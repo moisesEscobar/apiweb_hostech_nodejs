@@ -1,12 +1,12 @@
 import * as Joi from 'joi';
-import { IBrandModel } from '../models/brand-model';
+import Brand, { IBrandModel } from '../models/brand-model';
 
 class BrandValidation {
     brand(
         params: IBrandModel
     ): Joi.ValidationResult {
         const schema: Joi.Schema = Joi.object().keys({
-            name: Joi.string().required()
+            name:  Joi.string().required().min(3).max(255)
         });
         return schema.validate(params);
     }

@@ -3,7 +3,7 @@ import sequelize from '../config/connection/connection';
 
 export interface IBrandModel {
     id?: number;
-    name: string;
+    name?: string;
     updated_at?:Date,
     created_at?:Date,
     deleted_at?:Date,

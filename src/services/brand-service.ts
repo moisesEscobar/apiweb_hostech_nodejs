@@ -1,13 +1,15 @@
 import * as Joi from 'joi';
 const { Op } = require('sequelize');
 import Brand, { IBrandModel } from '../models/brand-model';
+import BrandView from '../models/views/brand-view';
 import BrandValidation from '../validations/brand-validations';
 import { IBrandService } from '../interfaces/brand-interface';
+import ProductView from '../models/views/product-view';
 
 const BrandService: IBrandService = {
     async findAll(): Promise < IBrandModel[] > {
         try {
-            return await Brand.findAll({});
+            return await BrandView.findAll({where:{deleted_at:null}});
         } catch (error) {
             throw new Error(error.message);
         }
@@ -18,7 +20,7 @@ const BrandService: IBrandService = {
             if (validate.error) {
                 throw new Error(validate.error.message);
             }
-            const brand = await Brand.findByPk(id);
+            const brand = await BrandView.findOne({ where: {id,deleted_at: null}});
             if(!brand){
                 throw new Error("Brand not found");
             }
@@ -29,11 +31,12 @@ const BrandService: IBrandService = {
     },
     async search(params: any): Promise < IBrandModel[] > {
         try {
-            const brands = await Brand.findAll({
+            const brands = await BrandView.findAll({
                 where: {
                     name: {
                         [Op.iLike]: `%${params.name}%`,
                     },
+                    deleted_at:null
                 },
             });
             return brands;
@@ -43,13 +46,15 @@ const BrandService: IBrandService = {
     },
     async create(body: IBrandModel): Promise < IBrandModel > {
         try {
-            const validate: Joi.ValidationResult = BrandValidation.brand(body);
+            const validate: Joi.ValidationResult = await BrandValidation.brand(body);
             if (validate.error) {
                 throw new Error(validate.error.message);
             }
-            const brand: IBrandModel = await Brand.create({
-                name:body.name
-            });
+            const brand_exist = await BrandView.findOne({ where: {name:body.name,deleted_at: null}});
+            if(brand_exist){
+                throw new Error("Brand name exist");
+            }
+            const brand: IBrandModel = await Brand.create({name:body.name});
             return brand;
         } catch (error) {
             throw new Error(error.message);
@@ -65,6 +70,10 @@ const BrandService: IBrandService = {
             const brand = await Brand.findByPk(id);
             if(!brand){
                 throw new Error("Brand not found");
+            }
+            const exist_in_product = await ProductView.findOne({ where: {brand_id:id,deleted_at: null}});
+            if(exist_in_product){
+                throw new Error("The brand cannot be eliminated because it has associated products");
             }
             await brand.destroy();
             return brand;
@@ -82,6 +91,10 @@ const BrandService: IBrandService = {
             const brand = await Brand.findByPk(id);
             if(!brand){
                 throw new Error("Brand not found");
+            }
+            const exist_in_product = await ProductView.findOne({ where: {brand_id:id,deleted_at: null}});
+            if(exist_in_product){
+                throw new Error("The brand cannot be updated because it has associated products");
             }
             await brand.update(body);
         } catch (error) {

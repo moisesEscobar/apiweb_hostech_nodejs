@@ -1,8 +1,10 @@
 import * as Joi from 'joi';
-import * as jwt from 'jsonwebtoken';// implementation of temporary library in which they give us the real accesses
 import { IAuthService } from '../interfaces/auth-interface';
 import AuthValidation from '../validations/auth-validation';
-import User, { IUserModel, IUserModelRegistry } from '../models/user-model';
+import User, {IUserModelRegistry } from '../models/user-model';
+import  UserView, {IUserViewModel} from '../models/views/user-view';
+
+
 
 const AuthService: IAuthService = {
     //Generate user
@@ -14,8 +16,8 @@ const AuthService: IAuthService = {
             }
 
             // Verificar si el usuario ya existe
-            const userExist = await User.findOne({ where: { email:data.email } });
-            if (userExist) {
+            const user_exist = await User.findOne({ where: { email:data.email } });
+            if (user_exist) {
                 throw new Error('Este correo electrónico ya ha sido registrado.');
             }
 
@@ -35,18 +37,18 @@ const AuthService: IAuthService = {
         }
     },
     // Credentials are used to login and return a token
-    async login(body: {email: string, password: string}): Promise < IUserModel > {
+    async login(body: {email: string, password: string}): Promise < IUserViewModel > {
         try {
             const validate: Joi.ValidationResult < {email: string, password: string} > = AuthValidation.login(body);
             if (validate.error) {
                 throw new Error(await validate.error.message);
             }
-            const user: IUserModel  = await User.findOne({where:{email:body.email}});
+            const user: IUserViewModel  = await UserView.findOne({where:{email:body.email,deleted:null}});
             if (!user) {
                 throw new Error('Error login notfound');
             }           
-            const isMatched: boolean = await user.comparePassword(body.password);
-            if (!isMatched) {
+            const is_matched: boolean = await user.comparePassword(body.password);
+            if (!is_matched) {
                 throw new Error('Incorrect password');
             }
             return user;

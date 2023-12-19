@@ -8,8 +8,8 @@ class LogValidation {
             action: Joi.string().required(),
             catalog: Joi.string().required(),
             user_id: Joi.number().integer().positive().required().custom(async (value, helpers) => {
-                const userExist = await User.findByPk(value);
-                if (!userExist) {
+                const user_exist = await User.findByPk(value, { paranoid: false });
+                if (!user_exist) {
                     return helpers.error('any.invalid', { message: 'The user does not exist' });
                 }
                 return value;

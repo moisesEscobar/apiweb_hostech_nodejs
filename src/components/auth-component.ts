@@ -8,10 +8,10 @@ import * as jwt from 'jsonwebtoken'
 // Credentials are used to login and return a token
 export async function login(req: Request, res: Response, next: NextFunction): Promise < void > {
     try {
-        let jsonObject: any = req.body.json ? JSON.parse(req.body.json) : req.body;
+        let json_object: any = req.body.json ? JSON.parse(req.body.json) : req.body;
 
         // Verificar si el usuario existe y la contraseña es válida
-        const user: IUserModel = await AuthService.login(jsonObject);
+        const user: IUserModel = await AuthService.login(json_object);
         // Generate token
         const token: string =  jwt.sign({ email: user.email, id: user.id, type: 'session' },config.SECRET, {
             expiresIn: '60m'
@@ -19,7 +19,7 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
         res.status(200).json({
             status: 200,
             message: 'Successfully logged in.',
-            securityContext: {token}
+            security_context: {token}
         });
         next();
     } catch (error) {
@@ -34,14 +34,14 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
 }
 export async function signup(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-        const jsonObject: any = req.body.json ? JSON.parse(req.body.json) : req.body;
-        const emailEnc: any = await AuthService.signup(jsonObject.data);
+        const json_object: any = req.body.json ? JSON.parse(req.body.json) : req.body;
+        const user: any = await AuthService.signup(json_object.data);
         res.json({
             status: 200,
             data: {
                 clave: 'OK',
                 message: 'Registration completed successfully',
-                content:  emailEnc
+                content:  user
             }
         });
         

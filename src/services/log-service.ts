@@ -3,17 +3,12 @@ const { Op } = require('sequelize');
 import Log, { ILogModel } from '../models/log-model';
 import LogValidation from '../validations/log-validations';
 import { ILogService } from '../interfaces/log-interface';
-import User from '../models/user-model';
+import LogView from '../models/views/log-view';
 
 const LogService: ILogService = {
     async findAll(): Promise < any[] > {
         try {
-            return await Log.findAll({
-                include: [{
-                  model: User,
-                  attributes: ['id', 'name', 'last_name','email'], // selecciona los atributos que deseas incluir
-                }],
-              });
+            return await LogView.findAll({});
         } catch (error) {
             throw new Error(error.message);
         }

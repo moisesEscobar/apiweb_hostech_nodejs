@@ -1,5 +1,5 @@
 import { DataTypes, Model } from 'sequelize';
-import {hash, compare} from 'bcrypt';
+import {hash} from 'bcrypt';
 import sequelize from '../config/connection/connection';
 
 export interface IUserModel {
@@ -9,7 +9,9 @@ export interface IUserModel {
     second_surname: string;
     email: string;
     password: string;
-    comparePassword: (password: string) => Promise<boolean>;
+    updated_at?:Date,
+    created_at?:Date,
+    deleted_at?:Date,
 }
 
 export interface IUserModelRegistry{
@@ -27,16 +29,11 @@ class User extends Model {
     public second_surname: string;
     public email: string;
     public password: string;
-    // Definir relaciones, validaciones u otros métodos aquí
 
     // Method to encrypt the password before saving it
     public async encryptPassword(): Promise<void> {
         const saltRounds = 10;
         this.password = await hash(this.password, saltRounds);
-    }
-    // MéMethod for comparing the encrypted password with an unencrypted password
-    public async comparePassword(password: string): Promise<boolean> {
-        return compare(password, this.password);
     }
 }
 User.init(

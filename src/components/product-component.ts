@@ -8,10 +8,10 @@ import LogService from '../services/log-service';
 
 export async function findAll(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
     try {
-        const jsonObjectUs: any = req.user;
+        const json_object_user: any = req.user;
         const products: IProductModel[] = await ProductService.findAll();
         await LogService.create({
-            user_id: jsonObjectUs.id,
+            user_id: json_object_user.id,
             action: "findAll",
             catalog: "brand"
         })
@@ -33,10 +33,10 @@ export async function findAll(req: RequestWithUser, res: Response, next: NextFun
 
 export async function findOne(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
     try {
-        const jsonObjectUs: any = req.user;
+        const json_object_user: any = req.user;
         const product: IProductModel = await ProductService.findOne(parseInt(req.params.id));
         await LogService.create({
-            user_id: jsonObjectUs.id,
+            user_id: json_object_user.id,
             action: "findOne",
             catalog: "brand"
         })
@@ -58,10 +58,10 @@ export async function findOne(req: RequestWithUser, res: Response, next: NextFun
 
 export async function search(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
     try {
-        const jsonObjectUs: any = req.user;
+        const json_object_user: any = req.user;
         const products: IProductModel[] = await ProductService.search(req.query);
         await LogService.create({
-            user_id: jsonObjectUs.id,
+            user_id: json_object_user.id,
             action: "search",
             catalog: "brand"
         })
@@ -83,11 +83,11 @@ export async function search(req: RequestWithUser, res: Response, next: NextFunc
 
 export async function create(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
     try {
-        const jsonObjectUs: any = req.user;
-        let jsonObject: any = req.body.json ? JSON.parse(req.body.json) : req.body;
-        const product: IProductModel = await ProductService.create(jsonObject);
+        const json_object_user: any = req.user;
+        let json_object: any = req.body.json ? JSON.parse(req.body.json) : req.body;
+        const product: IProductModel = await ProductService.create(json_object);
         await LogService.create({
-            user_id: jsonObjectUs.id,
+            user_id: json_object_user.id,
             action: "ceate",
             catalog: "brand"
         })
@@ -109,11 +109,11 @@ export async function create(req: RequestWithUser, res: Response, next: NextFunc
 
 export async function update(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
     try {
-        const jsonObjectUs: any = req.user;
-        let jsonObject: any = req.body.json ? JSON.parse(req.body.json) : req.body;
-        await ProductService.update(parseInt(req.params.id),jsonObject);
+        const json_object_user: any = req.user;
+        let json_object: any = req.body.json ? JSON.parse(req.body.json) : req.body;
+        await ProductService.update(parseInt(req.params.id),json_object);
         await LogService.create({
-            user_id: jsonObjectUs.id,
+            user_id: json_object_user.id,
             action: "update",
             catalog: "brand"
         })
@@ -134,10 +134,10 @@ export async function update(req: RequestWithUser, res: Response, next: NextFunc
 
 export async function remove(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
     try {
-        const jsonObjectUs: any = req.user;
+        const json_object_user: any = req.user;
         const product: IProductModel = await ProductService.remove(parseInt(req.params.id));
         await LogService.create({
-            user_id: jsonObjectUs.id,
+            user_id: json_object_user.id,
             action: "remove",
             catalog: "brand"
         })
@@ -158,10 +158,10 @@ export async function remove(req: RequestWithUser, res: Response, next: NextFunc
 
 export async function restore(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
     try {
-        const jsonObjectUs: any = req.user;
+        const json_object_user: any = req.user;
         const product: IProductModel = await ProductService.restore(parseInt(req.params.id));
         await LogService.create({
-            user_id: jsonObjectUs.id,
+            user_id: json_object_user.id,
             action: "restore",
             catalog: "brand"
         })
