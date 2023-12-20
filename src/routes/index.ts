@@ -15,9 +15,10 @@ export function init(app: express.Application): void {
         definition: {
             openapi: "3.0.0",
             info: { title: "Api web node js", version: "1.0.0" },
-            servers: [{ url: "https://mem-hostech-7efd928b200f.herokuapp.com" },{ url: "http://127.0.0.1:3000" }],
+            //{ url: "http://127.0.0.1:3000" }
+            servers: [{ url: "https://mem-hostech-7efd928b200f.herokuapp.com" }],
         },
-        apis: [`${path.join(__dirname, "api-doc.ts")}`],
+        apis: [`${path.join(__dirname, "api-doc.js")}`],
     }
     console.log(__dirname)
     app.get('/', (req, res, next) => { return res.send('Api Web 🏓') });
