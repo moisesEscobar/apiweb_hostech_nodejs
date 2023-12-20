@@ -14,13 +14,11 @@ const AuthService: IAuthService = {
             if (validate.error) {
                 throw new Error(validate.error.message);
             }
-
             // Verificar si el usuario ya existe
-            const user_exist = await User.findOne({ where: { email:data.email } });
+            const user_exist: IUserViewModel  = await UserView.findOne({where:{email:data.email}});
             if (user_exist) {
                 throw new Error('Este correo electrónico ya ha sido registrado.');
-            }
-
+            } 
             // Crear un nuevo usuario
             const newUser = await User.create({
                 name:data.name,
@@ -41,9 +39,9 @@ const AuthService: IAuthService = {
         try {
             const validate: Joi.ValidationResult < {email: string, password: string} > = AuthValidation.login(body);
             if (validate.error) {
-                throw new Error(await validate.error.message);
+                throw new Error(validate.error.message);
             }
-            const user: IUserViewModel  = await UserView.findOne({where:{email:body.email,deleted:null}});
+            const user: IUserViewModel  = await UserView.findOne({where:{email:body.email}});
             if (!user) {
                 throw new Error('Error login notfound');
             }           

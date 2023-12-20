@@ -29,6 +29,30 @@ export async function findAll(req: RequestWithUser, res: Response, next: NextFun
         });
     }
 }
+export async function findAllWithProducts(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
+    try {
+        const json_object_user: any = req.user;
+        const brands: IBrandModel[] = await BrandService.findAllWithProducts();
+        await LogService.create({
+            user_id: json_object_user.id,
+            action: "findAll",
+            catalog: "brand"
+        })
+        res.json({
+            status: 200,
+            message: 'Get brands with products successfull',
+            content: brands
+        });
+    } catch (error) {
+        if (error.code === 500) {
+            return next(new HttpError(error.message.status, error.message));
+        }
+        res.json({
+            status: 400,
+            message: error.message
+        });
+    }
+}
 
 export async function findOne(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
     try {
@@ -87,9 +111,11 @@ export async function create(req: RequestWithUser, res: Response, next: NextFunc
         const brand: IBrandModel = await BrandService.create(json_object);
         await LogService.create({
             user_id: json_object_user.id,
-            action: "ceate",
-            catalog: "brand"
-        })
+            action: "create",
+            catalog: "brand",
+            detail_last: null,
+            detail_new: JSON.stringify(brand)
+        });
         res.json({
             status: 200,
             message: 'Create brand successfull',
@@ -110,12 +136,14 @@ export async function update(req: RequestWithUser, res: Response, next: NextFunc
     try {
         const json_object_user: any = req.user;
         let json_object: any = req.body.json ? JSON.parse(req.body.json) : req.body;
-        await BrandService.update(parseInt(req.params.id),json_object);
+        const {last_data,new_data} = await BrandService.update(parseInt(req.params.id),json_object);
         await LogService.create({
             user_id: json_object_user.id,
             action: "update",
-            catalog: "brand"
-        })
+            catalog: "brand",
+            detail_last: JSON.stringify(last_data),
+            detail_new: JSON.stringify(new_data)
+        });
         res.json({
             status: 200,
             message: 'Update brand successfull'
@@ -134,16 +162,18 @@ export async function update(req: RequestWithUser, res: Response, next: NextFunc
 export async function remove(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
     try {
         const json_object_user: any = req.user;
-        const brand: IBrandModel = await BrandService.remove(parseInt(req.params.id));
+        const {last_data,new_data} = await BrandService.remove(parseInt(req.params.id));
         await LogService.create({
             user_id: json_object_user.id,
             action: "remove",
-            catalog: "brand"
+            catalog: "brand",
+            detail_last: JSON.stringify(last_data),
+            detail_new: JSON.stringify(new_data)
         })
         res.json({
             status: 200,
             message: 'Delete brand successfull',
-            content: brand
+            content: new_data
         });
     } catch (error) {
         if (error.code === 500) {
@@ -159,16 +189,18 @@ export async function remove(req: RequestWithUser, res: Response, next: NextFunc
 export async function restore(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
     try {
         const json_object_user: any = req.user;
-        const brand: IBrandModel = await BrandService.restore(parseInt(req.params.id));
+        const {last_data,new_data} = await BrandService.restore(parseInt(req.params.id));
         await LogService.create({
             user_id: json_object_user.id,
             action: "restore",
-            catalog: "brand"
+            catalog: "brand",
+            detail_last: JSON.stringify(last_data),
+            detail_new: JSON.stringify(new_data)
         })
         res.json({
             status: 200,
             message: 'Restore brand successfull',
-            content: brand
+            content: new_data
         });
     } catch (error) {
         if (error.code === 500) {

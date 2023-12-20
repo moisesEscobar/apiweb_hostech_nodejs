@@ -35,7 +35,7 @@ export async function login(req: Request, res: Response, next: NextFunction): Pr
 export async function signup(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
         const json_object: any = req.body.json ? JSON.parse(req.body.json) : req.body;
-        const user: any = await AuthService.signup(json_object.data);
+        const user: any = await AuthService.signup(json_object);
         res.json({
             status: 200,
             data: {

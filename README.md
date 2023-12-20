@@ -36,7 +36,7 @@ Asegúrate de tener Node.js y PostgreSQL instalados en tu sistema.
 
 La documentación de la API se encuentra en Postman y puedes acceder a ella en [Postman Documentation](https://documenter.getpostman.com/view/12536131/2s9YkjANtF).
 
-La documentación EN PROCESO de la API se encuentra en Swagger y puedes acceder a ella en [Swagger Documentation](https://app.swaggerhub.com/apis-docs/MOISESEMTZ/hostech/1.0.0).
+La documentación EN PROCESO de la API se encuentra en Swagger y puedes acceder a ella en [Swagger Documentation](https://mem-hostech-7efd928b200f.herokuapp.com/api_doc).
 
 
 Uso

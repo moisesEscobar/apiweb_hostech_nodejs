@@ -3,18 +3,24 @@ import * as Routes from '../../routes';
 import * as bodyParser from 'body-parser';
 import sequelize from "../connection/connection";
 import express from 'express';
+import errorHandler from '../middleware/middleware';
+import cors from 'cors';
+
+
 
 const app: express.Application = express();
 
-
-
-//Middleware.configure(app);
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+
+// Routes
 Routes.init(app);
-//Middleware.initErrorHandler(app);
 
+// Habilita CORS para todas las rutas
+app.use(cors());
 
+app.use(errorHandler);
 // env.port.toString() / process.env.PORT 
 // sets port 3000 to default or unless otherwise specified in the environment
 app.set('port', process.env.PORT || 3000);

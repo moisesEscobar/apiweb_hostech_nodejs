@@ -65,10 +65,14 @@ export async function search(req: RequestWithUser, res: Response, next: NextFunc
             action: "search",
             catalog: "brand"
         })
+
+        
         res.json({
             status: 200,
             message: 'Searchs product successfull',
-            content: products
+            content: products,
+            page: req.query.page,
+            page_size: req.query.page_size,
         });
     } catch (error) {
         if (error.code === 500) {
@@ -89,7 +93,9 @@ export async function create(req: RequestWithUser, res: Response, next: NextFunc
         await LogService.create({
             user_id: json_object_user.id,
             action: "ceate",
-            catalog: "brand"
+            catalog: "brand",
+            detail_last: null,
+            detail_new: JSON.stringify(product)
         })
         res.json({
             status: 200,
@@ -111,11 +117,13 @@ export async function update(req: RequestWithUser, res: Response, next: NextFunc
     try {
         const json_object_user: any = req.user;
         let json_object: any = req.body.json ? JSON.parse(req.body.json) : req.body;
-        await ProductService.update(parseInt(req.params.id),json_object);
+        const {last_data,new_data} = await ProductService.update(parseInt(req.params.id),json_object);
         await LogService.create({
             user_id: json_object_user.id,
             action: "update",
-            catalog: "brand"
+            catalog: "brand",
+            detail_last: JSON.stringify(last_data),
+            detail_new: JSON.stringify(new_data)
         })
         res.json({
             status: 200,

@@ -1,57 +1,18 @@
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes } from 'sequelize';
 import sequelize from '../../config/connection/connection';
 
-class LogView extends Model {}
-
-LogView.init(
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-    },
-    action: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    catalog: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    user_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    user_name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    user_last_name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    user_email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    created_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-    updated_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-  },
-  {
-    sequelize, 
-    modelName: 'LogView',
-    tableName: 'view_all_logs', 
-    timestamps: false, 
-    freezeTableName: true,
-  }
-);
+const LogView = sequelize.define('view_logs', {
+  id: {type: DataTypes.INTEGER,primaryKey: true,},
+  action: DataTypes.STRING,
+  catalog: DataTypes.STRING,
+  detail_last: DataTypes.STRING,
+  detail_new: DataTypes.STRING,
+  user_id: DataTypes.INTEGER,
+  user_name: DataTypes.STRING,
+  user_last_name: DataTypes.STRING,
+  user_email: DataTypes.STRING,
+  created_at: DataTypes.DATE,
+  updated_at: DataTypes.DATE
+}, { timestamps: false ,freezeTableName: true});
 
 export default LogView;
-
-

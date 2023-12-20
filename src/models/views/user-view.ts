@@ -14,7 +14,6 @@ export interface IUserViewModel {
   deleted_at?:Date,
   comparePassword: (password: string) => Promise<boolean>;
 }
-
 class UserView extends Model {
   public id: number;
     public name: string;
@@ -22,63 +21,27 @@ class UserView extends Model {
     public second_surname: string;
     public email: string;
     public password: string;
-
-  // Method for comparing the encrypted password with an unencrypted password
   public async comparePassword(password: string): Promise<boolean> {
     return compare(password, this.password);
   }
 }
-
-UserView.init(
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true,
-    },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    last_name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    second_surname: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    // timestamps
-    created_at: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-      allowNull: false,
-    },
-    updated_at: {
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
-      allowNull: false,
-    },
-    deleted_at: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
+UserView.init({
+    id: {type: DataTypes.INTEGER,primaryKey: true,},
+    name: DataTypes.STRING,
+    last_name: DataTypes.STRING,
+    second_surname: DataTypes.STRING,
+    email: DataTypes.STRING,
+    password: DataTypes.STRING,
+    created_at: DataTypes.DATE,
+    updated_at: DataTypes.DATE,
+    deleted_at: DataTypes.DATE
   },
   {
     sequelize,
     modelName: 'UserView',
-    tableName: 'view_all_users',
+    tableName: 'view_users',
     timestamps: false,
     freezeTableName: true,
   }
 );
-
 export default UserView;

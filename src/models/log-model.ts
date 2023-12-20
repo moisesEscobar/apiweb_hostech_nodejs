@@ -7,6 +7,8 @@ export interface ILogModel {
     action: string;
     catalog: string;
     user_id?: number;
+    detail_last?:string,
+    detail_new?:string
 }
 
 class Log extends Model {
@@ -16,6 +18,8 @@ class Log extends Model {
     public updated_at: Date;
     public created_at: Date;
     public deleted_at: Date;
+    public detail_last: string;
+    public detail_new: string;
     // Definir relaciones, validaciones u otros métodos aquí
 }
 Log.init(
@@ -48,6 +52,14 @@ Log.init(
         },
         deleted_at: {
             type: DataTypes.DATE,
+            allowNull: true,
+        },
+        detail_last: {
+            type: DataTypes.JSONB,
+            allowNull: true,
+        },
+        detail_new: {
+            type: DataTypes.JSONB,
             allowNull: true,
         },
     },

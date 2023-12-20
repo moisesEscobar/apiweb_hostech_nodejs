@@ -5,22 +5,31 @@ import BrandView from '../models/views/brand-view';
 import BrandValidation from '../validations/brand-validations';
 import { IBrandService } from '../interfaces/brand-interface';
 import ProductView from '../models/views/product-view';
+import LogService from './log-service';
+import BrandWithProductView from '../models/views/brand-withproducts-view';
 
 const BrandService: IBrandService = {
-    async findAll(): Promise < IBrandModel[] > {
+    async findAll(): Promise < any[] > {
         try {
-            return await BrandView.findAll({where:{deleted_at:null}});
+            return await BrandView.findAll();
         } catch (error) {
             throw new Error(error.message);
         }
     },
-    async findOne(id: number): Promise < IBrandModel > {
+    async findAllWithProducts(): Promise < any[] > {
+        try {
+            return await BrandWithProductView.findAll({});
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    },
+    async findOne(id: number): Promise < any > {
         try {
             const validate: Joi.ValidationResult =  BrandValidation.validateId({id});
             if (validate.error) {
                 throw new Error(validate.error.message);
             }
-            const brand = await BrandView.findOne({ where: {id,deleted_at: null}});
+            const brand = await BrandView.findByPk(id);
             if(!brand){
                 throw new Error("Brand not found");
             }
@@ -29,14 +38,13 @@ const BrandService: IBrandService = {
             throw new Error(error.message);
         }
     },
-    async search(params: any): Promise < IBrandModel[] > {
+    async search(params: any): Promise < any[] > {
         try {
             const brands = await BrandView.findAll({
                 where: {
                     name: {
                         [Op.iLike]: `%${params.name}%`,
-                    },
-                    deleted_at:null
+                    }
                 },
             });
             return brands;
@@ -50,7 +58,7 @@ const BrandService: IBrandService = {
             if (validate.error) {
                 throw new Error(validate.error.message);
             }
-            const brand_exist = await BrandView.findOne({ where: {name:body.name,deleted_at: null}});
+            const brand_exist = await BrandView.findOne({ where: {name:body.name}});
             if(brand_exist){
                 throw new Error("Brand name exist");
             }
@@ -60,29 +68,7 @@ const BrandService: IBrandService = {
             throw new Error(error.message);
         }
     },
-
-    async remove(id: number): Promise < IBrandModel > {
-        try {
-            const validate: Joi.ValidationResult = BrandValidation.validateId({id});
-            if (validate.error) {
-                throw new Error(validate.error.message);
-            }
-            const brand = await Brand.findByPk(id);
-            if(!brand){
-                throw new Error("Brand not found");
-            }
-            const exist_in_product = await ProductView.findOne({ where: {brand_id:id,deleted_at: null}});
-            if(exist_in_product){
-                throw new Error("The brand cannot be eliminated because it has associated products");
-            }
-            await brand.destroy();
-            return brand;
-        } catch (error) {
-            throw new Error(error.message);
-        }
-    },
-
-    async update(id:number,body: IBrandModel): Promise < void > {
+    async update(id:number,body: IBrandModel): Promise < any > {
         try {
             const validate: Joi.ValidationResult = BrandValidation.brand(body);
             if (validate.error) {
@@ -92,16 +78,43 @@ const BrandService: IBrandService = {
             if(!brand){
                 throw new Error("Brand not found");
             }
-            const exist_in_product = await ProductView.findOne({ where: {brand_id:id,deleted_at: null}});
+            const last_data={...brand.get()};
+            const exist_in_product = await ProductView.findOne({ where: {brand_id:id}});
+            console.log(exist_in_product)
             if(exist_in_product){
                 throw new Error("The brand cannot be updated because it has associated products");
             }
             await brand.update(body);
+            const new_data={...brand.get()};
+
+            return {last_data:last_data,new_data:new_data}
         } catch (error) {
             throw new Error(error.message);
         }
     },
-    async restore(id: number): Promise < IBrandModel > {
+    async remove(id: number): Promise < any > {
+        try {
+            const validate: Joi.ValidationResult = BrandValidation.validateId({id});
+            if (validate.error) {
+                throw new Error(validate.error.message);
+            }
+            const brand = await Brand.findByPk(id);
+            if(!brand){
+                throw new Error("Brand not found");
+            }
+            const last_data={...brand.get()};
+            const exist_in_product = await ProductView.findOne({ where: {brand_id:id}});
+            if(exist_in_product){
+                throw new Error("The brand cannot be eliminated because it has associated products");
+            }
+            await brand.destroy();
+            const new_data={...brand.get()};
+            return {last_data:last_data,new_data:new_data}
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    },
+    async restore(id: number): Promise < any > {
         try {
             const validate: Joi.ValidationResult = BrandValidation.validateId({id});
             if (validate.error) {
@@ -111,8 +124,10 @@ const BrandService: IBrandService = {
             if(!brand){
                 throw new Error("Brand not found");
             }
+            const last_data={...brand.get()};
             await brand.restore();
-            return brand;
+            const new_data={...brand.get()};
+            return {last_data:last_data,new_data:new_data}
         } catch (error) {
             throw new Error(error.message);
         }
