@@ -17,9 +17,9 @@ export function init(app: express.Application): void {
             info: { title: "Api web node js", version: "1.0.0" },
             servers: [{ url: "https://mem-hostech-7efd928b200f.herokuapp.com" },{ url: "http://127.0.0.1:3000" }],
         },
-        apis: [`${path.join(__dirname, "/api-doc.ts")}`],
+        apis: [`${path.join(__dirname, "api-doc.ts")}`],
     }
-
+    console.log(__dirname)
     app.get('/', (req, res, next) => { return res.send('Api Web 🏓') });
     app.use("/api_doc", swaggerUi.serve, swaggerUi.setup(swaggerJsdoc(swaggerSpec))); // swagger
 
