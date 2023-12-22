@@ -113,6 +113,18 @@ BASES DE DATOS:
         FROM products prds
         WHERE prds.deleted_at is null;
 
+        CREATE VIEW view_inventory_resume AS
+        SELECT product_id, (
+                SELECT SUM(quantity) total_quantity
+                FROM inventories WHERE deleted_at IS NULL AND product_id = rp.product_id
+            ) total_quantity,
+            quantity_sold,
+            total_amount
+        FROM(
+            SELECT product_id,sum(quantity) quantity_sold,sum(total_amount) total_amount
+            FROM product_sales GROUP BY product_id
+        ) AS rp;
+
 
         CREATE VIEW view_products_with_inventory AS
         SELECT
@@ -125,19 +137,14 @@ BASES DE DATOS:
             vp.brand_name,
             vp.price product_price,
             vp.reorder_point product_reorder_point,
-            COALESCE(ps.quantity_sold, 0) AS quantity_sold,
-            COALESCE(ip.total_quantity, 0) AS total_quantity,
-            ( COALESCE(ip.total_quantity, 0)  - COALESCE(ps.quantity_sold, 0) ) AS quantity_available,
-            COALESCE(ps.total_amount, 0) AS total_amount
+            vir. total_quantity,
+            vir.quantity_sold,
+            (vir.total_quantity  - vir.quantity_sold) AS quantity_available,
+            COALESCE(vir.total_amount, 0) AS total_amount
         FROM view_products vp
-        LEFT JOIN(
-            SELECT product_id,SUM(quantity) total_quantity FROM inventories WHERE deleted_at IS NULL GROUP BY product_id
-        ) as ip ON vp.id=ip.product_id
-        LEFT JOIN (
-            SELECT 
-                product_id,sum(quantity) quantity_sold,sum(total_amount) total_amount 
-            FROM product_sales WHERE deleted_at IS NULL GROUP BY product_id
-        ) AS ps ON vp.id = ps.product_id;
+        INNER JOIN view_inventory_resume vir ON vp.id=vir.product_id;
+
+
 
         CREATE VIEW view_logs  AS
         SELECT
@@ -240,110 +247,6 @@ BASES DE DATOS:
         SELECT * FROM pg_views where Schemaname='public';
         select pg_get_viewdef('view_all_logs', true);
         SELECT nextval('products_id_seq') AS proximo_id;
-
-## Cambios de nomenclaturas
-    **camelCase** = funcionADeclarar
-    **snake_case**  = variable_a_declarar
-    **PascalCase**  = ClaseADeclarar
-    **kebab-case** = archivo-a-declarar
-## Campo delted_at
-
-
-* CONSIDERACIONES
-    Usar vistas en todas las consultas a excepcion de las actualizaciones,eliminacione sy creaciones
-    Corregir nomenclaturas
-    Limpiar y reiniciar tablas
-    Validaciones de minimo y maximo en el nombre de las marcas
-    Validacion de nombres unicos en marcas
-endpoint que me den las marcas que tienen productos
-original y cambio en log
-No permitir actualizar nombres de marcas que ya existan
-
-Corregir:
-    Permitir selecionar created_at and updated_at
-    Crear un procedimiento almacenado que reciba los logs y los guarde
-    paginacion de pg_ls_archive_statusdir
-
-
-
-NUEVOS REQUERIMIENTOS:
-    Se necesita que los productos permitan saber cuando se compra del producto y cuanto.
-    Que cuando me compren ese producto igual se guarde y cuanto.
-    Cundo yo compre quiero saber de que proveedor es.
-    Cuado me compren el producto y yo ya llegue a mi punto de reorden que me alerte que ya hay que comprar mas.
-    Punto de reorden: Cuando solo se tengan solo 10 unidades
-
-    Que hacer:
-        Rutas:
-            sale/product_sale
-                body:
-                    id_product
-                    quantity
-                Proceso:
-                    Recibir los parámetros
-                        validar si la cantidad de productos a comprar esta disponible (Transaciones)
-                            Guardar la venta en a tabla de product_sales
-                                * Obtener el precio total, multiplicando las unidades por el precio de cada unidad
-                            Si la venta se gaurdo disminuir la cantidad de productos del producto buscandolo por el id
-                        Si la cantidad no esta disponible indicarlo al usuario
-                            Mensaje informativo
-                        Informar si la cantidad disminuida del usuario es menor o igual a su punto de reorden
-                            Si esto se cumple indicarlo en la respuesta
-            sale/find_all
-                Obtener todas las ventas
-            Inventarios/(CRUD)
-                Considerar los nuevos campos en las rutas (id_supplier,quantity,price,reorder_point)
-            supplier/(CRUD)
-                Considerar crear una tabla de proveedores
-
-            product/ (Edit/Crear/Obtener)
-                Considerar los nuevos campos en las rutas (id_supplier,quantity,price,reorder_point)
-            
-        reports
-            product/report_resume: Select * from view_products_with_inventory
-
-
-        Tablas/ Ajustes:
-            product_sales
-                product_id not null
-                quantity 
-                total_amount
-                created_at
-                updated_at
-                deleted_at
-                * No restaurar
-            
-            inventories
-                product_id not null
-                quantity default 0
-                reorder_point default 0
-            
-            suppliers
-                id
-                name
-                updated_at
-                deleted_at
-            products
-                name
-                key
-                * price
-                * reorder_point
-                * supplier_id
-        corregir
-            * a la hora de gurdar la venta y el punto de reorden tomar la dispobnibilidad desde la vista construida de productos    
-            * Vista de productos todas sus ventas, todas sus compras, cantidad disponible
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
