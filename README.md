@@ -33,6 +33,5 @@ Asegúrate de tener Node.js y PostgreSQL instalados en tu sistema.
 
 
 ## Documentación API (Swagger)
-Recursos:
-   - Documentación Swagger Ui: https://mem-hostech-7efd928b200f.herokuapp.com/api_doc
+   - Documentación Swagger Ui: https://apiweb-hostech.onrender.com/api_doc
    - Url Api: https://apiweb-hostech.onrender.com
