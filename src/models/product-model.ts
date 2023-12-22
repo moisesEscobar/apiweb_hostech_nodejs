@@ -6,17 +6,21 @@ export interface IProductModel {
     id?: number;
     name: string;
     key: string;
+    supplier_id?: number;
+    reorder_point?: number;
     updated_at?:Date,
     created_at?:Date,
     deleted_at?:Date,
     brand_id?: number;
-
+    price?: number;
 }
 
 class Product extends Model {
     public id: number;
     public name: string;
     public key: string;
+    public supplier_id: number;
+    public reorder_point: number;
     public updated_at: Date;
     public created_at: Date;
     public deleted_at: Date;
@@ -36,6 +40,18 @@ Product.init(
         key: {
             type: DataTypes.STRING,
             allowNull: false,
+        },
+        price: {
+            type: DataTypes.DOUBLE,
+            defaultValue: 0
+        },
+        reorder_point: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
+        },
+        supplier_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false
         },
         brand_id: {
             type: DataTypes.INTEGER
@@ -67,6 +83,6 @@ Product.init(
         deletedAt: 'deleted_at',
     }
 );
-Product.belongsTo(Brand, { foreignKey: 'brand_id' });
+//Product.belongsTo(Brand, { foreignKey: 'brand_id' });
 
 export default Product;

@@ -2,6 +2,7 @@ import { IProductModel } from '../models/product-model';
 
 export interface IProductService {
     findAll(): Promise<IProductModel[]>;
+    reportResume(): Promise<any[]>;
     findOne(id: number): Promise<IProductModel>;
     search(params: any): Promise<IProductModel[]>;
     create(IProductModel: IProductModel): Promise<IProductModel>;

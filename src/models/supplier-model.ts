@@ -1,44 +1,30 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/connection/connection';
-import User from './user-model';
 
-export interface ILogModel {
+export interface ISupplierModel {
     id?: number;
-    action: string;
-    catalog: string;
-    user_id?: number;
-    detail_last?:string,
-    detail_new?:string
+    name?: string;
+    updated_at?:Date,
+    created_at?:Date,
+    deleted_at?:Date,
 }
-
-class Log extends Model {
+class Supplier extends Model {
     public id: number;
-    public action: string;
-    public catalog: string;
+    public name: string;
     public updated_at: Date;
     public created_at: Date;
     public deleted_at: Date;
-    public detail_last: string;
-    public detail_new: string;
-    // Definir relaciones, validaciones u otros métodos aquí
 }
-Log.init(
+Supplier.init(
     {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
         },
-        action: {
+        name: {
             type: DataTypes.STRING,
             allowNull: false,
-        },
-        catalog: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        user_id: {
-            type: DataTypes.INTEGER
         },
         created_at: {
             type: DataTypes.DATE,
@@ -54,19 +40,11 @@ Log.init(
             type: DataTypes.DATE,
             allowNull: true,
         },
-        detail_last: {
-            type: DataTypes.JSONB,
-            allowNull: true,
-        },
-        detail_new: {
-            type: DataTypes.JSONB,
-            allowNull: true,
-        },
     },
     {
         sequelize,
-        modelName: 'Log',
-        tableName: 'logs',
+        modelName: 'Supplier',
+        tableName: 'suppliers',
         timestamps: true, // enabled created_at y updated_at 
         paranoid: true, // enabled column deleted_at 
         underscored: true, // use snake_case ,
@@ -75,7 +53,4 @@ Log.init(
         deletedAt: 'deleted_at',
     }
 );
-
-//Log.belongsTo(User, { foreignKey: 'user_id' });
-
-export default Log;
+export default Supplier;

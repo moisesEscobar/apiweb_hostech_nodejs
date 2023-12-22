@@ -1,4 +1,4 @@
-import { AuthComponent } from '../components';
+import { AuthComponent, InventoryComponent, SaleComponent, SupplierComponent } from '../components';
 import { BrandComponent } from '../components';
 import { LogComponent } from '../components';
 import { ProductComponent } from '../components';
@@ -16,6 +16,14 @@ const router: Router = Router();
  *      description: Detalles del catalogo de marcas
  *  -   name: products
  *      description: Detalles del catalogo de productos
+ *  -   name: suppliers
+ *      description: Detalles del los proveedores
+ *  -   name: inventories
+ *      description: Detalles del inventario de productos
+ *  -   name: sales
+ *      description: Detalles de las ventas de los productos
+ *  -   name: reports
+ *      description: Reportes
  *  -   name: logs
  *      description: Detalles del histórico de acciones
  * /auth/login:
@@ -530,6 +538,573 @@ router.put('/restore/:id', ProductComponent.restore);
 
 
 
+
+
+
+
+
+
+
+
+
+/**
+ * @swagger
+ *  /supplier/find_all:
+ *  get:
+ *      tags:
+ *          - suppliers
+ *      description: Obtener todos los proveedores
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get suppliers successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.get('/findAll', SupplierComponent.findAll);
+/**
+ *  @swagger
+ *  /supplier/find_one/{id}:
+ *  get:
+ *      tags:
+ *          - suppliers
+ *      description: Obtener un proveedor
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id del proveedor
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *              format: int64
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get supplier successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.get('/findOne/:id', SupplierComponent.findOne);
+/**
+ * @swagger
+ * /supplier/create:
+ *  post:
+ *      tags:
+ *          - suppliers
+ *      description: Crear un nuevo proveedor
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      $ref: '#/components/schemas/Supplier'
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Create supplier successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.post('/create', SupplierComponent.create);
+/**
+ * @swagger
+ * /supplier/update/{id}:
+ *  put:
+ *      tags:
+ *          - suppliers
+ *      description: Actualizar un proveedor en el catalogo
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id del proveedor a actualizar
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      $ref: '#/components/schemas/Supplier'
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Update supplier successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.put('/update/:id', SupplierComponent.update);
+/**
+ * @swagger
+ * /supplier/remove/{id}:
+ *  delete:
+ *      tags:
+ *          - suppliers
+ *      description: Eliminar un proveedor del catalogo
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id del proveedor a eliminar
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Delete supplier successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.delete('/remove/:id', SupplierComponent.remove);
+/**
+ * @swagger
+ * /supplier/restore/{id}:
+ *  put:
+ *      tags:
+ *          - suppliers
+ *      description: Restaurar un proveedor
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id del pproveedor
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Restore supplier successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.put('/restore/:id', SupplierComponent.restore);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * @swagger
+ *  /inventory/find_all:
+ *  get:
+ *      tags:
+ *          - inventories
+ *      description: Obtener todos los inventarios
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get inventories successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.get('/findAll', InventoryComponent.findAll);
+/**
+ *  @swagger
+ *  /inventory/find_one/{id}:
+ *  get:
+ *      tags:
+ *          - inventories
+ *      description: Obtener un solo inventario
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id del inventario
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *              format: int64
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get inventory successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.get('/findOne/:id', InventoryComponent.findOne);
+/**
+ * @swagger
+ * /inventory/create:
+ *  post:
+ *      tags:
+ *          - inventories
+ *      description: Crear una muevo inventario
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      $ref: '#/components/schemas/Inventory'
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Create inventory successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.post('/create', InventoryComponent.create);
+/**
+ * @swagger
+ * /inventory/update/{id}:
+ *  put:
+ *      tags:
+ *          - inventories
+ *      description: Actualizar un inventario
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id del inventario
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      $ref: '#/components/schemas/Inventory'
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Update inventory successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.put('/update/:id', InventoryComponent.update);
+/**
+ * @swagger
+ * /inventory/remove/{id}:
+ *  delete:
+ *      tags:
+ *          - inventories
+ *      description: Eliminar un inventario
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id de la marca a eliminar
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Delete inventory successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.delete('/remove/:id', InventoryComponent.remove);
+/**
+ * @swagger
+ * /inventory/restore/{id}:
+ *  put:
+ *      tags:
+ *          - inventories
+ *      description: Restaurar un inventario
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id del inventario
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Restore inventory successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.put('/restore/:id', InventoryComponent.restore);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * @swagger
+ *  /sale/find_all:
+ *  get:
+ *      tags:
+ *          - sales
+ *      description: Obtener todas las ventas
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get sales successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.get('/findAll', SaleComponent.findAll);
+/**
+ *  @swagger
+ *  /sale/find_one/{id}:
+ *  get:
+ *      tags:
+ *          - sales
+ *      description: Obtener una venta
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id de la venta a consultar
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *              format: int64
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get sale successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.get('/findOne/:id', SaleComponent.findOne);
+/**
+ * @swagger
+ * /sale/create:
+ *  post:
+ *      tags:
+ *          - sales
+ *      description: Crear una mueva venta
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      $ref: '#/components/schemas/Sale'
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Create sale successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.post('/create', SaleComponent.create);
+/**
+ * @swagger
+ * /sale/update/{id}:
+ *  put:
+ *      tags:
+ *          - sales
+ *      description: Actualizar una venta
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id de  la venta a actualizar
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      $ref: '#/components/schemas/Sale'
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Update sale successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.put('/update/:id', SaleComponent.update);
+/**
+ * @swagger
+ * /sale/remove/{id}:
+ *  delete:
+ *      tags:
+ *          - sales
+ *      description: Eliminar una venta
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id de la venta a eliminar
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Delete sale successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.delete('/remove/:id', SaleComponent.remove);
+
+
+
+
+
+
+
+
+/**
+ * @swagger
+ *  /product/report_resume:
+ *  get:
+ *      tags:
+ *          - reports
+ *      description: Obtener los productos y detalles de ventas e inventarios
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get brands successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.get('/report_resume', ProductComponent.reportResume);
+
+
+
+
+
+
+
+
+
+
 /**
  * @swagger
  *  /log/find_all:
@@ -621,17 +1196,73 @@ router.get('/findAll', LogComponent.findAll);
  *              key:
  *                  type: string
  *                  description: the product key
+ *              price:
+ *                  type: number
+ *                  format: double
+ *                  description: the price product
+ *              reorder_point:
+ *                  type: integer
+ *                  description: the quantity of products but reorder
  *              brand_id:
  *                  type: integer
  *                  description: the product brand id
+ *              supplier_id:
+ *                  type: integer
+ *                  description: the supplier id
  *          required:
  *              - name
  *              - key
+ *              - price
+ *              - reorder_point
  *              - brand_id
+ *              - supplier_id
  *          example:
  *              name: 'Galletas maria gamesa'
  *              key: 'game'
+ *              price: 15
+ *              reorder_point: 15
  *              brand_id: 1
+ *              supplier_id: 1
+ *      Supplier:
+ *          type: object
+ *          properties:
+ *              name:
+ *                  type: string
+ *                  description: the product name
+ *          required:
+ *              - name
+ *          example:
+ *              name: 'Soriana'
+ *      Inventory:
+ *          type: object
+ *          properties:
+ *              product_id:
+ *                  type: integer
+ *                  description: the product id
+ *              quantity:
+ *                  type: integer
+ *                  description: the quantity of products in inventory
+ *          required:
+ *              - product_id
+ *              - quantity
+ *          example:
+ *              product_id: 1
+ *              quantity: 20
+ *      Sale:
+ *          type: object
+ *          properties:
+ *              product_id:
+ *                  type: integer
+ *                  description: the product id
+ *              quantity:
+ *                  type: number
+ *                  description: the quantity of products in sale
+ *          required:
+ *              - product_id
+ *              - quantity
+ *          example:
+ *              product_id: 1
+ *              quantity: 5
  *  securitySchemes:
  *      ApiKeyAuth:
  *          type: apiKey
