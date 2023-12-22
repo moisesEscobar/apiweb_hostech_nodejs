@@ -5,11 +5,19 @@ import ProductValidation from '../validations/product-validations';
 import { IProductService } from '../interfaces/product-interface';
 import ProductView from '../models/views/product-view';
 import BrandView from '../models/views/brand-view';
+import ProductWithInventoryView from '../models/views/products_with_inventory';
 
 const ProductService: IProductService = {
     async findAll(): Promise<any[]> {
         try {
             return await ProductView.findAll({});
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    },
+    async reportResume(): Promise<any[]> {
+        try {
+            return await ProductWithInventoryView.findAll({});
         } catch (error) {
             throw new Error(error.message);
         }
@@ -79,7 +87,10 @@ const ProductService: IProductService = {
             const product: IProductModel = await Product.create({
                 name: body.name,
                 key: body.key,
-                brand_id: body.brand_id
+                price: body.price,
+                reorder_point: body.reorder_point,
+                brand_id: body.brand_id,
+                supplier_id: body.supplier_id
             });
             return product;
         } catch (error) {

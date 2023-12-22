@@ -1,24 +1,23 @@
-import ProductService from '../services/product-service';
+import SupplierService from '../services/supplier-service';
+import LogService from '../services/log-service';
 import { HttpError } from '../config/error';
-import { IProductModel } from '../models/product-model';
+import { ISupplierModel } from '../models/supplier-model';
 import { NextFunction, Response } from 'express';
 import { RequestWithUser } from '../interfaces/request';
-import LogService from '../services/log-service';
-
 
 export async function findAll(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
     try {
         const json_object_user: any = req.user;
-        const products: IProductModel[] = await ProductService.findAll();
+        const suppliers: ISupplierModel[] = await SupplierService.findAll();
         await LogService.create({
             user_id: json_object_user.id,
             action: "findAll",
-            catalog: "brand"
+            catalog: "supplier"
         })
         res.json({
             status: 200,
-            message: 'Get products successfull',
-            content: products
+            message: 'Get suppliers successfull',
+            content: suppliers
         });
     } catch (error) {
         if (error.code === 500) {
@@ -30,75 +29,20 @@ export async function findAll(req: RequestWithUser, res: Response, next: NextFun
         });
     }
 }
-
-export async function reportResume(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
-    try {
-        const json_object_user: any = req.user;
-        const products: IProductModel[] = await ProductService.reportResume();
-        await LogService.create({
-            user_id: json_object_user.id,
-            action: "reportResume",
-            catalog: "product"
-        })
-        res.json({
-            status: 200,
-            message: 'Get products report successfull',
-            content: products
-        });
-    } catch (error) {
-        if (error.code === 500) {
-            return next(new HttpError(error.message.status, error.message));
-        }
-        res.json({
-            status: 400,
-            message: error.message
-        });
-    }
-}
-
 
 export async function findOne(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
     try {
         const json_object_user: any = req.user;
-        const product: IProductModel = await ProductService.findOne(parseInt(req.params.id));
+        const supplier: ISupplierModel = await SupplierService.findOne(parseInt(req.params.id));
         await LogService.create({
             user_id: json_object_user.id,
             action: "findOne",
-            catalog: "brand"
+            catalog: "supplier"
         })
         res.json({
             status: 200,
-            message: 'Get product successfull',
-            content: product
-        });
-    } catch (error) {
-        if (error.code === 500) {
-            return next(new HttpError(error.message.status, error.message));
-        }
-        res.json({
-            status: 400,
-            message: error.message
-        });
-    }
-}
-
-export async function search(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
-    try {
-        const json_object_user: any = req.user;
-        const products: IProductModel[] = await ProductService.search(req.query);
-        await LogService.create({
-            user_id: json_object_user.id,
-            action: "search",
-            catalog: "brand"
-        })
-
-        
-        res.json({
-            status: 200,
-            message: 'Searchs product successfull',
-            content: products,
-            page: req.query.page,
-            page_size: req.query.page_size,
+            message: 'Get supplier successfull',
+            content: supplier
         });
     } catch (error) {
         if (error.code === 500) {
@@ -115,18 +59,18 @@ export async function create(req: RequestWithUser, res: Response, next: NextFunc
     try {
         const json_object_user: any = req.user;
         let json_object: any = req.body.json ? JSON.parse(req.body.json) : req.body;
-        const product: IProductModel = await ProductService.create(json_object);
+        const supplier: ISupplierModel = await SupplierService.create(json_object);
         await LogService.create({
             user_id: json_object_user.id,
-            action: "ceate",
-            catalog: "brand",
+            action: "create",
+            catalog: "supplier",
             detail_last: null,
-            detail_new: JSON.stringify(product)
-        })
+            detail_new: JSON.stringify(supplier)
+        });
         res.json({
             status: 200,
-            message: 'Create product successfull',
-            content: product
+            message: 'Create supplier successfull',
+            content: supplier
         });
     } catch (error) {
         if (error.code === 500) {
@@ -143,17 +87,17 @@ export async function update(req: RequestWithUser, res: Response, next: NextFunc
     try {
         const json_object_user: any = req.user;
         let json_object: any = req.body.json ? JSON.parse(req.body.json) : req.body;
-        const {last_data,new_data} = await ProductService.update(parseInt(req.params.id),json_object);
+        const {last_data,new_data} = await SupplierService.update(parseInt(req.params.id),json_object);
         await LogService.create({
             user_id: json_object_user.id,
             action: "update",
-            catalog: "brand",
+            catalog: "supplier",
             detail_last: JSON.stringify(last_data),
             detail_new: JSON.stringify(new_data)
-        })
+        });
         res.json({
             status: 200,
-            message: 'Update product successfull'
+            message: 'Update supplier successfull'
         });
     } catch (error) {
         if (error.code === 500) {
@@ -169,15 +113,18 @@ export async function update(req: RequestWithUser, res: Response, next: NextFunc
 export async function remove(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
     try {
         const json_object_user: any = req.user;
-        const product: IProductModel = await ProductService.remove(parseInt(req.params.id));
+        const {last_data,new_data} = await SupplierService.remove(parseInt(req.params.id));
         await LogService.create({
             user_id: json_object_user.id,
             action: "remove",
-            catalog: "brand"
+            catalog: "supplier",
+            detail_last: JSON.stringify(last_data),
+            detail_new: JSON.stringify(new_data)
         })
         res.json({
             status: 200,
-            message: 'Delete product successfull'
+            message: 'Delete supplier successfull',
+            content: new_data
         });
     } catch (error) {
         if (error.code === 500) {
@@ -193,16 +140,18 @@ export async function remove(req: RequestWithUser, res: Response, next: NextFunc
 export async function restore(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
     try {
         const json_object_user: any = req.user;
-        const product: IProductModel = await ProductService.restore(parseInt(req.params.id));
+        const {last_data,new_data} = await SupplierService.restore(parseInt(req.params.id));
         await LogService.create({
             user_id: json_object_user.id,
             action: "restore",
-            catalog: "brand"
+            catalog: "supplier",
+            detail_last: JSON.stringify(last_data),
+            detail_new: JSON.stringify(new_data)
         })
         res.json({
             status: 200,
-            message: '  Restore product successfull',
-            content: product
+            message: 'Restore supplier successfull',
+            content: new_data
         });
     } catch (error) {
         if (error.code === 500) {

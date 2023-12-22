@@ -1,15 +1,16 @@
-import { DataTypes, Model } from 'sequelize';
+import { DataTypes } from 'sequelize';
 import sequelize from '../../config/connection/connection';
 
-const ProductView = sequelize.define('view_products', {
+const SaleView = sequelize.define('view_product_sales', {
   id: {type: DataTypes.INTEGER,primaryKey: true,},
+  product_id: DataTypes.INTEGER,
   name: DataTypes.STRING,
   key: DataTypes.STRING,
-  brand_id: DataTypes.INTEGER,
-  price: DataTypes.DOUBLE,
   brand_name: DataTypes.STRING,
+  quantity_sold: DataTypes.INTEGER,
+  total_amount: DataTypes.INTEGER,
   created_at: DataTypes.DATE,
   updated_at: DataTypes.DATE
 }, { timestamps: false ,freezeTableName: true});
 
-export default ProductView;
+export default SaleView;
