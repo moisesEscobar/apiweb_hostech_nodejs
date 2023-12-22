@@ -20,15 +20,9 @@ export function init(app: express.Application): void {
         definition: {
             openapi: "3.0.0",
             info: { title: "Api web node js", version: "1.0.0" },
-<<<<<<< Updated upstream
-            servers: [{ url: "https://mem-hostech-7efd928b200f.herokuapp.com" },{ url: "http://127.0.0.1:3000" }],
-        },
-        apis: [`${path.join(__dirname, "api-doc.ts")}`],
-=======
             servers: [{ url: config.HOST}],
         },
         apis: [`${path.join(__dirname, ext_file_api)}`],
->>>>>>> Stashed changes
     }
     app.get('/', (req, res, next) => { return res.send('Api Web 🏓') });
     app.use("/api_doc", swaggerUi.serve, swaggerUi.setup(swaggerJsdoc(swaggerSpec))); // swagger
