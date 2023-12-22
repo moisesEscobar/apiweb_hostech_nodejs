@@ -34,12 +34,5 @@ Asegúrate de tener Node.js y PostgreSQL instalados en tu sistema.
 
 ## Documentación API (Swagger)
 
-La documentación de la API se encuentra en Postman y puedes acceder a ella en [Postman Documentation](https://documenter.getpostman.com/view/12536131/2s9YkjANtF).
-
-La documentación EN PROCESO de la API se encuentra en Swagger y puedes acceder a ella en [Swagger Documentation](https://mem-hostech-7efd928b200f.herokuapp.com/api_doc).
-
-
-Uso
-Asegúrate de tener tu API en ejecución. Si no tienes Node.js instalado, puedes usar la API en la ruta https://mem-hostech-7efd928b200f.herokuapp.com.
-
-La api se encuentra alojada [API WEB](https://mem-hostech-7efd928b200f.herokuapp.com).
+Documentación Swagger Ui: https://mem-hostech-7efd928b200f.herokuapp.com/api_doc
+Url Api: https://apiweb-hostech.onrender.com
