@@ -1,32 +1,23 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/connection/connection';
-import Brand from './brand-model';
 
-export interface IProductModel {
+export interface IPaymentTypeModel {
     id?: number;
-    name: string;
-    sku: string;
-    supplier_id?: number;
-    reorder_point?: number;
+    name?: string;
     updated_at?:Date,
     created_at?:Date,
     deleted_at?:Date,
-    brand_id?: number;
-    price?: number;
 }
 
-class Product extends Model {
+class PaymentType extends Model {
     public id: number;
     public name: string;
-    public sku: string;
-    public supplier_id: number;
-    public reorder_point: number;
     public updated_at: Date;
     public created_at: Date;
     public deleted_at: Date;
     // Definir relaciones, validaciones u otros métodos aquí
 }
-Product.init(
+PaymentType.init(
     {
         id: {
             type: DataTypes.INTEGER,
@@ -36,25 +27,6 @@ Product.init(
         name: {
             type: DataTypes.STRING,
             allowNull: false,
-        },
-        sku: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        price: {
-            type: DataTypes.DOUBLE,
-            defaultValue: 0
-        },
-        reorder_point: {
-            type: DataTypes.INTEGER,
-            defaultValue: 0
-        },
-        supplier_id: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
-        brand_id: {
-            type: DataTypes.INTEGER
         },
         created_at: {
             type: DataTypes.DATE,
@@ -73,8 +45,8 @@ Product.init(
     },
     {
         sequelize,
-        modelName: 'Product',
-        tableName: 'products',
+        modelName: 'PaymentType',
+        tableName: 'payment_types',
         timestamps: true, // enabled created_at y updated_at 
         paranoid: true, // enabled column deleted_at 
         underscored: true, // use snake_case ,
@@ -83,6 +55,5 @@ Product.init(
         deletedAt: 'deleted_at',
     }
 );
-//Product.belongsTo(Brand, { foreignKey: 'brand_id' });
 
-export default Product;
+export default PaymentType;

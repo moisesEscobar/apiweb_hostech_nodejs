@@ -5,5 +5,7 @@ import * as LogComponent from './log-component';
 import * as SupplierComponent from './supplier-component';
 import * as SaleComponent from './sale-component';
 import * as InventoryComponent from './inventory-component';
+import * as PaymentTypeComponent from './payment-type-component';
 
-export { AuthComponent,ProductComponent,BrandComponent,LogComponent,SupplierComponent,SaleComponent,InventoryComponent};
+
+export { AuthComponent,ProductComponent,BrandComponent,LogComponent,SupplierComponent,SaleComponent,InventoryComponent,PaymentTypeComponent};

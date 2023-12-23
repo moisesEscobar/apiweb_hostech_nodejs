@@ -12,6 +12,7 @@ import SupplierRouter from './supplier-router';
 import SaleRouter from './sale-router';
 import config from '../config/env/index';
 import path from "path";
+import PaymentTypeRouter from './payment-type-router';
 
 export function init(app: express.Application): void {
     const ext_file_api = (config.NODE_ENV=='production')?"api-doc.js":"api-doc.ts";
@@ -35,6 +36,7 @@ export function init(app: express.Application): void {
     app.use('/supplier', jwtConfig.isAuthenticated, SupplierRouter);
     app.use('/sale', jwtConfig.isAuthenticated, SaleRouter);
     app.use('/inventory', jwtConfig.isAuthenticated, InventoryRouter);
+    app.use('/payment_type', jwtConfig.isAuthenticated, PaymentTypeRouter);
 
     app.use((req, res, next) => {
         res.status(StatusCodes.BAD_REQUEST).json( {message: 'Not Found!'});

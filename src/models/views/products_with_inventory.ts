@@ -6,7 +6,7 @@ const ProductWithInventoryView = sequelize.define('view_products_with_inventory'
   supplier_id: DataTypes.INTEGER,
   supplier_name: DataTypes.STRING,
   product_name: DataTypes.STRING,
-  product_key: DataTypes.STRING,
+  product_sku: DataTypes.STRING,
   brand_id: DataTypes.INTEGER,
   brand_name: DataTypes.STRING,
   product_price: DataTypes.DOUBLE,

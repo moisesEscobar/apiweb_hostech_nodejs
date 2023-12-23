@@ -1,4 +1,4 @@
-import { AuthComponent, InventoryComponent, SaleComponent, SupplierComponent } from '../components';
+import { AuthComponent, InventoryComponent, SaleComponent, PaymentTypeComponent } from '../components';
 import { BrandComponent } from '../components';
 import { LogComponent } from '../components';
 import { ProductComponent } from '../components';
@@ -10,26 +10,28 @@ const router: Router = Router();
 /**
  * @swagger
  * tags:
- *  -   name: users
- *      description: Detalles de usuarios
- *  -   name: brands
+ *  -   name: Usuarios
+ *      description: Detalles de los usuarios
+ *  -   name: Marcas
  *      description: Detalles del catalogo de marcas
- *  -   name: products
- *      description: Detalles del catalogo de productos
- *  -   name: suppliers
+ *  -   name: Proveedores
  *      description: Detalles del los proveedores
- *  -   name: inventories
+ *  -   name: Tipo de pagos
+ *      description: Detalles del catalogo de tipo de pagos
+ *  -   name: Productos
+ *      description: Detalles del catalogo de productos
+ *  -   name: Inventarios
  *      description: Detalles del inventario de productos
- *  -   name: sales
+ *  -   name: Ventas
  *      description: Detalles de las ventas de los productos
- *  -   name: reports
- *      description: Reportes
- *  -   name: logs
+ *  -   name: Reportes
+ *      description: Diversos reportes
+ *  -   name: Registros de acciones
  *      description: Detalles del histórico de acciones
  * /auth/login:
  *  post:
  *      tags:
- *          - users
+ *          - Usuarios
  *      description: Se crean nuevos usuarios 
  *      tag: [User]
  *      requestBody:
@@ -38,7 +40,7 @@ const router: Router = Router();
  *              application/json:
  *                  schema:
  *                      type: object
- *                      $ref: '#/components/schemas/UserLogin'
+ *                      $ref: '#/components/schemas/InicioDeSesion'
  *      responses:
  *          200:
  *              description: (OK) Successfully logged in
@@ -53,7 +55,7 @@ router.post('/login', AuthComponent.login);
  * /auth/signup:
  *  post:
  *      tags:
- *          - users
+ *          - Usuarios
  *      description: Inicio sesión de usuarios, se retorno un token de acceso
  *      tag: [User]
  *      requestBody:
@@ -62,7 +64,7 @@ router.post('/login', AuthComponent.login);
  *              application/json:
  *                  schema:
  *                      type: object
- *                      $ref: '#/components/schemas/User'
+ *                      $ref: '#/components/schemas/Usuario'
  *      responses:
  *          200:
  *              description: (OK)  Successfully signup
@@ -79,7 +81,7 @@ router.post('/signup', AuthComponent.signup);
  *  /brand/find_all:
  *  get:
  *      tags:
- *          - brands
+ *          - Marcas
  *      description: Obtener todas las marcas
  *      security:
  *      - ApiKeyAuth: []
@@ -99,7 +101,7 @@ router.get('/findAll', BrandComponent.findAll);
  *  /brand/find_all_with_products:
  *  get:
  *      tags:
- *          - brands
+ *          - Marcas
  *      description: Obtener todas las marcas con productos vinculados
  *      security:
  *      - ApiKeyAuth: []
@@ -119,7 +121,7 @@ router.get('/find_all_with_products', BrandComponent.findAllWithProducts);
  *  /brand/find_one/{id}:
  *  get:
  *      tags:
- *          - brands
+ *          - Marcas
  *      description: Obtener una sola marca
  *      parameters:
  *          - name: id
@@ -148,7 +150,7 @@ router.get('/findOne/:id', BrandComponent.findOne);
  *  /brand/search/?name={name}:
  *  get:
  *      tags:
- *          - brands
+ *          - Marcas
  *      description: Buscar marcas por nombre
  *      parameters:
  *          - name: name
@@ -176,7 +178,7 @@ router.get('/search', BrandComponent.search);
  * /brand/create:
  *  post:
  *      tags:
- *          - brands
+ *          - Marcas
  *      description: Crear una mueva marca en el catalogo
  *      requestBody:
  *          required: true
@@ -184,7 +186,7 @@ router.get('/search', BrandComponent.search);
  *              application/json:
  *                  schema:
  *                      type: object
- *                      $ref: '#/components/schemas/Brand'
+ *                      $ref: '#/components/schemas/Marca'
  *      security:
  *          - ApiKeyAuth: []
  *      responses:
@@ -203,7 +205,7 @@ router.post('/create', BrandComponent.create);
  * /brand/update/{id}:
  *  put:
  *      tags:
- *          - brands
+ *          - Marcas
  *      description: Actualizar una marca en el catalogo
  *      parameters:
  *          - name: id
@@ -219,7 +221,7 @@ router.post('/create', BrandComponent.create);
  *              application/json:
  *                  schema:
  *                      type: object
- *                      $ref: '#/components/schemas/Brand'
+ *                      $ref: '#/components/schemas/Marca'
  *      security:
  *          - ApiKeyAuth: []
  *      responses:
@@ -238,7 +240,7 @@ router.put('/update/:id', BrandComponent.update);
  * /brand/remove/{id}:
  *  delete:
  *      tags:
- *          - brands
+ *          - Marcas
  *      description: Eliminar una marca en el catalogo
  *      parameters:
  *          - name: id
@@ -266,7 +268,7 @@ router.delete('/remove/:id', BrandComponent.remove);
  * /brand/restore/{id}:
  *  put:
  *      tags:
- *          - brands
+ *          - Marcas
  *      description: Restaurar una marca del catalogo
  *      parameters:
  *          - name: id
@@ -302,7 +304,7 @@ router.put('/restore/:id', BrandComponent.restore);
  *  /product/find_all:
  *  get:
  *      tags:
- *          - products
+ *          - Productos
  *      description: Obtener todos los productos
  *      security:
  *      - ApiKeyAuth: []
@@ -322,7 +324,7 @@ router.get('/findAll', ProductComponent.findAll);
  *  /product/find_one/{id}:
  *  get:
  *      tags:
- *          - products
+ *          - Productos
  *      description: Obtener un solo producto
  *      parameters:
  *          - name: id
@@ -349,7 +351,7 @@ router.get('/findOne/:id', ProductComponent.findOne);
  *  /product/search/:
  *  get:
  *      tags:
- *          - products
+ *          - Productos
  *      description: Buscar productos 
  *      parameters:
  *          - name: name
@@ -358,7 +360,7 @@ router.get('/findOne/:id', ProductComponent.findOne);
  *            example: 'marias'
  *            schema:
  *              type: string
- *          - name: key
+ *          - name: sku
  *            in: query
  *            description: Clave del producto
  *            example: ''
@@ -422,7 +424,7 @@ router.get('/search', ProductComponent.search);
  * /product/create:
  *  post:
  *      tags:
- *          - products
+ *          - Productos
  *      description: Crear un nuevo producto en el catalogo
  *      requestBody:
  *          required: true
@@ -430,7 +432,7 @@ router.get('/search', ProductComponent.search);
  *              application/json:
  *                  schema:
  *                      type: object
- *                      $ref: '#/components/schemas/Product'
+ *                      $ref: '#/components/schemas/Producto'
  *      security:
  *          - ApiKeyAuth: []
  *      responses:
@@ -449,7 +451,7 @@ router.post('/create', ProductComponent.create);
  * /product/update/{id}:
  *  put:
  *      tags:
- *          - products
+ *          - Productos
  *      description: Actualizar un producto del catalogo
  *      parameters:
  *          - name: id
@@ -465,7 +467,7 @@ router.post('/create', ProductComponent.create);
  *              application/json:
  *                  schema:
  *                      type: object
- *                      $ref: '#/components/schemas/Product'
+ *                      $ref: '#/components/schemas/Producto'
  *      security:
  *          - ApiKeyAuth: []
  *      responses:
@@ -484,7 +486,7 @@ router.put('/update/:id', ProductComponent.update);
  * /product/remove/{id}:
  *  delete:
  *      tags:
- *          - products
+ *          - Productos
  *      description: Eliminar un producto del catalogo
  *      parameters:
  *          - name: id
@@ -512,7 +514,7 @@ router.delete('/remove/:id', ProductComponent.remove);
  * /product/restore/{id}:
  *  put:
  *      tags:
- *          - products
+ *          - Productos
  *      description: Restaurar un producto del catalogo
  *      parameters:
  *          - name: id
@@ -552,7 +554,7 @@ router.put('/restore/:id', ProductComponent.restore);
  *  /supplier/find_all:
  *  get:
  *      tags:
- *          - suppliers
+ *          - Proveedores
  *      description: Obtener todos los proveedores
  *      security:
  *      - ApiKeyAuth: []
@@ -566,13 +568,13 @@ router.put('/restore/:id', ProductComponent.restore);
  *          500:
  *              description: (ERROR) Internal Server Error
 */
-router.get('/findAll', SupplierComponent.findAll);
+router.get('/findAll', PaymentTypeComponent.findAll);
 /**
  *  @swagger
  *  /supplier/find_one/{id}:
  *  get:
  *      tags:
- *          - suppliers
+ *          - Proveedores
  *      description: Obtener un proveedor
  *      parameters:
  *          - name: id
@@ -595,13 +597,13 @@ router.get('/findAll', SupplierComponent.findAll);
  *          500:
  *              description: (ERROR) Internal Server Error
 */
-router.get('/findOne/:id', SupplierComponent.findOne);
+router.get('/findOne/:id', PaymentTypeComponent.findOne);
 /**
  * @swagger
  * /supplier/create:
  *  post:
  *      tags:
- *          - suppliers
+ *          - Proveedores
  *      description: Crear un nuevo proveedor
  *      requestBody:
  *          required: true
@@ -609,7 +611,7 @@ router.get('/findOne/:id', SupplierComponent.findOne);
  *              application/json:
  *                  schema:
  *                      type: object
- *                      $ref: '#/components/schemas/Supplier'
+ *                      $ref: '#/components/schemas/Proveedor'
  *      security:
  *          - ApiKeyAuth: []
  *      responses:
@@ -622,13 +624,13 @@ router.get('/findOne/:id', SupplierComponent.findOne);
  *          500:
  *              description: (ERROR) Internal Server Error
 */
-router.post('/create', SupplierComponent.create);
+router.post('/create', PaymentTypeComponent.create);
 /**
  * @swagger
  * /supplier/update/{id}:
  *  put:
  *      tags:
- *          - suppliers
+ *          - Proveedores
  *      description: Actualizar un proveedor en el catalogo
  *      parameters:
  *          - name: id
@@ -644,7 +646,7 @@ router.post('/create', SupplierComponent.create);
  *              application/json:
  *                  schema:
  *                      type: object
- *                      $ref: '#/components/schemas/Supplier'
+ *                      $ref: '#/components/schemas/Proveedor'
  *      security:
  *          - ApiKeyAuth: []
  *      responses:
@@ -657,13 +659,13 @@ router.post('/create', SupplierComponent.create);
  *          500:
  *              description: (ERROR) Internal Server Error
 */
-router.put('/update/:id', SupplierComponent.update);
+router.put('/update/:id', PaymentTypeComponent.update);
 /**
  * @swagger
  * /supplier/remove/{id}:
  *  delete:
  *      tags:
- *          - suppliers
+ *          - Proveedores
  *      description: Eliminar un proveedor del catalogo
  *      parameters:
  *          - name: id
@@ -685,13 +687,13 @@ router.put('/update/:id', SupplierComponent.update);
  *          500:
  *              description: (ERROR) Internal Server Error
 */
-router.delete('/remove/:id', SupplierComponent.remove);
+router.delete('/remove/:id', PaymentTypeComponent.remove);
 /**
  * @swagger
  * /supplier/restore/{id}:
  *  put:
  *      tags:
- *          - suppliers
+ *          - Proveedores
  *      description: Restaurar un proveedor
  *      parameters:
  *          - name: id
@@ -713,7 +715,7 @@ router.delete('/remove/:id', SupplierComponent.remove);
  *          500:
  *              description: (ERROR) Internal Server Error
 */
-router.put('/restore/:id', SupplierComponent.restore);
+router.put('/restore/:id', PaymentTypeComponent.restore);
 
 
 
@@ -740,7 +742,7 @@ router.put('/restore/:id', SupplierComponent.restore);
  *  /inventory/find_all:
  *  get:
  *      tags:
- *          - inventories
+ *          - Inventarios
  *      description: Obtener todos los inventarios
  *      security:
  *      - ApiKeyAuth: []
@@ -760,7 +762,7 @@ router.get('/findAll', InventoryComponent.findAll);
  *  /inventory/find_one/{id}:
  *  get:
  *      tags:
- *          - inventories
+ *          - Inventarios
  *      description: Obtener un solo inventario
  *      parameters:
  *          - name: id
@@ -789,7 +791,7 @@ router.get('/findOne/:id', InventoryComponent.findOne);
  * /inventory/create:
  *  post:
  *      tags:
- *          - inventories
+ *          - Inventarios
  *      description: Crear una muevo inventario
  *      requestBody:
  *          required: true
@@ -797,7 +799,7 @@ router.get('/findOne/:id', InventoryComponent.findOne);
  *              application/json:
  *                  schema:
  *                      type: object
- *                      $ref: '#/components/schemas/Inventory'
+ *                      $ref: '#/components/schemas/Inventario'
  *      security:
  *          - ApiKeyAuth: []
  *      responses:
@@ -816,7 +818,7 @@ router.post('/create', InventoryComponent.create);
  * /inventory/update/{id}:
  *  put:
  *      tags:
- *          - inventories
+ *          - Inventarios
  *      description: Actualizar un inventario
  *      parameters:
  *          - name: id
@@ -832,7 +834,7 @@ router.post('/create', InventoryComponent.create);
  *              application/json:
  *                  schema:
  *                      type: object
- *                      $ref: '#/components/schemas/Inventory'
+ *                      $ref: '#/components/schemas/Inventario'
  *      security:
  *          - ApiKeyAuth: []
  *      responses:
@@ -851,7 +853,7 @@ router.put('/update/:id', InventoryComponent.update);
  * /inventory/remove/{id}:
  *  delete:
  *      tags:
- *          - inventories
+ *          - Inventarios
  *      description: Eliminar un inventario
  *      parameters:
  *          - name: id
@@ -879,7 +881,7 @@ router.delete('/remove/:id', InventoryComponent.remove);
  * /inventory/restore/{id}:
  *  put:
  *      tags:
- *          - inventories
+ *          - Inventarios
  *      description: Restaurar un inventario
  *      parameters:
  *          - name: id
@@ -933,7 +935,7 @@ router.put('/restore/:id', InventoryComponent.restore);
  *  /sale/find_all:
  *  get:
  *      tags:
- *          - sales
+ *          - Ventas
  *      description: Obtener todas las ventas
  *      security:
  *      - ApiKeyAuth: []
@@ -953,7 +955,7 @@ router.get('/findAll', SaleComponent.findAll);
  *  /sale/find_one/{id}:
  *  get:
  *      tags:
- *          - sales
+ *          - Ventas
  *      description: Obtener una venta
  *      parameters:
  *          - name: id
@@ -982,7 +984,7 @@ router.get('/findOne/:id', SaleComponent.findOne);
  * /sale/create:
  *  post:
  *      tags:
- *          - sales
+ *          - Ventas
  *      description: Crear una mueva venta
  *      requestBody:
  *          required: true
@@ -990,7 +992,7 @@ router.get('/findOne/:id', SaleComponent.findOne);
  *              application/json:
  *                  schema:
  *                      type: object
- *                      $ref: '#/components/schemas/Sale'
+ *                      $ref: '#/components/schemas/Venta'
  *      security:
  *          - ApiKeyAuth: []
  *      responses:
@@ -1009,7 +1011,7 @@ router.post('/create', SaleComponent.create);
  * /sale/update/{id}:
  *  put:
  *      tags:
- *          - sales
+ *          - Ventas
  *      description: Actualizar una venta
  *      parameters:
  *          - name: id
@@ -1025,7 +1027,7 @@ router.post('/create', SaleComponent.create);
  *              application/json:
  *                  schema:
  *                      type: object
- *                      $ref: '#/components/schemas/Sale'
+ *                      $ref: '#/components/schemas/Venta'
  *      security:
  *          - ApiKeyAuth: []
  *      responses:
@@ -1044,7 +1046,7 @@ router.put('/update/:id', SaleComponent.update);
  * /sale/remove/{id}:
  *  delete:
  *      tags:
- *          - sales
+ *          - Ventas
  *      description: Eliminar una venta
  *      parameters:
  *          - name: id
@@ -1080,7 +1082,7 @@ router.delete('/remove/:id', SaleComponent.remove);
  *  /product/report_resume:
  *  get:
  *      tags:
- *          - reports
+ *          - Reportes
  *      description: Obtener los productos y detalles de ventas e inventarios
  *      security:
  *      - ApiKeyAuth: []
@@ -1105,12 +1107,202 @@ router.get('/report_resume', ProductComponent.reportResume);
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * @swagger
+ *  /payment_type/find_all:
+ *  get:
+ *      tags:
+ *          - Tipo de pagos
+ *      description: Obtener todos los tipos de pagos
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get payment types successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.get('/findAll', PaymentTypeComponent.findAll);
+/**
+ *  @swagger
+ *  /payment_type/find_one/{id}:
+ *  get:
+ *      tags:
+ *          - Tipo de pagos
+ *      description: Obtener un tipo de pago
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id del tipo de pago
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *              format: int64
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get payment type successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.get('/findOne/:id', PaymentTypeComponent.findOne);
+/**
+ * @swagger
+ * /payment_type/create:
+ *  post:
+ *      tags:
+ *          - Tipo de pagos
+ *      description: Crear un nuevo tipo de pago
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      $ref: '#/components/schemas/TipoDePago'
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Create payment type successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.post('/create', PaymentTypeComponent.create);
+/**
+ * @swagger
+ * /payment_type/update/{id}:
+ *  put:
+ *      tags:
+ *          - Tipo de pagos
+ *      description: Actualizar un tipo de pago en el catalogo
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id del tipo de pago a actualizar
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      $ref: '#/components/schemas/TipoDePago'
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Update payment type successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.put('/update/:id', PaymentTypeComponent.update);
+/**
+ * @swagger
+ * /payment_type/remove/{id}:
+ *  delete:
+ *      tags:
+ *          - Tipo de pagos
+ *      description: Eliminar un tipo de pago del catalogo
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id del tipo de pago a eliminar
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Delete type payment successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.delete('/remove/:id', PaymentTypeComponent.remove);
+/**
+ * @swagger
+ * /payment_type/restore/{id}:
+ *  put:
+ *      tags:
+ *          - Tipo de pagos
+ *      description: Restaurar un tipo de pago
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id del tipo de pago
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Restore type payment successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.put('/restore/:id', PaymentTypeComponent.restore);
+
+
+
+
+
+
+
+
+
+
+
+
 /**
  * @swagger
  *  /log/find_all:
  *  get:
  *      tags:
- *          - logs
+ *          - Registros de acciones
  *      description: Obtener todos los logs
  *      security:
  *      - ApiKeyAuth: []
@@ -1134,24 +1326,24 @@ router.get('/findAll', LogComponent.findAll);
  * @swagger
  * components:
  *  schemas:
- *      User:
+ *      Usuario:
  *          type: object
  *          properties:
  *              name:
  *                  type: string
- *                  description: the user name
+ *                  description: El nombre del usuario
  *              last_name:
  *                  type: string
- *                  description: the user last name
+ *                  description: El apellido materno del usuario
  *              second_surname:
  *                  type: string
- *                  description: the user second surname
+ *                  description: El apellido paterno del usuario
  *              email:
  *                  type: string
- *                  description: the user email
+ *                  description: El correo del usuario
  *              password:
  *                  type: string
- *                  description: the user password
+ *                  description: La contraseña del usuario
  *          required:
  *              - name
  *              - email
@@ -1162,101 +1354,111 @@ router.get('/findAll', LogComponent.findAll);
  *              second_surname: 'martinez'
  *              email: 'admind@gmail.com'
  *              password: '123456'
- *      UserLogin:
+ *      InicioDeSesion:
  *          type: object
  *          properties:
  *              email:
  *                  type: string
- *                  description: the user email
+ *                  description: El correo del usuario
  *              password:
  *                  type: string
- *                  description: the user password
+ *                  description: La contraseña del usuario
  *          required:
  *              - email
  *              - password
  *          example:
  *              email: 'admind@gmail.com'
  *              password: '123456'
- *      Brand:
+ *      Marca:
  *          type: object
  *          properties:
  *              name:
  *                  type: string
- *                  description: the brand name
+ *                  description: El nombre de la marca
  *          required:
  *              - name
  *          example:
  *              name: 'gamesa'
- *      Product:
+ *      TipoDePago:
  *          type: object
  *          properties:
  *              name:
  *                  type: string
- *                  description: the product name
- *              key:
+ *                  description: El nombre del tipo de pago
+ *          required:
+ *              - name
+ *          example:
+ *              name: 'Tarjeta de crédito'
+ *      Producto:
+ *          type: object
+ *          properties:
+ *              name:
  *                  type: string
- *                  description: the product key
+ *                  description: Nombre del producto
+ *              sku:
+ *                  type: string
+ *                  description: El sku del producto
  *              price:
  *                  type: number
  *                  format: double
- *                  description: the price product
+ *                  description: El precio del producto
  *              reorder_point:
  *                  type: integer
- *                  description: the quantity of products but reorder
+ *                  description: La cantidad de producto minima para reordenar o resurtir
  *              brand_id:
  *                  type: integer
- *                  description: the product brand id
+ *                  description: El id de la marca asociada al producto
  *              supplier_id:
  *                  type: integer
- *                  description: the supplier id
+ *                  description: El id del proveedor del producto
  *          required:
  *              - name
- *              - key
+ *              - sku
  *              - price
  *              - reorder_point
  *              - brand_id
  *              - supplier_id
  *          example:
  *              name: 'Galletas maria gamesa'
- *              key: 'game'
+ *              sku: 'game'
  *              price: 15
  *              reorder_point: 15
  *              brand_id: 1
  *              supplier_id: 1
- *      Supplier:
+ *      Proveedor:
  *          type: object
  *          properties:
  *              name:
  *                  type: string
- *                  description: the product name
+ *                  description: El nombre del proveedor
  *          required:
  *              - name
  *          example:
  *              name: 'Soriana'
- *      Inventory:
+ *      Inventario:
  *          type: object
  *          properties:
  *              product_id:
  *                  type: integer
- *                  description: the product id
+ *                  description: El id del producto
  *              quantity:
  *                  type: integer
- *                  description: the quantity of products in inventory
+ *                  description: La cantidad de productos a agregar al inventario
  *          required:
  *              - product_id
  *              - quantity
  *          example:
  *              product_id: 1
  *              quantity: 20
- *      Sale:
+ *      Venta:
  *          type: object
  *          properties:
  *              product_id:
  *                  type: integer
- *                  description: the product id
+ *                  description: El id del producto
  *              quantity:
  *                  type: number
- *                  description: the quantity of products in sale
+ *                  description: La cantidad de productos a vender
  *          required:
  *              - product_id
  *              - quantity

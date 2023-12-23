@@ -5,7 +5,7 @@ const SaleView = sequelize.define('view_product_sales', {
   id: {type: DataTypes.INTEGER,primaryKey: true,},
   product_id: DataTypes.INTEGER,
   name: DataTypes.STRING,
-  key: DataTypes.STRING,
+  sku: DataTypes.STRING,
   brand_name: DataTypes.STRING,
   quantity_sold: DataTypes.INTEGER,
   total_amount: DataTypes.INTEGER,

@@ -6,7 +6,7 @@ class ProductValidation {
     async product(params: IProductModel) {
         const schema = Joi.object({
             name: Joi.string().required(),
-            key: Joi.string().required(),
+            sku: Joi.string().required(),
             price: Joi.number().positive().optional(),
             reorder_point: Joi.number().positive().optional(),
             brand_id: Joi.number().integer().positive().required(),

@@ -44,8 +44,8 @@ const ProductService: IProductService = {
             if (params['name']) {
                 whereClause.name = { [Op.iLike]: `%${params['name']}%` };
             }
-            if (params['key']) {
-                whereClause.key = { [Op.iLike]: `%${params['key']}%` };
+            if (params['sku']) {
+                whereClause.key = { [Op.iLike]: `%${params['sku']}%` };
             }
             if (params['brand_id']) {
                 whereClause.brand_id = { [Op.eq]: params['brand_id'] };
@@ -86,7 +86,7 @@ const ProductService: IProductService = {
             }
             const product: IProductModel = await Product.create({
                 name: body.name,
-                key: body.key,
+                sku: body.sku,
                 price: body.price,
                 reorder_point: body.reorder_point,
                 brand_id: body.brand_id,

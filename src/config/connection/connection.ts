@@ -7,8 +7,8 @@ import config from '../env/index';
   logging: false
 }); */
 const ssl= (config.NODE_ENV=='production')?true:false;
-const sequelize = new Sequelize('verceldb', 'default', 'Ug4aSABKVc7f', {
-  host: 'ep-sparkling-tree-24352510-pooler.us-east-1.postgres.vercel-storage.com',
+const sequelize = new Sequelize(config.DATABASE_POSTGRES.POSTGRES_DATABASE, config.DATABASE_POSTGRES.POSTGRES_USER, config.DATABASE_POSTGRES.POSTGRES_PASSWORD, {
+  host: config.DATABASE_POSTGRES.POSTGRES_HOST,
   dialect: 'postgres',
   logging: false,
   dialectOptions: { ssl: ssl}
