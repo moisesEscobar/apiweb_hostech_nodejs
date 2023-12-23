@@ -1119,7 +1119,7 @@ router.get('/report_resume', ProductComponent.reportResume);
 
 
 /**
- * @swagger
+ * swagger
  *  /payment_type/find_all:
  *  get:
  *      tags:
@@ -1139,7 +1139,7 @@ router.get('/report_resume', ProductComponent.reportResume);
 */
 router.get('/findAll', PaymentTypeComponent.findAll);
 /**
- *  @swagger
+ *  swagger
  *  /payment_type/find_one/{id}:
  *  get:
  *      tags:
@@ -1168,7 +1168,7 @@ router.get('/findAll', PaymentTypeComponent.findAll);
 */
 router.get('/findOne/:id', PaymentTypeComponent.findOne);
 /**
- * @swagger
+ * swagger
  * /payment_type/create:
  *  post:
  *      tags:
@@ -1195,7 +1195,7 @@ router.get('/findOne/:id', PaymentTypeComponent.findOne);
 */
 router.post('/create', PaymentTypeComponent.create);
 /**
- * @swagger
+ * swagger
  * /payment_type/update/{id}:
  *  put:
  *      tags:
@@ -1230,7 +1230,7 @@ router.post('/create', PaymentTypeComponent.create);
 */
 router.put('/update/:id', PaymentTypeComponent.update);
 /**
- * @swagger
+ * swagger
  * /payment_type/remove/{id}:
  *  delete:
  *      tags:
@@ -1258,7 +1258,7 @@ router.put('/update/:id', PaymentTypeComponent.update);
 */
 router.delete('/remove/:id', PaymentTypeComponent.remove);
 /**
- * @swagger
+ * swagger
  * /payment_type/restore/{id}:
  *  put:
  *      tags:
