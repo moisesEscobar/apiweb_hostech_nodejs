@@ -18,6 +18,6 @@ export function isAuthenticated(req: RequestWithUser, res: Response, next: NextF
           return next(new HttpError(401, http.STATUS_CODES[401]));
         }
     }
-    return next(new HttpError(400, 'No token provided'));
+    return next(new HttpError(400, 'NotToken'));
 }
 
