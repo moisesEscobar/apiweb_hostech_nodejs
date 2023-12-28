@@ -1717,7 +1717,6 @@ router.put('/restore/:id', PaymentOrderTxnComponent.restore);
  *          500:
  *              description: (ERROR) Internal Server Error
 */
-router.get('/findAll', ShoppingTypeComponent.findAll);
 /**
  *  @swagger
  *  /shopping/find_one/{id}:
@@ -1746,7 +1745,6 @@ router.get('/findAll', ShoppingTypeComponent.findAll);
  *          500:
  *              description: (ERROR) Internal Server Error
 */
-router.get('/findOne/:id', ShoppingTypeComponent.findOne);
 /**
  *  @swagger
  * /shopping/create:
@@ -1773,7 +1771,6 @@ router.get('/findOne/:id', ShoppingTypeComponent.findOne);
  *          500:
  *              description: (ERROR) Internal Server Error
 */
-router.post('/create', ShoppingTypeComponent.create);
 /**
  *  @swagger
  * /shopping/update/{id}:
@@ -1808,7 +1805,6 @@ router.post('/create', ShoppingTypeComponent.create);
  *          500:
  *              description: (ERROR) Internal Server Error
 */
-router.put('/update/:id', ShoppingTypeComponent.update);
 /**
  *  @swagger
  * /shopping/remove/{id}:
@@ -1836,7 +1832,6 @@ router.put('/update/:id', ShoppingTypeComponent.update);
  *          500:
  *              description: (ERROR) Internal Server Error
 */
-router.delete('/remove/:id', ShoppingTypeComponent.remove);
 /**
  *  @swagger
  * /shopping/restore/{id}:
