@@ -1,4 +1,4 @@
-import { AuthComponent, InventoryComponent, SaleComponent, PaymentTypeComponent } from '../components';
+import { AuthComponent, InventoryComponent, SaleComponent, PaymentTypeComponent,PaymentOrderComponent,PaymentOrderTxnComponent,PurchaseOrderComponent,ShoppingComponent } from '../components';
 import { BrandComponent } from '../components';
 import { LogComponent } from '../components';
 import { ProductComponent } from '../components';
@@ -23,7 +23,15 @@ const router: Router = Router();
  *  -   name: Inventarios
  *      description: Detalles del inventario de productos
  *  -   name: Ventas
- *      description: Detalles de las ventas de los productos
+ *      description: Detalles de las ventas de los productos (Los productos que el cliente compra)
+ *  -   name: Compras a proveedores
+ *      description: Las compras de recursos a proveedores
+ *  -   name: Ordenes de pago
+ *      description:    Las ordenes de pago generadas para los proveedores, estas pueden tener una o mas compras
+ *  -   name: Pedidos
+ *      description: Es la tabla que relaciona las compras a los proveedores con sus respectivas ordenes de pago
+ *  -   name: Transacciones de las ordenes de pago
+ *      description: Es el la tabla donde se registran los pagos y la culminación de la compra y las ordenes de pago
  *  -   name: Reportes
  *      description: Diversos reportes
  *  -   name: Registros de acciones
@@ -82,6 +90,7 @@ router.post('/signup', AuthComponent.signup);
  *  get:
  *      tags:
  *          - Marcas
+ *      summary: Obtener todas las marcas
  *      description: Obtener todas las marcas
  *      security:
  *      - ApiKeyAuth: []
@@ -1119,7 +1128,7 @@ router.get('/report_resume', ProductComponent.reportResume);
 
 
 /**
- * swagger
+ *  @swagger
  *  /payment_type/find_all:
  *  get:
  *      tags:
@@ -1139,7 +1148,7 @@ router.get('/report_resume', ProductComponent.reportResume);
 */
 router.get('/findAll', PaymentTypeComponent.findAll);
 /**
- *  swagger
+ *  @swagger
  *  /payment_type/find_one/{id}:
  *  get:
  *      tags:
@@ -1168,7 +1177,7 @@ router.get('/findAll', PaymentTypeComponent.findAll);
 */
 router.get('/findOne/:id', PaymentTypeComponent.findOne);
 /**
- * swagger
+ *  @swagger
  * /payment_type/create:
  *  post:
  *      tags:
@@ -1195,7 +1204,7 @@ router.get('/findOne/:id', PaymentTypeComponent.findOne);
 */
 router.post('/create', PaymentTypeComponent.create);
 /**
- * swagger
+ *  @swagger
  * /payment_type/update/{id}:
  *  put:
  *      tags:
@@ -1230,7 +1239,7 @@ router.post('/create', PaymentTypeComponent.create);
 */
 router.put('/update/:id', PaymentTypeComponent.update);
 /**
- * swagger
+ *  @swagger
  * /payment_type/remove/{id}:
  *  delete:
  *      tags:
@@ -1258,7 +1267,7 @@ router.put('/update/:id', PaymentTypeComponent.update);
 */
 router.delete('/remove/:id', PaymentTypeComponent.remove);
 /**
- * swagger
+ *  @swagger
  * /payment_type/restore/{id}:
  *  put:
  *      tags:
@@ -1291,6 +1300,571 @@ router.put('/restore/:id', PaymentTypeComponent.restore);
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * @swagger
+ *  /payment_order/find_all:
+ *  get:
+ *      tags:
+ *          - Ordenes de pago
+ *      description: Obtener todas las ordenes de pago
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get payment orders successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.get('/findAll', PaymentOrderComponent.findAll);
+/**
+ *  @swagger
+ *  /payment_order/find_one/{id}:
+ *  get:
+ *      tags:
+ *          - Ordenes de pago
+ *      description: Obtener una orden de pago
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id de la orden de pago
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *              format: int64
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get payment order successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.get('/findOne/:id', PaymentOrderComponent.findOne);
+/**
+ *  @swagger
+ * /payment_order/create:
+ *  post:
+ *      tags:
+ *          - Ordenes de pago
+ *      description: Crear un nuevo tipo de pago
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      $ref: '#/components/schemas/TipoDePago'
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Create payment type successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.post('/create', PaymentOrderComponent.create);
+/**
+ *  @swagger
+ * /payment_order/update/{id}:
+ *  put:
+ *      tags:
+ *          - Ordenes de pago
+ *      description: Actualizar una orden de pago
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id de la orden de pago a actualizar
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      $ref: '#/components/schemas/OrdenesDePago'
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Update payment order successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.put('/update/:id', PaymentOrderComponent.update);
+/**
+ *  @swagger
+ * /payment_order/remove/{id}:
+ *  delete:
+ *      tags:
+ *          - Ordenes de pago
+ *      description: Eliminar un tipo de pago del catalogo
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id del tipo de pago a eliminar
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Delete type payment successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.delete('/remove/:id', PaymentOrderComponent.remove);
+/**
+ *  @swagger
+ * /payment_order/restore/{id}:
+ *  put:
+ *      tags:
+ *          - Ordenes de pago
+ *      description: Restaurar una orden de pago
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id dee la orden de pago
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Restore type payment order successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.put('/restore/:id', PaymentOrderComponent.restore);
+
+
+
+
+
+
+/**
+ *  @swagger
+ *  /payment_order_txn/find_all:
+ *  get:
+ *      tags:
+ *          - Transacciones de las ordenes de pago
+ *      description: Obtener todos las transaccionas 
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get payment order txn successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.get('/findAll', PaymentOrderTxnComponent.findAll);
+/**
+ *  @swagger
+ *  /payment_order_txn/find_one/{id}:
+ *  get:
+ *      tags:
+ *          - Transacciones de las ordenes de pago
+ *      description: Obtener un ta transacción
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id de la transacción
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *              format: int64
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get payment order txn successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.get('/findOne/:id', PaymentOrderTxnComponent.findOne);
+/**
+ *  @swagger
+ * /payment_order_txn/create:
+ *  post:
+ *      tags:
+ *          - Transacciones de las ordenes de pago
+ *      description: Crear un nueva transacción
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      $ref: '#/components/schemas/TransaccionesOrdenesDePago'
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Create payment order txn successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.post('/create', PaymentOrderTxnComponent.create);
+/**
+ *  @swagger
+ * /payment_order_txn/update/{id}:
+ *  put:
+ *      tags:
+ *          - Transacciones de las ordenes de pago
+ *      description: Actualizar una transacción
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id de la transacción
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      $ref: '#/components/schemas/TransaccionesOrdenesDePago'
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Update payment order txn successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.put('/update/:id', PaymentOrderTxnComponent.update);
+/**
+ *  @swagger
+ * /payment_order_txn/remove/{id}:
+ *  delete:
+ *      tags:
+ *          - Transacciones de las ordenes de pago
+ *      description: Eliminar una transacción
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id de la transacción a eliminar
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Delete type payment order txn successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.delete('/remove/:id', PaymentOrderTxnComponent.remove);
+/**
+ *  @swagger
+ * /payment_order_txn/restore/{id}:
+ *  put:
+ *      tags:
+ *          - Tipo de pagos
+ *      description: Restaurar una transacción
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id de la transacción
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Restore type payment order txn successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.put('/restore/:id', PaymentOrderTxnComponent.restore);
+
+
+
+/**
+ *  @swagger
+ *  /purchase_order/find_all:
+ *  get:
+ *      tags:
+ *          - Pedidos
+ *      description: Obtener todos los pedidos
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get purchase orders successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+
+
+
+
+
+
+/**
+ *  @swagger
+ *  /shopping/find_all:
+ *  get:
+ *      tags:
+ *          - Compras a proveedores
+ *      description: Obtener todos las compras
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get shopings successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.get('/findAll', ShoppingTypeComponent.findAll);
+/**
+ *  @swagger
+ *  /shopping/find_one/{id}:
+ *  get:
+ *      tags:
+ *          - Compras a proveedores
+ *      description: Obtener una compra
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id de la compra
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *              format: int64
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get shopping successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.get('/findOne/:id', ShoppingTypeComponent.findOne);
+/**
+ *  @swagger
+ * /shopping/create:
+ *  post:
+ *      tags:
+ *          - Compras a proveedores
+ *      description: Crear una compra para surtir el inventario
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      $ref: '#/components/schemas/TipoDePago'
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Create payment type successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.post('/create', ShoppingTypeComponent.create);
+/**
+ *  @swagger
+ * /shopping/update/{id}:
+ *  put:
+ *      tags:
+ *          - Tipo de pagos
+ *      description: Actualizar un tipo de pago en el catalogo
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id del tipo de pago a actualizar
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      $ref: '#/components/schemas/ComprasProveedores'
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Update shopping successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.put('/update/:id', ShoppingTypeComponent.update);
+/**
+ *  @swagger
+ * /shopping/remove/{id}:
+ *  delete:
+ *      tags:
+ *          - Compras a proveedores
+ *      description: Eliminar una compra
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id  de la compra a eliminar
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Delete shopping successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.delete('/remove/:id', ShoppingTypeComponent.remove);
+/**
+ *  @swagger
+ * /shopping/restore/{id}:
+ *  put:
+ *      tags:
+ *          - Compras a proveedores
+ *      description: Restaurar una compra
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id de la compra
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Restore shopping successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+*/
+router.put('/restore/:id', PaymentTypeComponent.restore);
 
 
 
@@ -1338,6 +1912,9 @@ router.get('/findAll', LogComponent.findAll);
  *              second_surname:
  *                  type: string
  *                  description: El apellido paterno del usuario
+ *              phone_number:
+ *                  type: string
+ *                  description: El numero del telefono del usuario
  *              email:
  *                  type: string
  *                  description: El correo del usuario
@@ -1352,6 +1929,7 @@ router.get('/findAll', LogComponent.findAll);
  *              name: 'admin'
  *              last_name: 'escobar'
  *              second_surname: 'martinez'
+ *              phone_number: '9661006460'
  *              email: 'admind@gmail.com'
  *              password: '123456'
  *      InicioDeSesion:
@@ -1395,6 +1973,9 @@ router.get('/findAll', LogComponent.findAll);
  *              name:
  *                  type: string
  *                  description: Nombre del producto
+ *              description:
+ *                  type: text
+ *                  description: Descripción del producto
  *              sku:
  *                  type: string
  *                  description: El sku del producto
@@ -1408,7 +1989,7 @@ router.get('/findAll', LogComponent.findAll);
  *              brand_id:
  *                  type: integer
  *                  description: El id de la marca asociada al producto
- *              supplier_id:
+ *              supplier_customer_id:
  *                  type: integer
  *                  description: El id del proveedor del producto
  *          required:
@@ -1417,24 +1998,36 @@ router.get('/findAll', LogComponent.findAll);
  *              - price
  *              - reorder_point
  *              - brand_id
- *              - supplier_id
+ *              - supplier_customer_id
  *          example:
- *              name: 'Galletas maria gamesa'
+ *              name: 'Galletas maría gamesa'
+ *              description: 'Producto de tal proveedor, etc'
  *              sku: 'game'
  *              price: 15
  *              reorder_point: 15
  *              brand_id: 1
- *              supplier_id: 1
+ *              supplier_customer_id: 1
  *      Proveedor:
  *          type: object
  *          properties:
  *              name:
  *                  type: string
  *                  description: El nombre del proveedor
+ *              address:
+ *                  type: string
+ *                  description: La dirección del proveedor
+ *              phone_number:
+ *                  type: string
+ *                  description: El numero de contacto del proveedor
+ *              type_user:
+ *                  type: string
+ *                  description: El nombre del proveedor
+ *                  enum: ["supplier","customer"]
  *          required:
  *              - name
  *          example:
- *              name: 'Soriana'
+ *              name: 'supplier'
+ *              type_user: 'customer|supplier'
  *      Inventario:
  *          type: object
  *          properties:
@@ -1465,6 +2058,86 @@ router.get('/findAll', LogComponent.findAll);
  *          example:
  *              product_id: 1
  *              quantity: 5
+ *      Pedidos:
+ *          type: object
+ *          properties:
+ *              shopping_id:
+ *                  type: integer
+ *                  description: La compra asociada
+ *              payment_order_id:
+ *                  type: number
+ *                  description: La orden de pago asociada a una venta
+ *          required:
+ *              - shopping_id
+ *              - payment_order_id
+ *          example:
+ *              shopping_id: 1
+ *              payment_order_id: 1
+ *      ComprasProveedores:
+ *          type: object
+ *          properties:
+ *              inventory_id:
+ *                  type: integer
+ *                  description: El inventario donde se registran los productos comprados
+ *              unit_price:
+ *                  type: number
+ *                  description: El precio unitario por la cantidad de productos que ingresan al inventario
+ *          required:
+ *              - inventory_id
+ *              - unit_price
+ *          example:
+ *              inventory_id: 1
+ *              unit_price: 25
+ *      OrdenesDePago:
+ *          type: object
+ *          properties:
+ *              payment_date:
+ *                  type: date
+ *                  description: La fecha de la compra, se ingresa ya que puede ser distinta a la actual
+ *              status:
+ *                  type: number
+ *                  description: El estado posible de una orden
+ *                  enum: ['pending', 'process','completed','failed','cancelled','refunded','verifying','rejected']
+ *          required:
+ *              - payment_date
+ *              - status
+ *          example:
+ *              payment_date: '2023-12-27'
+ *              status: 'pending'
+ *      TransaccionesOrdenesDePago:
+ *          type: object
+ *          properties:
+ *              status:
+ *                  type: number
+ *                  description: El estado posible de una orden
+ *                  enum: ['pending', 'process','completed','failed','cancelled','refunded','verifying','rejected']
+ *              amount:
+ *                  type: integer
+ *                  description: El monto de la transacción
+ *              user_id:
+ *                  type: integer
+ *                  description: El identificador del usuario que inicio sesión
+ *              payment_type_id:
+ *                  type: integer
+ *                  description: El identificador del tipo de pago
+ *              payment_order_id:
+ *                  type: integer
+ *                  description: El identificador de la orden de pago generada
+ *              supplier_customer_id:
+ *                  type: integer
+ *                  description: El id del proveedor o cliente a quien se le genero la orden de pago
+ *          required:
+ *              - status
+ *              - payment_type_id
+ *              - payment_order_id
+ *              - supplier_customer_id
+ *          example:
+ *              status: 'pending'
+ *              amount: 1
+ *              user_id: 1
+ *              payment_type_id: 1
+ *              payment_order_id: 1
+ *              supplier_customer_id: 1
  *  securitySchemes:
  *      ApiKeyAuth:
  *          type: apiKey

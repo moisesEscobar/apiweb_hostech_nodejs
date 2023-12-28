@@ -13,9 +13,13 @@ import SaleRouter from './sale-router';
 import config from '../config/env/index';
 import path from "path";
 import PaymentTypeRouter from './payment-type-router';
+import PaymentOrderRouter from './payment-order-router';
+import PaymentOrderTxnRouter from './payment-order-txn-router';
+import ShoppingInventortyRouter from './shopping-inventory-router';
 
 export function init(app: express.Application): void {
-    const ext_file_api = (config.NODE_ENV=='production')?"api-doc.js":"api-doc.ts";
+    let ext_file_api = (config.NODE_ENV=='production')?"api-doc.js":"api-doc.ts";
+    ext_file_api = "../documentation/"+ext_file_api
     const router: express.Router = express.Router();
     const swaggerSpec = {
         definition: {
@@ -38,6 +42,13 @@ export function init(app: express.Application): void {
     app.use('/inventory', jwtConfig.isAuthenticated, InventoryRouter);
     app.use('/payment_type', jwtConfig.isAuthenticated, PaymentTypeRouter);
 
+    /* 
+        app.use('/purchase_order', jwtConfig.isAuthenticated, PurchaseOrderRouter);
+        app.use('/shopping', jwtConfig.isAuthenticated, ShoppingRouter); 
+    */
+    app.use('/payment_order', jwtConfig.isAuthenticated, PaymentOrderRouter);
+    app.use('/shopping_inventory', jwtConfig.isAuthenticated, ShoppingInventortyRouter);
+    app.use('/payment_order_txn', jwtConfig.isAuthenticated, PaymentOrderTxnRouter);
     app.use((req, res, next) => {
         res.status(StatusCodes.BAD_REQUEST).json( {message: 'Not Found!'});
     });

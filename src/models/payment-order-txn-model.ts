@@ -1,66 +1,63 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/connection/connection';
-import Brand from './brand-model';
 
-export interface IProductModel {
+export interface IPaymentOrderTxnModel {
     id?: number;
-    name: string;
-    sku: string;
-    description?: Text;
+    status?: string;
+    amount?: number;
+    user_id?: number;
+    payment_type_id?: number;
+    payment_order_id?: number;
     supplier_customer_id?: number;
-    reorder_point?: number;
     updated_at?:Date,
     created_at?:Date,
     deleted_at?:Date,
-    brand_id?: number;
-    price?: number;
 }
 
-class Product extends Model {
+class PaymentOrderTxn extends Model {
     public id: number;
-    public name: string;
-    public sku: string;
-    public description: Text;
-    public supplier_customer_id: number;
-    public reorder_point: number;
+    public status: string;
+    public amount: number;
+    public user_id: number;
+    public payment_type_id: number;
+    public payment_order_id: number;
+    public supplier_customer_id?: number;
     public updated_at: Date;
     public created_at: Date;
     public deleted_at: Date;
-    // Definir relaciones, validaciones u otros métodos aquí
 }
-Product.init(
+PaymentOrderTxn.init(
     {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
         },
-        name: {
+        status: {
             type: DataTypes.STRING,
             allowNull: false,
+            validate: {isIn: [['pending', 'process','completed','failed','cancelled','refunded','verifying','rejected']]},
         },
-        description: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-        },
-        sku: {
-            type: DataTypes.STRING,
-            allowNull: false,
-        },
-        price: {
+        amount: {
             type: DataTypes.DOUBLE,
+            allowNull: false,
             defaultValue: 0
         },
-        reorder_point: {
+        user_id: {
             type: DataTypes.INTEGER,
-            defaultValue: 0
+            allowNull: true
+        },
+        payment_type_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        payment_order_id: {
+            type: DataTypes.INTEGER,
+            allowNull: false
         },
         supplier_customer_id: {
             type: DataTypes.INTEGER,
             allowNull: false
-        },
-        brand_id: {
-            type: DataTypes.INTEGER
         },
         created_at: {
             type: DataTypes.DATE,
@@ -79,16 +76,15 @@ Product.init(
     },
     {
         sequelize,
-        modelName: 'Product',
-        tableName: 'products',
-        timestamps: true, // enabled created_at y updated_at 
-        paranoid: true, // enabled column deleted_at 
-        underscored: true, // use snake_case ,
+        modelName: 'PaymentOrderTxn',
+        tableName: 'payment_order_txns',
+        timestamps: true, 
+        paranoid: true, 
+        underscored: true,
         createdAt: 'created_at',
         updatedAt: 'updated_at',
         deletedAt: 'deleted_at',
     }
 );
-//Product.belongsTo(Brand, { foreignKey: 'brand_id' });
 
-export default Product;
+export default PaymentOrderTxn;

@@ -76,7 +76,7 @@ const ProductService: IProductService = {
     },
     async create(body: IProductModel): Promise<IProductModel> {
         try {
-            const validate: Joi.ValidationResult = await ProductValidation.product(body);
+            const validate: Joi.ValidationResult = await ProductValidation.createProduct(body);
             if (validate.error) {
                 throw new Error(validate.error.message);
             }
@@ -87,10 +87,11 @@ const ProductService: IProductService = {
             const product: IProductModel = await Product.create({
                 name: body.name,
                 sku: body.sku,
+                description: body.description,
                 price: body.price,
                 reorder_point: body.reorder_point,
                 brand_id: body.brand_id,
-                supplier_id: body.supplier_id
+                supplier_customer_id: body.supplier_customer_id
             });
             return product;
         } catch (error) {
@@ -99,7 +100,7 @@ const ProductService: IProductService = {
     },
     async update(id: number, body: IProductModel): Promise<any> {
         try {
-            const validate: Joi.ValidationResult = await ProductValidation.product(body);
+            const validate: Joi.ValidationResult = await ProductValidation.updateProduct(body);
             if (validate.error) {
                 throw new Error(validate.error.message);
             }

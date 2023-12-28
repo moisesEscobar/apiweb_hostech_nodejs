@@ -30,7 +30,7 @@ const SupplierService: ISupplierService = {
     },
     async create(body: ISupplierModel): Promise < ISupplierModel > {
         try {
-            const validate: Joi.ValidationResult = await SupplierValidation.supplier(body);
+            const validate: Joi.ValidationResult = await SupplierValidation.createSupplier(body);
             if (validate.error) {
                 throw new Error(validate.error.message);
             }
@@ -38,7 +38,12 @@ const SupplierService: ISupplierService = {
             if(supplier_exist){
                 throw new Error("Supplier name exist");
             }
-            const supplier: ISupplierModel = await Supplier.create({name:body.name});
+            const supplier: ISupplierModel = await Supplier.create({
+                name:body.name,
+                phone_number:body.phone_number,
+                type_user:body.type_user,
+                address:body.address
+            });
             return supplier;
         } catch (error) {
             throw new Error(error.message);
@@ -46,7 +51,7 @@ const SupplierService: ISupplierService = {
     },
     async update(id:number,body: ISupplierModel): Promise < any > {
         try {
-            const validate: Joi.ValidationResult = SupplierValidation.supplier(body);
+            const validate: Joi.ValidationResult = SupplierValidation.updateSupplier(body);
             if (validate.error) {
                 throw new Error(validate.error.message);
             }
@@ -55,7 +60,7 @@ const SupplierService: ISupplierService = {
                 throw new Error("Supplier not found");
             }
             const last_data={...supplier.get()};
-            const exist_in_product = await InventoryView.findOne({ where: {supplier_id:id}});
+            const exist_in_product = await InventoryView.findOne({ where: {supplier_customer_id:id}});
             if(exist_in_product){
                 throw new Error("The supplier cannot be updated because it has associated inventory");
             }
@@ -78,7 +83,7 @@ const SupplierService: ISupplierService = {
                 throw new Error("Supplier not found");
             }
             const last_data={...supplier.get()};
-            const exist_in_product = await InventoryView.findOne({ where: {supplier_id:id}});
+            const exist_in_product = await InventoryView.findOne({ where: {supplier_customer_id:id}});
             if(exist_in_product){
                 throw new Error("The supplier cannot be eliminated because it has associated inventory");
             }

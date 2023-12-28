@@ -1,49 +1,37 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../config/connection/connection';
 
-export interface ISupplierModel {
+export interface IShoppingModel {
     id?: number;
-    name?: string;
-    phone_number?: string;
-    address?: string;
-    type_user?: string;
+    inventory_id?: number;
+    unit_price?: number;
     updated_at?:Date,
     created_at?:Date,
     deleted_at?:Date,
 }
-class Supplier extends Model {
+
+class Shopping extends Model {
     public id: number;
-    public name: string;
-    public phone_number: string;
-    public type_user: string;
-    public address: string;
+    public inventory_id: number;
+    public unit_price: number;
     public updated_at: Date;
     public created_at: Date;
     public deleted_at: Date;
 }
-Supplier.init(
+Shopping.init(
     {
         id: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
         },
-        name: {
-            type: DataTypes.STRING,
+        inventory_id: {
+            type: DataTypes.INTEGER,
             allowNull: false,
         },
-        phone_number: {
-            type: DataTypes.STRING,
-            allowNull: true,
-        },
-        description: {
-            type: DataTypes.TEXT,
-            allowNull: true,
-        },
-        type_user: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            validate: {isIn: [['supplier', 'customer']]},
+        unit_price: {
+            type: DataTypes.DOUBLE,
+            allowNull: false
         },
         created_at: {
             type: DataTypes.DATE,
@@ -62,14 +50,15 @@ Supplier.init(
     },
     {
         sequelize,
-        modelName: 'Supplier',
-        tableName: 'suppliers_customers',
-        timestamps: true, // enabled created_at y updated_at 
-        paranoid: true, // enabled column deleted_at 
-        underscored: true, // use snake_case ,
+        modelName: 'Shopping',
+        tableName: 'shoppings',
+        timestamps: true,
+        paranoid: true, 
+        underscored: true, 
         createdAt: 'created_at',
         updatedAt: 'updated_at',
         deletedAt: 'deleted_at',
     }
 );
-export default Supplier;
+
+export default Shopping;

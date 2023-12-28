@@ -7,6 +7,7 @@ export interface IUserModel {
     name: string;
     last_name: string;
     second_surname: string;
+    phone_number?: string;
     email: string;
     password: string;
     updated_at?:Date,
@@ -18,6 +19,7 @@ export interface IUserModelRegistry{
     name: string;
     last_name: string;
     second_surname: string;
+    phone_number: string;
     email: string;
     password: string;
 }
@@ -27,6 +29,7 @@ class User extends Model {
     public name: string;
     public last_name: string;
     public second_surname: string;
+    public phone_number: string;
     public email: string;
     public password: string;
 
@@ -54,6 +57,10 @@ User.init(
         second_surname: {
             type: DataTypes.STRING,
             allowNull: false,
+        },
+        phone_number: {
+            type: DataTypes.STRING,
+            allowNull: true,
         },
         email: {
             type: DataTypes.STRING,

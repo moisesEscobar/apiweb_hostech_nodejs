@@ -1,6 +1,5 @@
 import * as Joi from 'joi';
-const { Op } = require('sequelize');
-import Log, { ILogModel } from '../models/log-model';
+import { ILogModel } from '../models/log-model';
 import LogValidation from '../validations/log-validations';
 import { ILogService } from '../interfaces/log-interface';
 import LogView from '../models/views/log-view';
@@ -23,10 +22,9 @@ const LogService: ILogService = {
 
             // Llamada al procedimiento almacenado desde Sequelize
             const { user_id, action, catalog, detail_last = null, detail_new = null } = body;
-            await sequelize.query('SELECT create_log(:user_id, :action, :catalog, :detail_last, :detail_new)', {
+            await sequelize.query('CALL create_log(:user_id, :action, :catalog, :detail_last, :detail_new)', {
                 replacements: { user_id, action, catalog, detail_last, detail_new },
             });
-
             /* const log: ILogModel = await Log.create({
                 user_id: body.user_id,
                 action: body.action,

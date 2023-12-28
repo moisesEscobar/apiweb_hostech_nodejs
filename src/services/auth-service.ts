@@ -26,6 +26,7 @@ const AuthService: IAuthService = {
                 second_surname:data.second_surname,
                 email:data.email,
                 password:data.password,
+                phone_number:data.phone_number
             });
             await newUser.encryptPassword();
             await newUser.save();

@@ -3,7 +3,7 @@ import sequelize from '../../config/connection/connection';
 
 const InventoryView = sequelize.define('view_inventories', {
   id: {type: DataTypes.INTEGER,primaryKey: true,},
-  supplier_id: DataTypes.INTEGER,
+  supplier_customer_id: DataTypes.INTEGER,
   supplier_name: DataTypes.STRING,
   product_id: DataTypes.INTEGER,
   name: DataTypes.STRING,
