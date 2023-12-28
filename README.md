@@ -29,9 +29,10 @@ Asegúrate de tener Node.js y PostgreSQL instalados en tu sistema.
 1. Clona el repositorio:
 
    ```bash
-   git clone https://tu-repositorio-git.com/backend-prueba-ingreso.git
+   git clone https://github.com/moisesEscobar/apiweb_hostech_nodejs
 
 
-## Documentación API (Swagger)
+## Recursos
    - Documentación Swagger Ui: https://apiweb-hostech.onrender.com/api_doc
    - Url Api: https://apiweb-hostech.onrender.com
+   - Url BD repositorio: https://github.com/moisesEscobar/apiweb_hostech_bdpgsql
