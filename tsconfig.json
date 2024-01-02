@@ -11,6 +11,7 @@
 		"baseUrl": ".",
 		"typeRoots": ["node_modules/@types"],
         "useUnknownInCatchVariables": false,
+		"types": ["jest"]
     },
     "include": ["src/**/*.ts"],
     "exclude": ["node_modules"]
