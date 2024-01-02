@@ -10,8 +10,7 @@
 		"outDir": "./dist",
 		"baseUrl": ".",
 		"typeRoots": ["node_modules/@types"],
-        "useUnknownInCatchVariables": false,
-		"types": ["node", "multer","jest"]
+        "useUnknownInCatchVariables": false
     },
     "include": ["src/**/*.ts"],
     "exclude": ["node_modules"]
