@@ -115,11 +115,10 @@ export async function create(req, res: Response, next: NextFunction): Promise<vo
     try {
         const json_object_user: any = req.user;
         let json_object: any = req.body.json ? JSON.parse(req.body.json) : req.body;
-
-        if (req.file_validation_error) {
-            throw new Error(req.file_validation_error);
-        }
         if (req.file) {
+            if(!['image/jpeg', 'image/png'].includes(req.file.mimetype)){
+                throw new Error("Formato de archivo no permitido");
+            }
             json_object.path_file = 'storage/'+ req.file.filename
         }
         const product: IProductModel = await ProductService.create(json_object);

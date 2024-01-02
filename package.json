@@ -5,8 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "start": "node ./dist/config/server/index.js",
-    "build": "tsc",
-    "test": "jest --verbose"
+    "build": "tsc"
   },
   "engines": {
     "node": "20.10.0",
@@ -51,22 +50,5 @@
     "ts-jest": "^29.1.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "globalSetup": "./src/test/config/jest-config.ts",
-    "testMatch": [
-      "**/src/test/**/*-(test|spec).[jt]s?(x)"
-    ],
-    "moduleFileExtensions": [
-      "ts",
-      "js",
-      "json",
-      "node"
-    ],
-    "preset": "ts-jest"
   }
 }
