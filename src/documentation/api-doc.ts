@@ -1422,7 +1422,7 @@
  *              file:
  *                  type: string
  *                  format: binary
- *                  description: Nombre del productoArchivo a cargarNombre del producto
+ *                  description: Carga de imagen (solo formatos jpg, png)
  *              name:
  *                  type: string
  *                  description: Nombre del producto

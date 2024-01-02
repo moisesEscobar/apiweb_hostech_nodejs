@@ -115,6 +115,10 @@ export async function create(req, res: Response, next: NextFunction): Promise<vo
     try {
         const json_object_user: any = req.user;
         let json_object: any = req.body.json ? JSON.parse(req.body.json) : req.body;
+
+        if (req.file_validation_error) {
+            throw new Error(req.file_validation_error);
+        }
         if (req.file) {
             json_object.path_file = 'storage/'+ req.file.filename
         }
@@ -131,6 +135,7 @@ export async function create(req, res: Response, next: NextFunction): Promise<vo
             message: 'Create product successfull',
             content: product
         });
+        
     } catch (error) {
         if (error.code === 500) {
             return next(new HttpError(error.message.status, error.message));
