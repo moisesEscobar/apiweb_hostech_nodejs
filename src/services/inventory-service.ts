@@ -50,17 +50,13 @@ const InventoryService: IInventoryService = {
     },
     async update(id:number,body: IInventoryModel): Promise < any > {
         try {
-            const validate: Joi.ValidationResult = InventoryValidation.inventory(body);
+            const validate: Joi.ValidationResult = InventoryValidation.updateInventory(body);
             if (validate.error) {
                 throw new Error(validate.error.message);
             }
             const inventory = await Inventory.findByPk(id);
             if(!inventory){
                 throw new Error("Inventory not found");
-            }
-            const product_exist = await ProductView.findOne({ where: {id:body.product_id}});
-            if(!product_exist){
-                throw new Error("Product not exist");
             }
             const last_data={...inventory.get()};
             await inventory.update(body);

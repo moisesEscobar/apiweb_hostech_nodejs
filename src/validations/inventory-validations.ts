@@ -11,6 +11,14 @@ class InventoryValidation {
         });
         return schema.validate(params);
     }
+    updateInventory(
+        params: IInventoryModel
+    ): Joi.ValidationResult {
+        const schema: Joi.Schema = Joi.object().keys({
+            quantity: Joi.number().required()
+        });
+        return schema.validate(params);
+    }
     validateId(
         body: {id: number}
     ): Joi.ValidationResult {

@@ -38,11 +38,8 @@ export async function signup(req: Request, res: Response, next: NextFunction): P
         const user: any = await AuthService.signup(json_object);
         res.json({
             status: 200,
-            data: {
-                clave: 'OK',
-                message: 'Registration completed successfully',
-                content:  user
-            }
+            message: 'Registration completed successfully',
+            content:  user
         });
         
     } catch (error) {
@@ -51,10 +48,9 @@ export async function signup(req: Request, res: Response, next: NextFunction): P
         }
         res.json({
             status: 400,
-            data: {
-                clave: '400',
-                message: error.message
-            }
+            message: error.message
         });
+
+
     }
 }

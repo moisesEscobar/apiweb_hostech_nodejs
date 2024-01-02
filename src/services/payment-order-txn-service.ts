@@ -39,7 +39,7 @@ const PaymentOrderTxnService: IPaymentOrderTxnService = {
                 payment_type_id, payment_order_id, supplier_customer_id
             } = body;
             const payment_order_txn: any = await sequelize.query(
-                'SELECT create_payment_order_txn(:status, :amount, :user_id, :payment_type_id, :payment_order_id,:supplier_customer_id)', {
+                'SELECT create_payment_order_txns(:status, :amount, :user_id, :payment_type_id, :payment_order_id,:supplier_customer_id)', {
                 replacements: { status, amount, user_id, payment_type_id, payment_order_id,supplier_customer_id },
             });
             /* const payment_order_txn: IPaymentOrderTxnModel = await PaymentOrderTxn.create({
@@ -50,7 +50,7 @@ const PaymentOrderTxnService: IPaymentOrderTxnService = {
                 payment_order_id:body.payment_order_id,
                 supplier_customer_id:body.supplier_customer_id
             }); */
-            return payment_order_txn[0][0].create_payment_order_txn;
+            return payment_order_txn[0][0].create_payment_order_txns;
         } catch (error) {
             throw new Error(error.message);
         }
@@ -99,7 +99,7 @@ const PaymentOrderTxnService: IPaymentOrderTxnService = {
             }
             const payment_order_txn= await PaymentOrderTxn.findByPk(id, { paranoid: false });
             if(!payment_order_txn){
-                throw new Error("payment order txn not found");
+                throw new Error("Payment order txn not found");
             }
             const last_data={...payment_order_txn.get()};
             await payment_order_txn.restore();

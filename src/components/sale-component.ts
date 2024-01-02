@@ -70,7 +70,7 @@ export async function create(req: RequestWithUser, res: Response, next: NextFunc
         res.json({
             status: 200,
             message: 'Create sale successfull',
-            message_reorder: sale.message,
+            message_reorder: sale.message??'',
             content: sale.sale
         });
     } catch (error) {
@@ -99,7 +99,7 @@ export async function update(req: RequestWithUser, res: Response, next: NextFunc
         res.json({
             status: 200,
             message: 'Update sale successfull',
-            message_reorder: message
+            message_reorder: message??''
         });
     } catch (error) {
         if (error.code === 500) {
@@ -126,7 +126,7 @@ export async function remove(req: RequestWithUser, res: Response, next: NextFunc
         res.json({
             status: 200,
             message: 'Delete sale successfull',
-            content: new_data
+            // content: new_data
         });
     } catch (error) {
         if (error.code === 500) {
@@ -153,7 +153,7 @@ export async function restore(req: RequestWithUser, res: Response, next: NextFun
         res.json({
             status: 200,
             message: 'Restore sale successfull',
-            content: new_data
+            // content: new_data
         });
     } catch (error) {
         if (error.code === 500) {

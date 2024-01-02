@@ -17,7 +17,7 @@ const AuthService: IAuthService = {
             // Verificar si el usuario ya existe
             const user_exist: IUserViewModel  = await UserView.findOne({where:{email:data.email}});
             if (user_exist) {
-                throw new Error('Este correo electrónico ya ha sido registrado.');
+                throw new Error('This e-mail has already been registered.');
             } 
             // Crear un nuevo usuario
             const newUser = await User.create({
@@ -32,7 +32,7 @@ const AuthService: IAuthService = {
             await newUser.save();
             return newUser;
         } catch (error) {
-            throw new Error(error);
+            throw new Error(error.message);
         }
     },
     // Credentials are used to login and return a token
@@ -52,7 +52,7 @@ const AuthService: IAuthService = {
             }
             return user;
         } catch (error) {
-            throw new Error(error);
+            throw new Error(error.message);
         }
     },
 }

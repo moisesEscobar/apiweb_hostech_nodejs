@@ -173,7 +173,7 @@ export async function remove(req: RequestWithUser, res: Response, next: NextFunc
         res.json({
             status: 200,
             message: 'Delete brand successfull',
-            content: new_data
+            //content: new_data
         });
     } catch (error) {
         if (error.code === 500) {
@@ -200,7 +200,7 @@ export async function restore(req: RequestWithUser, res: Response, next: NextFun
         res.json({
             status: 200,
             message: 'Restore brand successfull',
-            content: new_data
+            //content: new_data
         });
     } catch (error) {
         if (error.code === 500) {

@@ -111,10 +111,13 @@ export async function search(req: RequestWithUser, res: Response, next: NextFunc
     }
 }
 
-export async function create(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
+export async function create(req, res: Response, next: NextFunction): Promise<void> {
     try {
         const json_object_user: any = req.user;
         let json_object: any = req.body.json ? JSON.parse(req.body.json) : req.body;
+        if (req.file) {
+            json_object.path_file = 'storage/'+ req.file.filename
+        }
         const product: IProductModel = await ProductService.create(json_object);
         await LogService.create({
             user_id: json_object_user.id,
@@ -201,8 +204,8 @@ export async function restore(req: RequestWithUser, res: Response, next: NextFun
         })
         res.json({
             status: 200,
-            message: '  Restore product successfull',
-            content: product
+            message: 'Restore product successfull',
+            //content: product
         });
     } catch (error) {
         if (error.code === 500) {

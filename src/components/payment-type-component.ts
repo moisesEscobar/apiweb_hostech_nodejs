@@ -16,7 +16,7 @@ export async function findAll(req: RequestWithUser, res: Response, next: NextFun
         })
         res.json({
             status: 200,
-            message: 'Get payment_types successfull',
+            message: 'Get payment types successfull',
             content: payment_types
         });
     } catch (error) {
@@ -40,33 +40,8 @@ export async function findOne(req: RequestWithUser, res: Response, next: NextFun
         })
         res.json({
             status: 200,
-            message: 'Get payment_type successfull',
+            message: 'Get payment type successfull',
             content: payment_type
-        });
-    } catch (error) {
-        if (error.code === 500) {
-            return next(new HttpError(error.message.status, error.message));
-        }
-        res.json({
-            status: 400,
-            message: error.message
-        });
-    }
-}
-
-export async function search(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
-    try {
-        const json_object_user: any = req.user;
-        const payment_types: IPaymentTypeModel[] = await PaymentTypeService.search(req.query);
-        await LogService.create({
-            user_id: json_object_user.id,
-            action: "search",
-            catalog: "payment_type"
-        })
-        res.json({
-            status: 200,
-            message: 'Searchs payment_types successfull',
-            content: payment_types
         });
     } catch (error) {
         if (error.code === 500) {
@@ -93,7 +68,7 @@ export async function create(req: RequestWithUser, res: Response, next: NextFunc
         });
         res.json({
             status: 200,
-            message: 'Create payment_type successfull',
+            message: 'Create payment type successfull',
             content: payment_type
         });
     } catch (error) {
@@ -121,7 +96,7 @@ export async function update(req: RequestWithUser, res: Response, next: NextFunc
         });
         res.json({
             status: 200,
-            message: 'Update payment_type successfull'
+            message: 'Update payment type successfull'
         });
     } catch (error) {
         if (error.code === 500) {
@@ -147,8 +122,8 @@ export async function remove(req: RequestWithUser, res: Response, next: NextFunc
         })
         res.json({
             status: 200,
-            message: 'Delete payment_type successfull',
-            content: new_data
+            message: 'Delete payment type successfull',
+            // content: new_data
         });
     } catch (error) {
         if (error.code === 500) {
@@ -174,8 +149,8 @@ export async function restore(req: RequestWithUser, res: Response, next: NextFun
         })
         res.json({
             status: 200,
-            message: 'Restore payment_type successfull',
-            content: new_data
+            message: 'Restore payment type successfull',
+            // content: new_data
         });
     } catch (error) {
         if (error.code === 500) {

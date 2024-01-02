@@ -16,7 +16,7 @@ export async function findAll(req: RequestWithUser, res: Response, next: NextFun
         })
         res.json({
             status: 200,
-            message: 'Get payment_order_purchase successfull',
+            message: 'Get payment order purchase successfull',
             content: payment_orders
         });
     } catch (error) {
@@ -69,7 +69,7 @@ export async function create(req: RequestWithUser, res: Response, next: NextFunc
         });
         res.json({
             status: 200,
-            message: 'Create payment_order_purchase successfull',
+            message: 'Create payment order purchase successfull',
             content: json_object
         });
     } catch (error) {

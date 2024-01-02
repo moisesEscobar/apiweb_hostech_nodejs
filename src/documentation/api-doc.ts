@@ -147,7 +147,7 @@
  *      requestBody:
  *          required: true
  *          content:
- *              application/json:
+ *              multipart/form-data:
  *                  schema:
  *                      type: object
  *                      $ref: '#/components/schemas/ProductoCreacion'
@@ -874,7 +874,7 @@
  *              application/json:
  *                  schema:
  *                      type: object
- *                      $ref: '#/components/schemas/Inventario'
+ *                      $ref: '#/components/schemas/InventarioActualizacion'
  *      security:
  *          - ApiKeyAuth: []
  *      responses:
@@ -1419,6 +1419,10 @@
  *      ProductoCreacion:
  *          type: object
  *          properties:
+ *              file:
+ *                  type: string
+ *                  format: binary
+ *                  description: Nombre del productoArchivo a cargarNombre del producto
  *              name:
  *                  type: string
  *                  description: Nombre del producto
@@ -1531,6 +1535,16 @@
  *              - quantity
  *          example:
  *              product_id: 1
+ *              quantity: 20
+ *      InventarioActualizacion:
+ *          type: object
+ *          properties:
+ *              quantity:
+ *                  type: integer
+ *                  description: La cantidad de productos a agregar al inventario
+ *          required:
+ *              - quantity
+ *          example:
  *              quantity: 20
  *      ComprasInventariosProveedores:
  *          type: object

@@ -4,7 +4,7 @@ import PaymentType, { IPaymentTypeModel } from '../models/payment-type-model';
 import PaymentTypeView from '../models/views/payment-type-view';
 import PaymentTypeValidation from '../validations/payment-type-validations';
 import { IPaymentTypeService } from '../interfaces/payment-type-interface';
-import ProductView from '../models/views/product-view';
+import PaymentOrderTxnView from '../models/views/payment-order-txn-view';
 
 const PaymentTypeService: IPaymentTypeService = {
     async findAll(): Promise < any[] > {
@@ -25,20 +25,6 @@ const PaymentTypeService: IPaymentTypeService = {
                 throw new Error("PaymentType not found");
             }
             return payment_type;
-        } catch (error) {
-            throw new Error(error.message);
-        }
-    },
-    async search(params: any): Promise < any[] > {
-        try {
-            const payment_types = await PaymentTypeView.findAll({
-                where: {
-                    name: {
-                        [Op.iLike]: `%${params.name}%`,
-                    }
-                },
-            });
-            return payment_types;
         } catch (error) {
             throw new Error(error.message);
         }
@@ -70,10 +56,9 @@ const PaymentTypeService: IPaymentTypeService = {
                 throw new Error("PaymentType not found");
             }
             const last_data={...payment_type.get()};
-            const exist_in_product = await ProductView.findOne({ where: {payment_type_id:id}});
-            console.log(exist_in_product)
+            const exist_in_product = await PaymentOrderTxnView.findOne({ where: {payment_type_id:id}});
             if(exist_in_product){
-                throw new Error("The payment type cannot be updated because it has associated products");
+                throw new Error("The payment type cannot be updated because it has associated transactions");
             }
             await payment_type.update(body);
             const new_data={...payment_type.get()};
@@ -94,9 +79,9 @@ const PaymentTypeService: IPaymentTypeService = {
                 throw new Error("PaymentType not found");
             }
             const last_data={...payment_type.get()};
-            const exist_in_product = await ProductView.findOne({ where: {payment_type_id:id}});
+            const exist_in_product = await PaymentOrderTxnView.findOne({ where: {payment_type_id:id}});
             if(exist_in_product){
-                throw new Error("The payment_type cannot be eliminated because it has associated products");
+                throw new Error("The payment type cannot be eliminated because it has associated transactions");
             }
             await payment_type.destroy();
             const new_data={...payment_type.get()};

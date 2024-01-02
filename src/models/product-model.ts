@@ -6,6 +6,7 @@ export interface IProductModel {
     id?: number;
     name: string;
     sku: string;
+    path_file: string;
     description?: Text;
     supplier_customer_id?: number;
     reorder_point?: number;
@@ -20,13 +21,13 @@ class Product extends Model {
     public id: number;
     public name: string;
     public sku: string;
+    public path_file: string;
     public description: Text;
     public supplier_customer_id: number;
     public reorder_point: number;
     public updated_at: Date;
     public created_at: Date;
     public deleted_at: Date;
-    // Definir relaciones, validaciones u otros métodos aquí
 }
 Product.init(
     {
@@ -38,6 +39,10 @@ Product.init(
         name: {
             type: DataTypes.STRING,
             allowNull: false,
+        },
+        path_file: {
+            type: DataTypes.STRING,
+            allowNull: true,
         },
         description: {
             type: DataTypes.TEXT,

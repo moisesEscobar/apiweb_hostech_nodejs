@@ -78,9 +78,12 @@ const BrandService: IBrandService = {
             if(!brand){
                 throw new Error("Brand not found");
             }
+            const brand_exist = await BrandView.findOne({ where: {name:body.name}});
+            if(brand_exist){
+                throw new Error("Brand name exist");
+            }
             const last_data={...brand.get()};
             const exist_in_product = await ProductView.findOne({ where: {brand_id:id}});
-            console.log(exist_in_product)
             if(exist_in_product){
                 throw new Error("The brand cannot be updated because it has associated products");
             }

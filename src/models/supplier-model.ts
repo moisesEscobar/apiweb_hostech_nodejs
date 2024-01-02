@@ -36,7 +36,7 @@ Supplier.init(
             type: DataTypes.STRING,
             allowNull: true,
         },
-        description: {
+        address: {
             type: DataTypes.TEXT,
             allowNull: true,
         },

@@ -37,12 +37,10 @@ const PaymentOrderService: IPaymentOrderService = {
             }
             
             const { shopping_id,payment_date,status } = body;
-            console.log("Pruebas2",{ shopping_id, payment_date, status });
             await sequelize.query('CALL create_payment_orders(:shopping_id, :payment_date, :status)', {
                 replacements: { shopping_id, payment_date, status },
             });
         } catch (error) {
-            console.log(error.message)
             throw new Error(error.message);
         }
     },

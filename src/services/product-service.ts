@@ -6,6 +6,7 @@ import { IProductService } from '../interfaces/product-interface';
 import ProductView from '../models/views/product-view';
 import BrandView from '../models/views/brand-view';
 import ProductWithInventoryView from '../models/views/products_with_inventory';
+import SupplierView from '../models/views/supplier-view';
 
 const ProductService: IProductService = {
     async findAll(): Promise<any[]> {
@@ -45,7 +46,7 @@ const ProductService: IProductService = {
                 whereClause.name = { [Op.iLike]: `%${params['name']}%` };
             }
             if (params['sku']) {
-                whereClause.key = { [Op.iLike]: `%${params['sku']}%` };
+                whereClause.sku = { [Op.iLike]: `%${params['sku']}%` };
             }
             if (params['brand_id']) {
                 whereClause.brand_id = { [Op.eq]: params['brand_id'] };
@@ -84,6 +85,14 @@ const ProductService: IProductService = {
             if (!brand) {
                 throw new Error("Brand not exist");
             }
+            const supplier = await SupplierView.findByPk(body.supplier_customer_id);
+            if (!supplier) {
+                throw new Error("Supplier not exist");
+            }
+            const product_exist = await ProductView.findOne({ where: {sku:body.sku}});
+            if(product_exist){
+                throw new Error("Product sku exist");
+            }
             const product: IProductModel = await Product.create({
                 name: body.name,
                 sku: body.sku,
@@ -91,7 +100,8 @@ const ProductService: IProductService = {
                 price: body.price,
                 reorder_point: body.reorder_point,
                 brand_id: body.brand_id,
-                supplier_customer_id: body.supplier_customer_id
+                supplier_customer_id: body.supplier_customer_id,
+                path_file: body.path_file
             });
             return product;
         } catch (error) {
@@ -104,13 +114,9 @@ const ProductService: IProductService = {
             if (validate.error) {
                 throw new Error(validate.error.message);
             }
-            const brand = await BrandView.findByPk(body.brand_id);
-            if (!brand) {
-                throw new Error("Brand not exist");
-            }
             const product = await Product.findByPk(id);
             if (!product) {
-                throw new Error(`Product with ID ${id} not found`);
+                throw new Error(`Product not found`);
             }
             const last_data = { ...product.get() };
             await product.update(body);

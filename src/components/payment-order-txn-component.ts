@@ -123,8 +123,8 @@ export async function remove(req: RequestWithUser, res: Response, next: NextFunc
         })
         res.json({
             status: 200,
-            message: 'Delete payment_order successfull',
-            content: new_data
+            message: 'Delete payment_order_txn successfull',
+            // content: new_data
         });
     } catch (error) {
         if (error.code === 500) {
@@ -150,8 +150,8 @@ export async function restore(req: RequestWithUser, res: Response, next: NextFun
         })
         res.json({
             status: 200,
-            message: 'Restore payment_order successfull',
-            content: new_data
+            message: 'Restore payment_order_txn successfull',
+            // content: new_data
         });
     } catch (error) {
         if (error.code === 500) {

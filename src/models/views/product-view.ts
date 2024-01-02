@@ -8,6 +8,7 @@ const ProductView = sequelize.define('view_products', {
   brand_id: DataTypes.INTEGER,
   price: DataTypes.DOUBLE,
   brand_name: DataTypes.STRING,
+  path_file:DataTypes.STRING,
   created_at: DataTypes.DATE,
   updated_at: DataTypes.DATE
 }, { timestamps: false ,freezeTableName: true});
