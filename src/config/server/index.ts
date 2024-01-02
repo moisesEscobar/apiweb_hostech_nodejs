@@ -5,13 +5,20 @@ import sequelize from "../connection/connection";
 import express from 'express';
 import errorHandler from '../middleware/middleware';
 import cors from 'cors';
-
+import * as fs from 'fs';
+import * as path from 'path';
 
 
 const app: express.Application = express();
 
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+
+const storagePath = path.join(__dirname, '../../../storage');
+if (!fs.existsSync(storagePath)) {
+    fs.mkdirSync(storagePath, { recursive: true });
+}
 
 
 // Routes
