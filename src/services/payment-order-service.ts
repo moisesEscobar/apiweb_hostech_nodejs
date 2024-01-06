@@ -2,14 +2,30 @@ import * as Joi from 'joi';
 import PaymentOrder from '../models/payment-order-model';
 import PaymentOrderView from '../models/views/payment-order-view';
 import PaymentOrderValidation from '../validations/payment-order-validations';
-import { IPaymentOrderModel,IPaymentOrderService } from '../interfaces/payment-order-interface';
+import { IPaymentOrderModel,IPaymentOrderCreateModel,IPaymentOrderService } from '../interfaces/payment-order-interface';
 import PurchaseOrderView from '../models/views/purchase-order-view';
 import sequelize from '../config/connection/connection';
+import Utils from '../utils/validate-data-utils';
 
 const PaymentOrderService: IPaymentOrderService = {
-    async findAll(): Promise < any[] > {
+    async findAll(params: any): Promise < any[] > {
         try {
-            return await PaymentOrderView.findAll();
+            const validate: Joi.ValidationResult = await PaymentOrderValidation.searchPaymentOrder(params);
+            if (validate.error) throw new Error(validate.error.message)
+
+            const whereClause: { [key: string]: any } = {};
+            Utils.validateFieldRangeParams(params,whereClause);
+
+            const page = params['page'] ? parseInt(params['page'], 10) : 1;
+            const page_size = params['page_size'] ? parseInt(params['page_size'], 10) : 200;
+            const offset = (page - 1) * page_size;
+
+            return await PaymentOrderView.findAll({
+                where: Object.keys(whereClause).length > 0 ? whereClause : undefined,
+                offset: offset,
+                limit: page_size,
+            });
+
         } catch (error) {
             throw new Error(error.message);
         }
@@ -29,16 +45,18 @@ const PaymentOrderService: IPaymentOrderService = {
             throw new Error(error.message);
         }
     },
-    async create(body: IPaymentOrderModel): Promise < void > {
+    async create(body: IPaymentOrderCreateModel): Promise < void > {
         try {
-            const validate: Joi.ValidationResult = await PaymentOrderValidation.paymentOrder(body);
-            if (validate.error) {
-                throw new Error(validate.error.message);
-            }
-            
-            const { shopping_id,payment_date,status } = body;
-            await sequelize.query('CALL create_payment_orders(:shopping_id, :payment_date, :status)', {
-                replacements: { shopping_id, payment_date, status },
+            const validate: Joi.ValidationResult = await PaymentOrderValidation.createPaymentOrder(body);
+            if(validate.error) throw new Error(validate.error.message);
+
+            Utils.ValidateDateToCurrent(body.payment_date,1);
+            if (!body.payment_date)  body.payment_date = new Date();
+            if (!body.status)  body.status = "pending";
+
+            const jso_body=JSON.stringify(body);
+            await sequelize.query('CALL create_payment_orders(:jso_body)', {
+                replacements: {jso_body },
             });
         } catch (error) {
             throw new Error(error.message);
@@ -46,7 +64,7 @@ const PaymentOrderService: IPaymentOrderService = {
     },
     async update(id:number,body: IPaymentOrderModel): Promise < any > {
         try {
-            const validate: Joi.ValidationResult = PaymentOrderValidation.paymentOrder(body);
+            const validate: Joi.ValidationResult = PaymentOrderValidation.updatePaymentOrder(body);
             if (validate.error) {
                 throw new Error(validate.error.message);
             }

@@ -13,7 +13,7 @@ export async function findAll(req: RequestWithUser, res: Response, next: NextFun
         await LogService.create({
             user_id: json_object_user.id,
             action: "findAll",
-            catalog: "brand"
+            catalog: "product"
         })
         res.json({
             status: 200,
@@ -91,13 +91,11 @@ export async function search(req: RequestWithUser, res: Response, next: NextFunc
             action: "search",
             catalog: "brand"
         })
-
-        
         res.json({
             status: 200,
             message: 'Searchs product successfull',
             content: products,
-            page: req.query.page,
+            //page: req.query.page,
             page_size: req.query.page_size,
         });
     } catch (error) {

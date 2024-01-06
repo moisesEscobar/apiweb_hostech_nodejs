@@ -91,7 +91,9 @@ export async function search(req: RequestWithUser, res: Response, next: NextFunc
         res.json({
             status: 200,
             message: 'Searchs brands successfull',
-            content: brands
+            content: brands,
+            //page: req.query.page,
+            page_size: req.query.page_size,
         });
     } catch (error) {
         if (error.code === 500) {

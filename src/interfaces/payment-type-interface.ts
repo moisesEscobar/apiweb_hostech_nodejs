@@ -1,7 +1,7 @@
 import { IPaymentTypeModel } from '../models/payment-type-model';
 
 export interface IPaymentTypeService {
-    findAll(): Promise<IPaymentTypeModel[]>;
+    findAll(params: any): Promise<IPaymentTypeModel[]>;
     findOne(id: number): Promise<IPaymentTypeModel>;
     create(IPaymentTypeModel: IPaymentTypeModel): Promise<IPaymentTypeModel>;
     remove(id: number): Promise<any>;

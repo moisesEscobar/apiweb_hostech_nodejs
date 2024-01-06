@@ -1,7 +1,21 @@
 import * as Joi from 'joi';
 import Sale, { ISaleModel } from '../models/sale-model';
+import { ISaleCreateModel } from 'src/interfaces/sale-interface';
 
 class SaleValidation {
+    createSale(
+        params: ISaleCreateModel
+    ): Joi.ValidationResult {
+        const schema: Joi.Schema = Joi.object().keys({
+            date_sale: Joi.date().optional().allow(''),
+            customer_id: Joi.number().optional().required(),
+            products: Joi.array().items(Joi.object().keys({
+                product_id: Joi.number().required(),
+                quantity: Joi.number().required()
+            })).min(1)
+        });
+        return schema.validate(params);
+    }
     sale(
         params: ISaleModel
     ): Joi.ValidationResult {
@@ -29,5 +43,19 @@ class SaleValidation {
         });
         return schema.validate(body);
     }
+    searchSale(params: any): Joi.ValidationResult {
+        const schema: Joi.Schema = Joi.object().keys({
+            supplier_customer_id:  Joi.number().optional().min(1).allow(''),
+            field_type: Joi.string().valid('quantity_products', 'total_amount_purchase','amount_payable').optional().allow(''),
+            initial_value:  Joi.number().optional().allow(''),
+            end_value:  Joi.number().optional().allow(''),
+            type_date: Joi.string().valid('created_at', 'updated_at','date_purchase').optional().allow(''),
+            init_date:  Joi.date().optional().allow(''),
+            end_date:  Joi.date().optional().allow(''),
+            page:  Joi.number().optional().min(1),
+            page_size:  Joi.number().optional().min(1)
+        });
+        return schema.validate(params);
+    } 
 }
 export default new SaleValidation();

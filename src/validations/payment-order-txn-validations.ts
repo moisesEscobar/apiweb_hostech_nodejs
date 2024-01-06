@@ -9,7 +9,7 @@ class PaymentOrderTxnValidation {
             status: Joi.string().valid(
                 'pending', 'process','completed','failed','cancelled','refunded','verifying','rejected'
             ).required(),
-            amount: Joi.number().optional(),
+            //amount: Joi.number().optional(),
             user_id: Joi.number().optional(),
             payment_type_id: Joi.number().required(),
             payment_order_id: Joi.number().required(),

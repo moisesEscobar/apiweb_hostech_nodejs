@@ -35,12 +35,12 @@ const PaymentOrderTxnService: IPaymentOrderTxnService = {
                 throw new Error(validate.error.message);
             }
             const { 
-                status,amount=null,user_id=null,
+                status,user_id=null,
                 payment_type_id, payment_order_id, supplier_customer_id
             } = body;
             const payment_order_txn: any = await sequelize.query(
-                'SELECT create_payment_order_txns(:status, :amount, :user_id, :payment_type_id, :payment_order_id,:supplier_customer_id)', {
-                replacements: { status, amount, user_id, payment_type_id, payment_order_id,supplier_customer_id },
+                'SELECT create_payment_order_txns(:status, :user_id, :payment_type_id, :payment_order_id,:supplier_customer_id)', {
+                replacements: { status, user_id, payment_type_id, payment_order_id,supplier_customer_id },
             });
             /* const payment_order_txn: IPaymentOrderTxnModel = await PaymentOrderTxn.create({
                 status:body.status,

@@ -2,13 +2,34 @@ import * as Joi from 'joi';
 import Sale, { ISaleModel } from '../models/sale-model';
 import SaleView from '../models/views/sale-view';
 import SaleValidation from '../validations/sale-validations';
-import { ISaleService } from '../interfaces/sale-interface';
+import { ISaleService ,ISaleCreateModel} from '../interfaces/sale-interface';
 import { Op } from 'sequelize';
 import ProductWithInventoryView from '../models/views/products_with_inventory';
+import sequelize from '../config/connection/connection';
+import Utils from '../utils/validate-data-utils';
+import ProductView from '../models/views/product-view';
 
 const SaleService: ISaleService = {
-    async findAll(): Promise<any[]> {
+    async findAll(params: any): Promise<any[]> {
         try {
+
+            const validate: Joi.ValidationResult = await SaleValidation.searchSale(params);
+            if (validate.error) throw new Error(validate.error.message)
+
+            const whereClause: { [key: string]: any } = {};
+            Utils.validateFieldsParams('supplier_customer_id',params['supplier_customer_id'],Op.eq,whereClause);
+            Utils.validateFieldRangeParams(params,whereClause);
+
+            const page = params['page'] ? parseInt(params['page'], 10) : 1;
+            const page_size = params['page_size'] ? parseInt(params['page_size'], 10) : 200;
+            const offset = (page - 1) * page_size;
+
+            return await SaleView.findAll({
+                where: Object.keys(whereClause).length > 0 ? whereClause : undefined,
+                offset: offset,
+                limit: page_size,
+            });
+
             return await SaleView.findAll();
         } catch (error) {
             throw new Error(error.message);
@@ -29,33 +50,26 @@ const SaleService: ISaleService = {
             throw new Error(error.message);
         }
     },
-    async create(body: ISaleModel): Promise<any> {
+    async create(body: ISaleCreateModel): Promise<any> {
         try {
-            let message=null;
-            const validate: Joi.ValidationResult = await SaleValidation.sale(body);
-            if (validate.error) {
-                throw new Error(validate.error.message);
-            }
 
-            let inventory_exist = await ProductWithInventoryView.findOne({
-                where: {
-                    product_id: body.product_id, 
-                    quantity_available: {[Op.gt]: body.quantity},
+            let message=[];
+            const validate: Joi.ValidationResult = await SaleValidation.createSale(body);
+            if(validate.error) throw new Error(validate.error.message);
+
+            Utils.ValidateDateToCurrent(body.date_sale,1);
+            if (!body.date_sale) body.date_sale = new Date();
+
+            const jso_body=JSON.stringify(body);
+            await sequelize.query('CALL create_product_sale(:jso_body)', { replacements: { jso_body },});
+
+            for (const element of body.products) {
+                const product_i:any = await ProductWithInventoryView.findByPk(element.product_id);
+                if (product_i && (product_i.product_reorder_point >= product_i.quantity_available)) {
+                    message.push("El producto " + element.product_id + " necesita reordenar unidades, STOCK actual: " + product_i.quantity_available);
                 }
-            });
-            if (!inventory_exist) {
-                throw new Error("The product is not found or not in stock");
             }
-            const json_inventory = inventory_exist.toJSON();
-            const sale: ISaleModel = await Sale.create({ 
-                product_id: body.product_id,
-                quantity: body.quantity,
-                total_amount: (json_inventory.product_price*body.quantity)
-            });
-            if( (json_inventory.quantity_available-body.quantity) <= json_inventory.reorder_point){
-                message=" Es necesario reordenar mas unidades de este producto"
-            }
-            return{message: message,sale: sale}
+            return{message: message}
         } catch (error) {
             throw new Error(error.message);
         }

@@ -5,11 +5,29 @@ import PaymentTypeView from '../models/views/payment-type-view';
 import PaymentTypeValidation from '../validations/payment-type-validations';
 import { IPaymentTypeService } from '../interfaces/payment-type-interface';
 import PaymentOrderTxnView from '../models/views/payment-order-txn-view';
+import Utils from '../utils/validate-data-utils';
 
 const PaymentTypeService: IPaymentTypeService = {
-    async findAll(): Promise < any[] > {
+    async findAll(params: any): Promise < any[] > {
         try {
-            return await PaymentTypeView.findAll();
+
+            const validate: Joi.ValidationResult = await PaymentTypeValidation.searchPaymentType(params);
+            if (validate.error) throw new Error(validate.error.message)
+
+            const whereClause: { [key: string]: any } = {};
+            Utils.validateFieldsParams('name',params['name'],Op.iLike,whereClause);
+            Utils.validateFieldRangeParams(params,whereClause);
+
+            const page = params['page'] ? parseInt(params['page'], 10) : 1;
+            const page_size = params['page_size'] ? parseInt(params['page_size'], 10) : 200;
+            const offset = (page - 1) * page_size;
+
+            return await PaymentTypeView.findAll({
+                where: Object.keys(whereClause).length > 0 ? whereClause : undefined,
+                offset: offset,
+                limit: page_size,
+            });
+
         } catch (error) {
             throw new Error(error.message);
         }

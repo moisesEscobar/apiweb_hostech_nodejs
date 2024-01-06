@@ -1,15 +1,40 @@
 import * as Joi from 'joi';
-import Inventory, { IInventoryModel } from '../models/inventory-model';
 import InventoryView from '../models/views/inventory-view';
 import InventoryValidation from '../validations/inventory-validations';
 import { IInventoryService } from '../interfaces/inventory-interface';
-import ProductView from '../models/views/product-view';
-import SupplierView from '../models/views/supplier-view';
+import ProductWithInventoryView from '../models/views/products_with_inventory';
+import { Op } from 'sequelize';
+import Utils from '../utils/validate-data-utils';
 
 const InventoryService: IInventoryService = {
-    async findAll(): Promise < any[] > {
+    async search(params: any): Promise < any[] > {
         try {
-            return await InventoryView.findAll();
+
+            // product_id,supplier_customer_id,product_sku,brand_id
+            // product_price,product_reorder_point,quantity_sold,total_quantity,quantity_available,total_amount_sold
+
+            const validate: Joi.ValidationResult = await InventoryValidation.searchInventory(params);
+            if (validate.error) throw new Error(validate.error.message)
+
+            const whereClause: { [key: string]: any } = {};
+
+            Utils.validateFieldsParams('product_id',params['product_id'],Op.eq,whereClause);
+            Utils.validateFieldsParams('supplier_customer_id',params['supplier_customer_id'],Op.eq,whereClause);
+            Utils.validateFieldsParams('product_sku',params['product_sku'],Op.iLike,whereClause);
+            Utils.validateFieldsParams('brand_id',params['brand_id'],Op.eq,whereClause);
+            Utils.validateFieldRangeParams(params,whereClause);
+            console.log(whereClause);
+ 
+
+            const page = params['page'] ? parseInt(params['page'], 10) : 1;
+            const page_size = params['page_size'] ? parseInt(params['page_size'], 10) : 200;
+            const offset = (page - 1) * page_size;
+
+            return await ProductWithInventoryView.findAll({
+                where: Object.keys(whereClause).length > 0 ? whereClause : undefined,
+                offset: offset,
+                limit: page_size,
+            });
         } catch (error) {
             throw new Error(error.message);
         }
@@ -20,7 +45,7 @@ const InventoryService: IInventoryService = {
             if (validate.error) {
                 throw new Error(validate.error.message);
             }
-            const inventory = await InventoryView.findByPk(id);
+            const inventory = await ProductWithInventoryView.findByPk(id);
             if(!inventory){
                 throw new Error("Inventory not found");
             }
@@ -28,80 +53,7 @@ const InventoryService: IInventoryService = {
         } catch (error) {
             throw new Error(error.message);
         }
-    },
-    async create(body: IInventoryModel): Promise < IInventoryModel > {
-        try {
-            const validate: Joi.ValidationResult = await InventoryValidation.inventory(body);
-            if (validate.error) {
-                throw new Error(validate.error.message);
-            }
-            const product_exist = await ProductView.findOne({ where: {id:body.product_id}});
-            if(!product_exist){
-                throw new Error("Product not exist");
-            }
-            const inventory: IInventoryModel = await Inventory.create({
-                product_id: body.product_id,
-                quantity: body.quantity
-            });
-            return inventory;
-        } catch (error) {
-            throw new Error(error.message);
-        }
-    },
-    async update(id:number,body: IInventoryModel): Promise < any > {
-        try {
-            const validate: Joi.ValidationResult = InventoryValidation.updateInventory(body);
-            if (validate.error) {
-                throw new Error(validate.error.message);
-            }
-            const inventory = await Inventory.findByPk(id);
-            if(!inventory){
-                throw new Error("Inventory not found");
-            }
-            const last_data={...inventory.get()};
-            await inventory.update(body);
-            const new_data={...inventory.get()};
-            return {last_data:last_data,new_data:new_data}
-        } catch (error) {
-            throw new Error(error.message);
-        }
-    },
-    async remove(id: number): Promise < any > {
-        try {
-            const validate: Joi.ValidationResult = InventoryValidation.validateId({id});
-            if (validate.error) {
-                throw new Error(validate.error.message);
-            }
-            const inventory = await Inventory.findByPk(id);
-            if(!inventory){
-                throw new Error("Inventory not found");
-            }
-            const last_data={...inventory.get()};
-            await inventory.destroy();
-            const new_data={...inventory.get()};
-            return {last_data:last_data,new_data:new_data}
-        } catch (error) {
-            throw new Error(error.message);
-        }
-    },
-    async restore(id: number): Promise < any > {
-        try {
-            const validate: Joi.ValidationResult = InventoryValidation.validateId({id});
-            if (validate.error) {
-                throw new Error(validate.error.message);
-            }
-            const inventory = await Inventory.findByPk(id, { paranoid: false });
-            if(!inventory){
-                throw new Error("Inventory not found");
-            }
-            const last_data={...inventory.get()};
-            await inventory.restore();
-            const new_data={...inventory.get()};
-            return {last_data:last_data,new_data:new_data}
-        } catch (error) {
-            throw new Error(error.message);
-        }
-    },
+    }
 };
 
 export default InventoryService;

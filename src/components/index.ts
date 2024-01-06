@@ -8,15 +8,13 @@ import * as InventoryComponent from './inventory-component';
 import * as PaymentTypeComponent from './payment-type-component';
 import * as PaymentOrderComponent from './payment-order-component';
 import * as PaymentOrderTxnComponent from './payment-order-txn-component';
-import * as PurchaseOrderComponent from './purchase-order-component';
-import * as ShoppingComponent from './shopping-component';
 import * as ShoppingInventoryComponent from './shopping-inventory-component';
+import * as OrderReceiveComponent from './order-receive-component';
 
 export { 
     AuthComponent, ProductComponent, BrandComponent, 
     LogComponent, SupplierComponent, SaleComponent, 
     InventoryComponent, PaymentTypeComponent,
     PaymentOrderComponent,PaymentOrderTxnComponent,
-    PurchaseOrderComponent,ShoppingComponent,
-    ShoppingInventoryComponent
+    ShoppingInventoryComponent,OrderReceiveComponent
 };

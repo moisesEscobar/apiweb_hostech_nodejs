@@ -14,7 +14,8 @@ const ProductWithInventoryView = sequelize.define('view_products_with_inventory'
   quantity_sold: DataTypes.INTEGER,
   total_quantity: DataTypes.INTEGER,
   quantity_available: DataTypes.INTEGER,
-  total_amount: DataTypes.DOUBLE
+  total_amount_sold: DataTypes.DOUBLE
 }, { timestamps: false ,freezeTableName: true});
 
 export default ProductWithInventoryView;
+

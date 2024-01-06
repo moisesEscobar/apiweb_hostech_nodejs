@@ -5,8 +5,9 @@ import BrandView from '../models/views/brand-view';
 import BrandValidation from '../validations/brand-validations';
 import { IBrandService } from '../interfaces/brand-interface';
 import ProductView from '../models/views/product-view';
-import LogService from './log-service';
+
 import BrandWithProductView from '../models/views/brand-withproducts-view';
+import Utils from '../utils/validate-data-utils';
 
 const BrandService: IBrandService = {
     async findAll(): Promise < any[] > {
@@ -40,14 +41,24 @@ const BrandService: IBrandService = {
     },
     async search(params: any): Promise < any[] > {
         try {
-            const brands = await BrandView.findAll({
-                where: {
-                    name: {
-                        [Op.iLike]: `%${params.name}%`,
-                    }
-                },
+
+            const validate: Joi.ValidationResult = await BrandValidation.searchSupplier(params);
+            if (validate.error) {
+                throw new Error(validate.error.message);
+            }
+            const whereClause: { [key: string]: any } = {};
+            Utils.validateFieldsParams('name',params['name'],Op.iLike,whereClause);
+            Utils.validateFieldRangeParams(params,whereClause);;
+
+            const page = params['page'] ? parseInt(params['page'], 10) : 1;
+            const page_size = params['page_size'] ? parseInt(params['page_size'], 10) : 200;
+            const offset = (page - 1) * page_size;
+
+            return await BrandView.findAll({
+                where: Object.keys(whereClause).length > 0 ? whereClause : undefined,
+                offset: offset,
+                limit: page_size,
             });
-            return brands;
         } catch (error) {
             throw new Error(error.message);
         }

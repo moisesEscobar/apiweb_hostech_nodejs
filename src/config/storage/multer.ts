@@ -7,7 +7,7 @@ import path from 'path';
     const allowedMimeTypes = ['image/jpeg', 'image/png'];
     if (!file) { // El archivo no es requerido, pasar null para no generar un error
         cb(null, false);
-    } else if (allowedMimeTypes.includes(file.mimetype)) {
+    } else if (['image/jpeg', 'image/png'].includes(file.mimetype)) {
         cb(null, true); // Aceptar archivo
     } else {// Pasar un error si el archivo no tiene un formato permitido
         req.file_validation_error="Formato de archivo no permitido";

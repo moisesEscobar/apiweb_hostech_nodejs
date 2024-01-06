@@ -3,7 +3,7 @@ import LogService from '../services/log-service';
 import { HttpError } from '../config/error';
 import { NextFunction, Response } from 'express';
 import { RequestWithUser } from '../interfaces/request';
-import { IShoppingInventoryModel } from 'src/interfaces/shopping-inventory-interface';
+import { IShoppingInventoryModel } from '../interfaces/shopping-inventory-interface';
 
 export async function findAll(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
     try {
@@ -16,8 +16,56 @@ export async function findAll(req: RequestWithUser, res: Response, next: NextFun
         })
         res.json({
             status: 200,
-            message: 'Get shoppings and inventories successfull',
+            message: 'Get shoppings successfull',
             content: shoppings
+        });
+    } catch (error) {
+        if (error.code === 500) {
+            return next(new HttpError(error.message.status, error.message));
+        }
+        res.json({
+            status: 400,
+            message: error.message
+        });
+    }
+}
+export async function search(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
+    try {
+        const json_object_user: any = req.user;
+        const inventories: IShoppingInventoryModel[] = await ShoppingInventoryService.search(req.query);
+        await LogService.create({
+            user_id: json_object_user.id,
+            action: "search",
+            catalog: "shopping_inventory"
+        })
+        res.json({
+            status: 200,
+            message: 'Get shoppings successfull',
+            content: inventories
+        });
+    } catch (error) {
+        if (error.code === 500) {
+            return next(new HttpError(error.message.status, error.message));
+        }
+        res.json({
+            status: 400,
+            message: error.message
+        });
+    }
+}
+export async function findOne(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
+    try {
+        const json_object_user: any = req.user;
+        const inventory: IShoppingInventoryModel = await ShoppingInventoryService.findOne(parseInt(req.params.id));
+        await LogService.create({
+            user_id: json_object_user.id,
+            action: "findOne",
+            catalog: "shopping_inventory"
+        })
+        res.json({
+            status: 200,
+            message: 'Get shopping successfull',
+            content: inventory
         });
     } catch (error) {
         if (error.code === 500) {

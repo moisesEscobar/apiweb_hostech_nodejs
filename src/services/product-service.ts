@@ -7,6 +7,7 @@ import ProductView from '../models/views/product-view';
 import BrandView from '../models/views/brand-view';
 import ProductWithInventoryView from '../models/views/products_with_inventory';
 import SupplierView from '../models/views/supplier-view';
+import Utils from '../utils/validate-data-utils';
 
 const ProductService: IProductService = {
     async findAll(): Promise<any[]> {
@@ -26,13 +27,11 @@ const ProductService: IProductService = {
     async findOne(id: number): Promise<any> {
         try {
             const validate: Joi.ValidationResult = ProductValidation.validateId({ id });
-            if (validate.error) {
-                throw new Error(validate.error.message);
-            }
+            if (validate.error) throw new Error(validate.error.message)
+
             const product = await ProductView.findByPk(id);
-            if (!product) {
-                throw new Error("Product not found");
-            }
+            if (!product) throw new Error("Product not found");
+
             return product;
         } catch (error) {
             throw new Error(error.message);
@@ -40,37 +39,25 @@ const ProductService: IProductService = {
     },
     async search(params: any): Promise<any[]> {
         try {
+            const validate: Joi.ValidationResult = await ProductValidation.searchSupplier(params);
+            if (validate.error) throw new Error(validate.error.message)
 
             const whereClause: { [key: string]: any } = {};
-            if (params['name']) {
-                whereClause.name = { [Op.iLike]: `%${params['name']}%` };
-            }
-            if (params['sku']) {
-                whereClause.sku = { [Op.iLike]: `%${params['sku']}%` };
-            }
-            if (params['brand_id']) {
-                whereClause.brand_id = { [Op.eq]: params['brand_id'] };
-            }
-            if (params['type_date'] && params['init_date'] && params['end_date']) {
-                whereClause[params['type_date']] = {
-                    [Op.gte]: new Date(`${params['init_date']}T00:00:00Z`),
-                    [Op.lte]: new Date(`${params['end_date']}T23:59:59Z`),
-                };
-            }
+            Utils.validateFieldsParams('name',params['name'],Op.iLike,whereClause);
+            Utils.validateFieldsParams('sku',params['sku'],Op.iLike,whereClause);
+            Utils.validateFieldsParams('brand_id',params['brand_id'],Op.eq,whereClause);
+            Utils.validateFieldsParams('supplier_customer_id',params['supplier_customer_id'],Op.eq,whereClause);
+            Utils.validateFieldRangeParams(params,whereClause);
+
             const page = params['page'] ? parseInt(params['page'], 10) : 1;
-            const page_size = params['page_size'] ? parseInt(params['page_size'], 10) : 10;
+            const page_size = params['page_size'] ? parseInt(params['page_size'], 10) : 200;
             const offset = (page - 1) * page_size;
 
-            // Realizar la consulta solo si hay al menos una condición
-            if (Object.keys(whereClause).length > 0) {
-                return await ProductView.findAll({
-                    where: whereClause,
-                    offset: offset,
-                    limit: page_size,
-                });
-            } else {
-                throw new Error("No se proporcionaron condiciones para la consulta.");
-            }
+            return await ProductView.findAll({
+                where: Object.keys(whereClause).length > 0 ? whereClause : undefined,
+                offset: offset,
+                limit: page_size,
+            });
         } catch (error) {
             throw new Error(error.message);
         }
@@ -78,21 +65,17 @@ const ProductService: IProductService = {
     async create(body: IProductModel): Promise<IProductModel> {
         try {
             const validate: Joi.ValidationResult = await ProductValidation.createProduct(body);
-            if (validate.error) {
-                throw new Error(validate.error.message);
-            }
+            if (validate.error) throw new Error(validate.error.message)
+
             const brand = await BrandView.findByPk(body.brand_id);
-            if (!brand) {
-                throw new Error("Brand not exist");
-            }
-            const supplier = await SupplierView.findByPk(body.supplier_customer_id);
-            if (!supplier) {
-                throw new Error("Supplier not exist");
-            }
+            if (!brand) throw new Error("Brand not exist")
+
+            const supplier = await SupplierView.findOne({ where: {id:body.supplier_customer_id,type_user:'supplier'}});
+            if (!supplier) throw new Error("Supplier not exist")
+
             const product_exist = await ProductView.findOne({ where: {sku:body.sku}});
-            if(product_exist){
-                throw new Error("Product sku exist");
-            }
+            if (product_exist) throw new Error("Product sku exist")
+
             const product: IProductModel = await Product.create({
                 name: body.name,
                 sku: body.sku,
@@ -111,12 +94,22 @@ const ProductService: IProductService = {
     async update(id: number, body: IProductModel): Promise<any> {
         try {
             const validate: Joi.ValidationResult = await ProductValidation.updateProduct(body);
-            if (validate.error) {
-                throw new Error(validate.error.message);
-            }
+            if (validate.error) throw new Error(validate.error.message)
+
             const product = await Product.findByPk(id);
-            if (!product) {
-                throw new Error(`Product not found`);
+            if (!product) throw new Error("Product not found")
+
+            if(body.brand_id){
+                const brand = await BrandView.findByPk(body.brand_id);
+                if (!brand) throw new Error("Brand not exist");
+            }
+            if(body.supplier_customer_id){
+                const supplier = await SupplierView.findOne({ where: {id:body.supplier_customer_id,type_user:'supplier'}});
+                if (!supplier) throw new Error("Supplier not exist");
+            }
+            if(body.sku){
+                const product_exist = await ProductView.findOne({ where: {sku:body.sku}});
+                if (product_exist) throw new Error("Product sku exist");
             }
             const last_data = { ...product.get() };
             await product.update(body);
@@ -129,13 +122,11 @@ const ProductService: IProductService = {
     async remove(id: number): Promise<any> {
         try {
             const validate: Joi.ValidationResult = await ProductValidation.validateId({ id });
-            if (validate.error) {
-                throw new Error(validate.error.message);
-            }
+            if (validate.error) throw new Error(validate.error.message)
+
             const product = await Product.findByPk(id);
-            if (!product) {
-                throw new Error("Product not found");
-            }
+            if (!product) throw new Error("Product not found")
+
             const last_data = { ...product.get() };
             await product.destroy();
             const new_data = { ...product.get() };
@@ -147,13 +138,11 @@ const ProductService: IProductService = {
     async restore(id: number): Promise<any> {
         try {
             const validate: Joi.ValidationResult = ProductValidation.validateId({ id });
-            if (validate.error) {
-                throw new Error(validate.error.message);
-            }
+            if (validate.error) throw new Error(validate.error.message)
+
             const product = await Product.findByPk(id, { paranoid: false });
-            if (!product) {
-                throw new Error("Product not found");
-            }
+            if (!product) throw new Error("Product not found")
+
             const last_data = { ...product.get() };
             await product.restore();
             const new_data = { ...product.get() };

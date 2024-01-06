@@ -8,10 +8,10 @@ import { RequestWithUser } from '../interfaces/request';
 export async function findAll(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
     try {
         const json_object_user: any = req.user;
-        const payment_types: IPaymentTypeModel[] = await PaymentTypeService.findAll();
+        const payment_types: IPaymentTypeModel[] = await PaymentTypeService.findAll(req.query);
         await LogService.create({
             user_id: json_object_user.id,
-            action: "findAll",
+            action: "search",
             catalog: "payment_type"
         })
         res.json({

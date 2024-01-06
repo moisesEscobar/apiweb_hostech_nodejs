@@ -1,13 +1,15 @@
 import { DataTypes, Model } from 'sequelize';
 import sequelize from '../../config/connection/connection';
 
-const ShoppingView = sequelize.define('view_shoppings', {
+const ShoppingsView = sequelize.define('view_shoppings_summary', {
   id: {type: DataTypes.INTEGER,primaryKey: true,},
-  inventory_id: DataTypes.INTEGER,
-  unit_price: DataTypes.DOUBLE,
+  supplier_customer_id: DataTypes.INTEGER,
+  quantity_products: DataTypes.INTEGER,
+  total_amount_purchase: DataTypes.DOUBLE,
+  date_purchase: DataTypes.DATE,
+  amount_payable: DataTypes.DOUBLE,
   created_at: DataTypes.DATE,
-  updated_at: DataTypes.DATE,
-  deleted_at: DataTypes.DATE
+  updated_at: DataTypes.DATE
 }, { timestamps: false ,freezeTableName: true});
 
-export default ShoppingView;
+export default ShoppingsView;

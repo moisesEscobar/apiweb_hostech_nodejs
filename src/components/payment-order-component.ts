@@ -3,15 +3,15 @@ import LogService from '../services/log-service';
 import { HttpError } from '../config/error';
 import { NextFunction, Response } from 'express';
 import { RequestWithUser } from '../interfaces/request';
-import { IPaymentOrderModel } from 'src/interfaces/payment-order-interface';
+import { IPaymentOrderModel } from '../interfaces/payment-order-interface';
 
 export async function findAll(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
     try {
         const json_object_user: any = req.user;
-        const payment_orders: IPaymentOrderModel[] = await PaymentOrderService.findAll();
+        const payment_orders: IPaymentOrderModel[] = await PaymentOrderService.findAll(req.query);
         await LogService.create({
             user_id: json_object_user.id,
-            action: "findAll",
+            action: "search",
             catalog: "payment_order_purchase"
         })
         res.json({

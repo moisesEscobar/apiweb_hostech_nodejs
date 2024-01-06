@@ -8,10 +8,10 @@ import { RequestWithUser } from '../interfaces/request';
 export async function findAll(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
     try {
         const json_object_user: any = req.user;
-        const sales: ISaleModel[] = await SaleService.findAll();
+        const sales: ISaleModel[] = await SaleService.findAll(req.query);
         await LogService.create({
             user_id: json_object_user.id,
-            action: "findAll",
+            action: "search",
             catalog: "sale"
         })
         res.json({
@@ -65,13 +65,13 @@ export async function create(req: RequestWithUser, res: Response, next: NextFunc
             action: "create",
             catalog: "sale",
             detail_last: null,
-            detail_new: JSON.stringify(sale)
+            detail_new: JSON.stringify(json_object)
         });
         res.json({
             status: 200,
             message: 'Create sale successfull',
             message_reorder: sale.message??'',
-            content: sale.sale
+            content: json_object
         });
     } catch (error) {
         if (error.code === 500) {

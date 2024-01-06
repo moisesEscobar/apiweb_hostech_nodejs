@@ -30,6 +30,62 @@ export async function findAll(req: RequestWithUser, res: Response, next: NextFun
     }
 }
 
+
+export async function summaryShopings(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
+    try {
+        const json_object_user: any = req.user;
+        const suppliers: ISupplierModel[] = await    SupplierService.summaryShopings(req.query);
+        await LogService.create({
+            user_id: json_object_user.id,
+            action: "search",
+            catalog: "supplier"
+        })
+        res.json({
+            status: 200,
+            message: 'Searchs suppliers successfull',
+            content: suppliers,
+            //page: req.query.page,
+            page_size: req.query.page_size,
+        });
+    } catch (error) {
+        if (error.code === 500) {
+            return next(new HttpError(error.message.status, error.message));
+        }
+        res.json({
+            status: 400,
+            message: error.message
+        });
+    }
+}
+
+
+export async function search(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
+    try {
+        const json_object_user: any = req.user;
+        const suppliers: ISupplierModel[] = await    SupplierService.search(req.query);
+        await LogService.create({
+            user_id: json_object_user.id,
+            action: "search",
+            catalog: "supplier"
+        })
+        res.json({
+            status: 200,
+            message: 'Searchs suppliers successfull',
+            content: suppliers,
+            //page: req.query.page,
+            page_size: req.query.page_size,
+        });
+    } catch (error) {
+        if (error.code === 500) {
+            return next(new HttpError(error.message.status, error.message));
+        }
+        res.json({
+            status: 400,
+            message: error.message
+        });
+    }
+}
+
 export async function findOne(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
     try {
         const json_object_user: any = req.user;

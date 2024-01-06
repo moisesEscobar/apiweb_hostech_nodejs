@@ -1,31 +1,30 @@
-
-
-
 /**
  * @swagger
  * tags:
  *  -   name: Usuarios
  *      description: Detalles de los usuarios
- *  -   name: Catálogos - Crear
- *      description: Todas las peticiones para    Crear elementos de los catálogos (productos,tipos de pagos, proveedores,etc)
- *  -   name: Catálogos - Obtener
- *      description: Todas las peticiones para    Obtener elementos de los catálogos (productos,tipos de pagos, proveedores,etc)
- *  -   name: Catálogos - Actualizar
- *      description: Todas las peticiones para actualizar catálogos (productos,tipos de pagos, proveedores,etc)
- *  -   name: Catálogos - Eliminar
- *      description: Todas las peticiones para eliminar catálogos (productos,tipos de pagos, proveedores,etc)
- *  -   name: Catálogos - Restaurar
- *      description: Todas las peticiones para restaurar catálogos (productos,tipos de pagos, proveedores,etc)
- *  -   name: Ventas
- *      description: Ventas de productos (Las compras de los clientes)
- *  -   name: Reportes
- *      description: Diversos reportes
- *  -   name: Comprar y surtir inventarios
- *      description: Se crea un registro a la tabla de compras, la cual esta vinculada directamente con el inventario
- *  -   name: Ordenes de pago para las compras
- *      description: Diversos reportes
+ *  -   name: Proveedores
+ *      description: Detalles del los proveedores
+ *  -   name: Marcas
+ *      description: Detalles del catalogo de marcas
+ *  -   name: Productos
+ *      description: Detalles del catalogo de productos
+ *  -   name: Tipo de pagos
+ *      description: Detalles del catalogo de tipo de pagos
+ *  -   name: Compras a proveedores y surtir inventario
+ *      description: Las compras de recursos a proveedores
+ *  -   name: Inventarios
+ *      description: Detalles del inventario de productos
+ *  -   name: Ordenes de pago
+ *      description:    Las ordenes de pago generadas para los proveedores, estas pueden tener una o mas compras
  *  -   name: Transacciones de las ordenes de pago
  *      description: Es el la tabla donde se registran los pagos y la culminación de la compra y las ordenes de pago
+ *  -   name: Registros de acciones
+ *      description: Listado de acciones del sistema
+ *  -   name: Ventas
+ *      description: Detalles de las ventas de los productos (Los productos que el cliente compra)
+ *  -   name: Ordenes de cobro a clientes
+ *      description: Detalles de las ordenes de cobro vinculadas a clientes
  * /auth/login:
  *  post:
  *      tags:
@@ -84,7 +83,7 @@
  *                              description: El apellido paterno del usuario
  *                          phone_number:
  *                              type: string
- *                              description: El numero del telefono del usuario
+ *                              description: El numero del teléfono del usuario
  *                          email:
  *                              type: string
  *                              description: El correo del usuario
@@ -112,60 +111,12 @@
 */
 
 
-/**
- * @swagger
- * /brand/create:
- *  post:
- *      tags:
- *          -    Catálogos - Crear
- *      summary: Crear una marca
- *      description: Crear una mueva marca en el catalogo
- *      requestBody:
- *          required: true
- *          content:
- *              application/json:
- *                  schema:
- *                      type: object
- *                      $ref: '#/components/schemas/Marca'
- *      security:
- *          - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Create brand successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
- * /product/create:
- *  post:
- *      tags:
- *          -    Catálogos - Crear
- *      summary: Crear un producto
- *      description: Crear un nuevo producto en el catalogo
- *      requestBody:
- *          required: true
- *          content:
- *              multipart/form-data:
- *                  schema:
- *                      type: object
- *                      $ref: '#/components/schemas/ProductoCreacion'
- *      security:
- *          - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Create product successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
+/** 
+ *  @swagger
  * /supplier/create:
  *  post:
  *      tags:
- *          -    Catálogos - Crear
+ *          - Proveedores
  *      summary: Crear un proveedor o cliente
  *      description: Crear un nuevo proveedor
  *      requestBody:
@@ -186,262 +137,10 @@
  *              description: (ERROR) Unauthorized
  *          500:
  *              description: (ERROR) Internal Server Error
- * /inventory/create:
- *  post:
- *      tags:
- *          -    Catálogos - Crear
- *      summary: Crear un inventario
- *      description: Crear una muevo inventario
- *      requestBody:
- *          required: true
- *          content:
- *              application/json:
- *                  schema:
- *                      type: object
- *                      $ref: '#/components/schemas/Inventario'
- *      security:
- *          - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Create inventory successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
- * /payment_type/create:
- *  post:
- *      tags:
- *          -    Catálogos - Crear
- *      summary: Crear un tipo de pago
- *      description: Crear un nuevo tipo de pago
- *      requestBody:
- *          required: true
- *          content:
- *              application/json:
- *                  schema:
- *                      type: object
- *                      $ref: '#/components/schemas/TipoDePago'
- *      security:
- *          - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Create payment type successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
-*/
-
-
-
-
-
-/**
- * @swagger
- *  /brand/find_all:
- *  get:
- *      tags:
- *          - Catálogos - Obtener
- *      summary: Obtener todas las marcas
- *      description: Obtener todas las marcas
- *      security:
- *      - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Get Brands successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
- * /brand/find_all_with_products:
- *  get:
- *      tags:
- *          - Catálogos - Obtener
- *      summary: Obtener solo marcas con productos
- *      description: Obtener todas las marcas con productos vinculados
- *      security:
- *      - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Get brands successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
- * /brand/find_one/{id}:
- *  get:
- *      tags:
- *          - Catálogos - Obtener
- *      summary: Obtener una marca
- *      description: Obtener una sola marca
- *      parameters:
- *          - name: id
- *            in: path
- *            description: Id de la marca a buscar
- *            required: true
- *            example: 1
- *            schema:
- *              type: integer
- *              format: int64
- *      security:
- *      - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Get brand successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
- * /brand/search/?name={name}:
- *  get:
- *      tags:
- *          - Catálogos - Obtener
- *      summary: Búsqueda de marcas
- *      description: Buscar marcas por nombre
- *      parameters:
- *          - name: name
- *            in: path
- *            description: Nombre de la marca a buscar
- *            required: true
- *            example: 'gamesa'
- *            schema:
- *              type: string
- *      security:
- *          - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Searchs brands successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
- * /product/find_all:
- *  get:
- *      tags:
- *          - Catálogos - Obtener
- *      summary: Obtener productos
- *      description: Obtener todos los productos
- *      security:
- *      - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Get products successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
- * /product/find_one/{id}:
- *  get:
- *      tags:
- *          - Catálogos - Obtener
- *      summary: Obtener un producto
- *      description: Obtener un solo producto
- *      parameters:
- *          - name: id
- *            in: path
- *            description: Id del producto
- *            required: true
- *            schema:
- *              type: integer
- *      security:
- *      - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Get product successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          500:
- *              description: (ERROR) Internal Server Error
- *          401:
- *              description: (ERROR) Unauthorized
- * /product/search/:
- *  get:
- *      tags:
- *          - Catálogos - Obtener
- *      summary: Búsqueda de productos
- *      description: Buscar productos por varios campos y paginación
- *      parameters:
- *          - name: name
- *            in: query
- *            description: Nombre del producto
- *            example: 'marias'
- *            schema:
- *              type: string
- *          - name: sku
- *            in: query
- *            description: Clave del producto
- *            example: ''
- *            schema:
- *              type: string
- *          - name: brand_id
- *            in: query
- *            description: Id de la marca
- *            example: 
- *            schema:
- *              type: integer
- *          - name: type_date
- *            in: query
- *            description: Tipo de fecha
- *            required: true
- *            schema:
- *              type: string
- *              enum: ["created_at","updated_at"]
- *              example: 'created_at'
- *          - name: init_date
- *            in: query
- *            description: Fecha de creación
- *            example: '2023-12-19'
- *            required: true
- *            schema:
- *              type: string
- *          - name: end_date
- *            in: query
- *            description: Fecha de actualización
- *            example: '2023-12-20'
- *            required: true
- *            schema:
- *              type: string
- *          - name: page
- *            in: query
- *            description: Numero de la pagina
- *            example: 1
- *            schema:
- *              type: integer
- *          - name: page_size
- *            in: query
- *            description: Registros por pagina
- *            example: 2
- *            schema:
- *              type: integer
- *      security:
- *          - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Searchs brands successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
  * /supplier/find_all:
  *  get:
  *      tags:
- *          - Catálogos - Obtener
+ *          - Proveedores
  *      summary: Obtener proveedores
  *      description: Obtener todos los proveedores
  *      security:
@@ -455,10 +154,84 @@
  *              description: (ERROR) Unauthorized
  *          500:
  *              description: (ERROR) Internal Server Error
+ * /supplier/search/:
+ *  get:
+ *      tags:
+ *          - Proveedores
+ *      summary: Búsqueda de proveedores
+ *      description: Buscar proveedores por varios campos y paginación
+ *      parameters:
+ *          - name: type_user
+ *            in: query
+ *            description: Tipo de usuario
+ *            schema:
+ *              type: string
+ *              enum: ["supplier","customer"]
+ *              example: 'supplier'
+ *          - name: name
+ *            in: query
+ *            description: Nombre del proveedor
+ *            example: 'supplier'
+ *            schema:
+ *              type: string
+ *          - name: address
+ *            in: query
+ *            description: Dirección
+ *            example: ''
+ *            schema:
+ *              type: string
+ *          - name: phone_number
+ *            in: query
+ *            description: Numero telefónico
+ *            example: '9661006460'
+ *            schema:
+ *              type: string
+ *          - name: type_date
+ *            in: query
+ *            description: Tipo de fecha
+ *            schema:
+ *              type: string
+ *              enum: ["created_at","updated_at"]
+ *              example: 'created_at'
+ *          - name: init_date
+ *            in: query
+ *            description: Fecha inicial
+ *            example: '2023-12-19'
+ *            schema:
+ *              type: string
+ *          - name: end_date
+ *            in: query
+ *            description: Fecha final
+ *            example: '2024-01-20'
+ *            schema:
+ *              type: string
+ *          - name: page
+ *            in: query
+ *            description: Numero de la pagina
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *          - name: page_size
+ *            in: query
+ *            description: Registros por pagina
+ *            example: 100
+ *            schema:
+ *              type: integer
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Searchs brands successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
  * /supplier/find_one/{id}:
  *  get:
  *      tags:
- *          - Catálogos - Obtener
+ *          - Proveedores
  *      summary: Obtener un proveedor
  *      description: Obtener un proveedor
  *      parameters:
@@ -481,351 +254,10 @@
  *              description: (ERROR) Unauthorized
  *          500:
  *              description: (ERROR) Internal Server Error
- * /inventory/find_all:
- *  get:
- *      tags:
- *          - Catálogos - Obtener
- *      summary: Obtener todos los inventarios
- *      description: Obtener todos los inventarios
- *      security:
- *      - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Get inventories successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
- * /inventory/find_one/{id}:
- *  get:
- *      tags:
- *          - Catálogos - Obtener
- *      summary: Obtener un inventario
- *      description: Obtener un solo inventario
- *      parameters:
- *          - name: id
- *            in: path
- *            description: Id del inventario
- *            required: true
- *            example: 1
- *            schema:
- *              type: integer
- *              format: int64
- *      security:
- *      - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Get inventory successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
- * /payment_type/find_all:
- *  get:
- *      tags:
- *          - Catálogos - Obtener
- *      summary: Obtener los tipos de pagos
- *      description: Obtener todos los tipos de pagos
- *      security:
- *      - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Get payment types successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
- * /payment_type/find_one/{id}:
- *  get:
- *      tags:
- *          - Catálogos - Obtener
- *      summary: Obtener un tipo de pago
- *      description: Obtener un tipo de pago
- *      parameters:
- *          - name: id
- *            in: path
- *            description: Id del tipo de pago
- *            required: true
- *            example: 1
- *            schema:
- *              type: integer
- *              format: int64
- *      security:
- *      - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Get payment type successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
-*/
-
-
-
-
-
-
-
-
-/**
- * @swagger
- * /brand/remove/{id}:
- *  delete:
- *      tags:
- *          - Catálogos - Eliminar
- *      summary: Eliminar una marca
- *      description: Eliminar una marca en el catalogo
- *      parameters:
- *          - name: id
- *            in: path
- *            description: Id de la marca a eliminar
- *            required: true
- *            example: 1
- *            schema:
- *              type: integer
- *      security:
- *          - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Delete brand successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
- * /product/remove/{id}:
- *  delete:
- *      tags:
- *          - Catálogos - Eliminar
- *      summary: Eliminar un producto
- *      description: Eliminar un producto del catalogo
- *      parameters:
- *          - name: id
- *            in: path
- *            description: Id del producto a eliminar
- *            required: true
- *            example: 1
- *            schema:
- *              type: integer
- *      security:
- *          - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Delete product successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
- * /supplier/remove/{id}:
- *  delete:
- *      tags:
- *          - Catálogos - Eliminar
- *      summary: Eliminar un proveedor
- *      description: Eliminar un proveedor del catalogo
- *      parameters:
- *          - name: id
- *            in: path
- *            description: Id del proveedor a eliminar
- *            required: true
- *            example: 1
- *            schema:
- *              type: integer
- *      security:
- *          - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Delete supplier successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
- * /inventory/remove/{id}:
- *  delete:
- *      tags:
- *          - Catálogos - Eliminar
- *      summary: Eliminar un inventario
- *      description: Eliminar un inventario
- *      parameters:
- *          - name: id
- *            in: path
- *            description: Id de la marca a eliminar
- *            required: true
- *            example: 1
- *            schema:
- *              type: integer
- *      security:
- *          - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Delete inventory successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
- * /payment_type/remove/{id}:
- *  delete:
- *      tags:
- *          - Catálogos - Eliminar
- *      summary: Eliminar un tipo de pago
- *      description: Eliminar un tipo de pago del catalogo
- *      parameters:
- *          - name: id
- *            in: path
- *            description: Id del tipo de pago a eliminar
- *            required: true
- *            example: 1
- *            schema:
- *              type: integer
- *      security:
- *          - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Delete type payment successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
-*/
-
-
-
-
-
-
-
-
-/**
- * @swagger
- * /log/find_all:
- *  get:
- *      tags:
- *          - Reportes
- *      summary: Registro de acciones en la API
- *      description: Obtener todos los logs
- *      security:
- *      - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Get logs successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
- * /product/report_resume:
- *  get:
- *      tags:
- *          - Reportes
- *      summary: Productos con sus ventas y disponibilidades
- *      description: Obtener los productos y detalles de ventas e inventarios
- *      security:
- *      - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Get brands successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
-*/
-
-
-
-
-
-
-
-/**
- * @swagger
- * /brand/update/{id}:
- *  put:
- *      tags:
- *          - Catálogos - Actualizar
- *      summary: Actualizar una marca
- *      description: Actualizar una marca en el catalogo
- *      parameters:
- *          - name: id
- *            in: path
- *            description: Id de la marca a actualizar
- *            required: true
- *            example: 1
- *            schema:
- *              type: integer
- *      requestBody:
- *          required: true
- *          content:
- *              application/json:
- *                  schema:
- *                      type: object
- *                      $ref: '#/components/schemas/Marca'
- *      security:
- *          - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Update brand successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
- * /product/update/{id}:
- *  put:
- *      tags:
- *          - Catálogos - Actualizar
- *      summary: Actualizar un producto
- *      description: Actualizar un producto del catalogo
- *      parameters:
- *          - name: id
- *            in: path
- *            description: Id del producto a actualizar
- *            required: true
- *            example: 1
- *            schema:
- *              type: integer
- *      requestBody:
- *          required: true
- *          content:
- *              application/json:
- *                  schema:
- *                      type: object
- *                      $ref: '#/components/schemas/ProductoActualizacion'
- *      security:
- *          - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Update product successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
  * /supplier/update/{id}:
  *  put:
  *      tags:
- *          - Catálogos - Actualizar
+ *          - Proveedores
  *      summary: Actualizar un proveedor o cliente
  *      description: Actualizar un proveedor en el catalogo
  *      parameters:
@@ -854,16 +286,230 @@
  *              description: (ERROR) Unauthorized
  *          500:
  *              description: (ERROR) Internal Server Error
- * /inventory/update/{id}:
- *  put:
+ * /supplier/remove/{id}:
+ *  delete:
  *      tags:
- *          - Catálogos - Actualizar
- *      summary: Actualizar un inventario
- *      description: Actualizar un inventario
+ *          - Proveedores
+ *      summary: Eliminar un proveedor
+ *      description: Eliminar un proveedor del catalogo
  *      parameters:
  *          - name: id
  *            in: path
- *            description: Id del inventario
+ *            description: Id del proveedor a eliminar
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Delete supplier successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /supplier/restore/{id}:
+ *  put:
+ *      tags:
+ *          - Proveedores
+ *      summary: Restaurar un proveedor
+ *      description: Restaurar un proveedor
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id del proveedor
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Restore supplier successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /brand/create:
+ *  post:
+ *      tags:
+ *          - Marcas
+ *      summary: Crear una marca
+ *      description: Crear una mueva marca en el catalogo
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      $ref: '#/components/schemas/Marca'
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Create brand successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /brand/find_all:
+ *  get:
+ *      tags:
+ *          - Marcas
+ *      summary: Obtener todas las marcas
+ *      description: Obtener todas las marcas
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get Brands successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /brand/find_one/{id}:
+ *  get:
+ *      tags:
+ *          - Marcas
+ *      summary: Obtener una marca
+ *      description: Obtener una sola marca
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id de la marca a buscar
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *              format: int64
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get brand successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /brand/find_all_with_products:
+ *  get:
+ *      tags:
+ *          - Marcas
+ *      summary: Obtener solo marcas con productos
+ *      description: Obtener todas las marcas con productos vinculados
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get brands successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /brand/search/:
+ *  get:
+ *      tags:
+ *          - Marcas
+ *      summary: Búsqueda de marcas
+ *      description: Buscar marcas por nombre
+ *      parameters:
+ *          - name: name
+ *            in: query
+ *            description: Nombre de la marca
+ *            example: 'marca'
+ *            schema:
+ *              type: string
+ *          - name: type_date
+ *            in: query
+ *            description: Tipo de fecha
+ *            schema:
+ *              type: string
+ *              enum: ["created_at","updated_at"]
+ *              example: 'created_at'
+ *          - name: init_date
+ *            in: query
+ *            description: Fecha inicial
+ *            example: '2023-12-19'
+ *            schema:
+ *              type: string
+ *          - name: end_date
+ *            in: query
+ *            description: Fecha final
+ *            example: '2024-01-20'
+ *            schema:
+ *              type: string
+ *          - name: page
+ *            in: query
+ *            description: Numero de la pagina
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *          - name: page_size
+ *            in: query
+ *            description: Registros por pagina
+ *            example: 100
+ *            schema:
+ *              type: integer
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Searchs brands successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /brand/remove/{id}:
+ *  delete:
+ *      tags:
+ *          - Marcas
+ *      summary: Eliminar una marca
+ *      description: Eliminar una marca en el catalogo
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id de la marca a eliminar
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Delete brand successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /brand/update/{id}:
+ *  put:
+ *      tags:
+ *          - Marcas
+ *      summary: Actualizar una marca
+ *      description: Actualizar una marca en el catalogo
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id de la marca a actualizar
  *            required: true
  *            example: 1
  *            schema:
@@ -874,12 +520,379 @@
  *              application/json:
  *                  schema:
  *                      type: object
- *                      $ref: '#/components/schemas/InventarioActualizacion'
+ *                      $ref: '#/components/schemas/Marca'
  *      security:
  *          - ApiKeyAuth: []
  *      responses:
  *          200:
- *              description: (OK) Update inventory successfull
+ *              description: (OK) Update brand successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /brand/restore/{id}:
+ *  put:
+ *      tags:
+ *          - Marcas
+ *      summary: Restaurar una marca
+ *      description: Restaurar una marca del catalogo
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id de la marca a restaurar
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Restore brand successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /product/create:
+ *  post:
+ *      tags:
+ *          - Productos
+ *      summary: Crear un producto
+ *      description: Crear un nuevo producto en el catalogo
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              multipart/form-data:
+ *                  schema:
+ *                      type: object
+ *                      $ref: '#/components/schemas/ProductoCreacion'
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Create product successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /product/find_all:
+ *  get:
+ *      tags:
+ *          - Productos
+ *      summary: Obtener productos
+ *      description: Obtener todos los productos
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get products successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /product/find_one/{id}:
+ *  get:
+ *      tags:
+ *          - Productos
+ *      summary: Obtener un producto
+ *      description: Obtener un solo producto
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id del producto
+ *            required: true
+ *            schema:
+ *              type: integer
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get product successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ *          401:
+ *              description: (ERROR) Unauthorized
+ * /product/search/:
+ *  get:
+ *      tags:
+ *          - Productos
+ *      summary: Búsqueda de productos
+ *      description: Buscar productos por varios campos y paginación
+ *      parameters:
+ *          - name: name
+ *            in: query
+ *            description: Nombre del producto
+ *            example: 'marias'
+ *            schema:
+ *              type: string
+ *          - name: sku
+ *            in: query
+ *            description: Clave del producto
+ *            example: 'producto'
+ *            schema:
+ *              type: string
+ *          - name: brand_id
+ *            in: query
+ *            description: Id de la marca
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *          - name: supplier_customer_id
+ *            in: query
+ *            description: Id del proveedor
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *          - name: type_date
+ *            in: query
+ *            description: Tipo de fecha
+ *            schema:
+ *              type: string
+ *              enum: ["created_at","updated_at"]
+ *              example: 'created_at'
+ *          - name: init_date
+ *            in: query
+ *            description: Fecha inicial
+ *            example: '2023-12-19'
+ *            schema:
+ *              type: string
+ *          - name: end_date
+ *            in: query
+ *            description: Fecha final
+ *            example: '2024-01-20'
+ *            schema:
+ *              type: string
+ *          - name: page
+ *            in: query
+ *            description: Numero de la pagina
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *          - name: page_size
+ *            in: query
+ *            description: Registros por pagina
+ *            example: 100
+ *            schema:
+ *              type: integer
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Searchs brands successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /product/remove/{id}:
+ *  delete:
+ *      tags:
+ *          - Productos
+ *      summary: Eliminar un producto
+ *      description: Eliminar un producto del catalogo
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id del producto a eliminar
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Delete product successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /product/report_resume:
+ *  get:
+ *      tags:
+ *          - Productos
+ *      summary: Productos con sus ventas y disponibilidades
+ *      description: Obtener los productos y detalles de ventas e inventarios
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get brands successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /product/update/{id}:
+ *  put:
+ *      tags:
+ *          - Productos
+ *      summary: Actualizar un producto
+ *      description: Actualizar un producto del catalogo
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id del producto a actualizar
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      $ref: '#/components/schemas/ProductoActualizacion'
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Update product successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /product/restore/{id}:
+ *  put:
+ *      tags:
+ *          - Productos
+ *      summary: Restaurar un producto
+ *      description: Restaurar un producto del catalogo
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id del producto a restaurar
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Restore product successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /payment_type/create:
+ *  post:
+ *      tags:
+ *          - Tipo de pagos
+ *      summary: Crear un tipo de pago
+ *      description: Crear un nuevo tipo de pago
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      $ref: '#/components/schemas/TipoDePago'
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Create payment type successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /payment_type/search:
+ *  get:
+ *      tags:
+ *          - Tipo de pagos
+ *      summary: Obtener los tipos de pagos
+ *      description: Obtener todos los tipos de pagos
+ *      parameters:
+ *          - name: name
+ *            in: query
+ *            description: Nombre de tipo de pago
+ *            example: 'supplier'
+ *            schema:
+ *              type: string
+ *          - name: type_date
+ *            in: query
+ *            description: Tipo de fecha
+ *            schema:
+ *              type: string
+ *              enum: ["created_at","updated_at"]
+ *              example: 'created_at'
+ *          - name: init_date
+ *            in: query
+ *            description: Fecha inicial
+ *            example: '2023-12-19'
+ *            schema:
+ *              type: string
+ *          - name: end_date
+ *            in: query
+ *            description: Fecha final
+ *            example: '2024-01-20'
+ *            schema:
+ *              type: string
+ *          - name: page
+ *            in: query
+ *            description: Numero de la pagina
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *          - name: page_size
+ *            in: query
+ *            description: Registros por pagina
+ *            example: 100
+ *            schema:
+ *              type: integer
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get payment types successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /payment_type/find_one/{id}:
+ *  get:
+ *      tags:
+ *          - Tipo de pagos
+ *      summary: Obtener un tipo de pago
+ *      description: Obtener un tipo de pago
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id del tipo de pago
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *              format: int64
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get payment type successfull
  *          404:
  *              description: (ERROR) Bad Request
  *          401:
@@ -889,7 +902,7 @@
  * /payment_type/update/{id}:
  *  put:
  *      tags:
- *          - Catálogos - Actualizar
+ *          - Tipo de pagos
  *      summary: Actualizar un tipo de pago
  *      description: Actualizar un tipo de pago en el catalogo
  *      parameters:
@@ -918,27 +931,16 @@
  *              description: (ERROR) Unauthorized
  *          500:
  *              description: (ERROR) Internal Server Error
-*/
-
-
-
-
-
-
-
-
-/**
- *  @swagger 
- * /brand/restore/{id}:
- *  put:
+ * /payment_type/remove/{id}:
+ *  delete:
  *      tags:
- *          - Catálogos - Restaurar
- *      summary: Restaurar una marca
- *      description: Restaurar una marca del catalogo
+ *          - Tipo de pagos
+ *      summary: Eliminar un tipo de pago
+ *      description: Eliminar un tipo de pago del catalogo
  *      parameters:
  *          - name: id
  *            in: path
- *            description: Id de la marca a restaurar
+ *            description: Id del tipo de pago a eliminar
  *            required: true
  *            example: 1
  *            schema:
@@ -947,82 +949,7 @@
  *          - ApiKeyAuth: []
  *      responses:
  *          200:
- *              description: (OK) Restore brand successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
- * /product/restore/{id}:
- *  put:
- *      tags:
- *          - Catálogos - Restaurar
- *      summary: Restaurar un producto
- *      description: Restaurar un producto del catalogo
- *      parameters:
- *          - name: id
- *            in: path
- *            description: Id del producto a restaurar
- *            required: true
- *            example: 1
- *            schema:
- *              type: integer
- *      security:
- *          - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Restore product successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
- * /supplier/restore/{id}:
- *  put:
- *      tags:
- *          - Catálogos - Restaurar
- *      summary: Restaurar un proveedor
- *      description: Restaurar un proveedor
- *      parameters:
- *          - name: id
- *            in: path
- *            description: Id del pproveedor
- *            required: true
- *            example: 1
- *            schema:
- *              type: integer
- *      security:
- *          - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Restore supplier successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
- * /inventory/restore/{id}:
- *  put:
- *      tags:
- *          - Catálogos - Restaurar
- *      summary: Restaurar un inventario
- *      description: Restaurar un inventario
- *      parameters:
- *          - name: id
- *            in: path
- *            description: Id del inventario
- *            required: true
- *            example: 1
- *            schema:
- *              type: integer
- *      security:
- *          - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Restore inventory successfull
+ *              description: (OK) Delete type payment successfull
  *          404:
  *              description: (ERROR) Bad Request
  *          401:
@@ -1032,7 +959,7 @@
  * /payment_type/restore/{id}:
  *  put:
  *      tags:
- *          - Catálogos - Restaurar
+ *          - Tipo de pagos
  *      summary: Restaurar un tipo de pago
  *      description: Restaurar un tipo de pago
  *      parameters:
@@ -1054,16 +981,321 @@
  *              description: (ERROR) Unauthorized
  *          500:
  *              description: (ERROR) Internal Server Error
-*/
-
-
-
-
-
-
-
-/**
- *  @swagger
+ * 
+ * /inventory/search:
+ *  get:
+ *      tags:
+ *          - Inventarios
+ *      summary: Inventario de productos
+ *      description: Detalles de cada producto y su inventario
+ *      parameters:
+ *          - name: product_id
+ *            in: query
+ *            description: Id del producto
+ *            example: 
+ *            schema:
+ *              type: integer
+ *          - name: supplier_customer_id
+ *            in: query
+ *            description: Id del proveedor
+ *            example: 
+ *            schema:
+ *              type: integer
+ *          - name: brand_id
+ *            in: query
+ *            description: Id de la marca
+ *            example: 
+ *            schema:
+ *              type: integer
+ *          - name: product_sku
+ *            in: query
+ *            description: El código del producto
+ *            example: 
+ *            schema:
+ *              type: string
+ *          - name: field_type
+ *            in: query
+ *            description: Opciones de campos por los que filtrar un rango de valores
+ *            schema:
+ *              type: string
+ *              enum: ["product_price","product_reorder_point","quantity_sold","total_quantity","quantity_available","total_amount_sold"]
+ *              example: 'product_price'
+ *          - name: initial_value
+ *            in: query
+ *            description: Valor inicial
+ *            example: 1
+ *            schema:
+ *              type: number
+ *          - name: end_value
+ *            in: query
+ *            description: Valor final
+ *            example: 100
+ *            schema:
+ *              type: number
+ *          - name: page
+ *            in: query
+ *            description: Numero de la pagina
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *          - name: page_size
+ *            in: query
+ *            description: Registros por pagina
+ *            example: 100
+ *            schema:
+ *              type: integer
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get inventories successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /supplier/summary_shopings:
+ *  get:
+ *      tags:
+ *          - Inventarios
+ *      summary: Obtener proveedores y resumen de compras
+ *      description: Obtener todos los proveedores con su resumen de compras
+ *      parameters:
+ *          - name: type_user
+ *            in: query
+ *            required: true
+ *            description: Proveedores igual a COMPRAS y cliente igual a VENTAS
+ *            schema:
+ *              type: string
+ *              enum: ["supplier","customer"]
+ *              example: 'supplier'
+ *          - name: name
+ *            in: query
+ *            description: Nombre del proveedor
+ *            example: 
+ *            schema:
+ *              type: string
+ *          - name: address
+ *            in: query
+ *            description: Dirección
+ *            example: 
+ *            schema:
+ *              type: string
+ *          - name: phone_number
+ *            in: query
+ *            description: Numero telefónico
+ *            example: 
+ *            schema:
+ *              type: string
+ *          - name: field_type
+ *            in: query
+ *            description: Opciones de campos por los que filtrar un rango de valores
+ *            schema:
+ *              type: string
+ *              enum: ["total_products","total_amount_purchase","total_amount_paid","amount_payable"]
+ *              example: 
+ *          - name: initial_value
+ *            in: query
+ *            description: Valor inicial
+ *            example: 
+ *            schema:
+ *              type: number
+ *          - name: end_value
+ *            in: query
+ *            description: Valor final
+ *            example: 
+ *            schema:
+ *              type: number
+ *          - name: type_date
+ *            in: query
+ *            description: Tipo de fecha
+ *            schema:
+ *              type: string
+ *              enum: ["created_at","updated_at"]
+ *              example: 
+ *          - name: init_date
+ *            in: query
+ *            description: Fecha inicial
+ *            example: 
+ *            schema:
+ *              type: string
+ *          - name: end_date
+ *            in: query
+ *            description: Fecha final
+ *            example: 
+ *            schema:
+ *              type: string
+ *          - name: page
+ *            in: query
+ *            description: Numero de la pagina
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *          - name: page_size
+ *            in: query
+ *            description: Registros por pagina
+ *            example: 100
+ *            schema:
+ *              type: integer
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get suppliers successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /inventory/find_one/{id}:
+ *  get:
+ *      tags:
+ *          - Inventarios
+ *      summary: Obtener un inventario
+ *      description: Obtener un solo inventario
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id del inventario
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *              format: int64
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get inventory successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /sale/create:
+ *  post:
+ *      tags:
+ *          - Ventas
+ *      description: Crear una mueva venta
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      $ref: '#/components/schemas/Venta'
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Create sale successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /sale/search:
+ *  get:
+ *      tags:
+ *          - Ventas
+ *      description: Obtener todas las ventas
+ *      parameters:
+ *          - name: supplier_customer_id
+ *            in: query
+ *            description: Id del Cliente por el cual buscar
+ *            example: 
+ *            schema:
+ *              type: number
+ *          - name: field_type
+ *            in: query
+ *            description: Opciones de campos por los que filtrar un rango de valores
+ *            schema:
+ *              type: string
+ *              enum: ["quantity_products","amount_payable","total_amount"]
+ *              example: 
+ *          - name: initial_value
+ *            in: query
+ *            description: Valor inicial
+ *            example: 
+ *            schema:
+ *              type: number
+ *          - name: end_value
+ *            in: query
+ *            description: Valor final
+ *            example: 
+ *            schema:
+ *              type: number
+ *          - name: type_date
+ *            in: query
+ *            description: Tipo de fecha
+ *            schema:
+ *              type: string
+ *              enum: ["created_at","updated_at","date_sale"]
+ *              example: 
+ *          - name: init_date
+ *            in: query
+ *            description: Fecha inicial
+ *            example: 
+ *            schema:
+ *              type: string
+ *          - name: end_date
+ *            in: query
+ *            description: Fecha final
+ *            example: 
+ *            schema:
+ *              type: string
+ *          - name: page
+ *            in: query
+ *            description: Numero de la pagina
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *          - name: page_size
+ *            in: query
+ *            description: Registros por pagina
+ *            example: 100
+ *            schema:
+ *              type: integer
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get sales successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /sale/find_one/{id}:
+ *  get:
+ *      tags:
+ *          - Ventas
+ *      description: Obtener una venta
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id de la venta a consultar
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *              format: int64
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get sale successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
  * /payment_order_txn/find_all:
  *  get:
  *      tags:
@@ -1163,15 +1395,12 @@
  *              description: (ERROR) Unauthorized
  *          500:
  *              description: (ERROR) Internal Server Error
-*/
-
-
-/**
  *  @swagger
  * /shopping_inventory/create:
  *  post:
  *      tags:
- *          - Comprar y surtir inventarios
+ *          - Compras a proveedores y surtir inventario
+ *      summary: Comprar a proveedores y surtir inventarios
  *      description: Crear un nueva compra y surtir el inventario
  *      requestBody:
  *          required: true
@@ -1194,30 +1423,250 @@
  * /shopping_inventory/find_all:
  *  get:
  *      tags:
- *          - Comprar y surtir inventarios
+ *          - Compras a proveedores y surtir inventario
  *      summary: Obtener las compras e inventarios de proveedores
  *      description: Obtener las compras
  *      security:
  *      - ApiKeyAuth: []
  *      responses:
  *          200:
- *              description: (OK) Get shoppings and inventories successfull
+ *              description: (OK) Get shoppings  successfull
  *          404:
  *              description: (ERROR) Bad Request
  *          401:
  *              description: (ERROR) Unauthorized
  *          500:
  *              description: (ERROR) Internal Server Error
-*/
-
-
-
-/**
- *  @swagger
+ * /shopping_inventory/find_one/{id}:
+ *  get:
+ *      tags:
+ *          - Compras a proveedores y surtir inventario
+ *      summary: Obtener una compra
+ *      description: Obtener una sola compra
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id de la compra
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *              format: int64
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get shopping successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /shopping_inventory/search:
+ *  get:
+ *      tags:
+ *          - Compras a proveedores y surtir inventario
+ *      summary: Obtener las compras 
+ *      description: Obtener resumen de compras
+ *      parameters:
+ *          - name: supplier_customer_id
+ *            in: query
+ *            description: Id del proveedor
+ *            example: 
+ *            schema:
+ *              type: integer
+ *          - name: field_type
+ *            in: query
+ *            description: Opciones de campos por los que filtrar un rango de valores
+ *            schema:
+ *              type: string
+ *              enum: ["quantity_products","total_amount_purchase","amount_payable"]
+ *              example: 'quantity_products'
+ *          - name: initial_value
+ *            in: query
+ *            description: Valor inicial
+ *            example: 1
+ *            schema:
+ *              type: number
+ *          - name: end_value
+ *            in: query
+ *            description: Valor final
+ *            example: 100
+ *            schema:
+ *              type: number
+ *          - name: type_date
+ *            in: query
+ *            description: Tipo de fecha
+ *            schema:
+ *              type: string
+ *              enum: ["created_at","updated_at","date_purchase"]
+ *              example: 'created_at'
+ *          - name: init_date
+ *            in: query
+ *            description: Fecha inicial
+ *            example: '2023-12-19'
+ *            schema:
+ *              type: string
+ *          - name: end_date
+ *            in: query
+ *            description: Fecha final
+ *            example: '2024-01-20'
+ *            schema:
+ *              type: string
+ *          - name: page
+ *            in: query
+ *            description: Numero de la pagina
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *          - name: page_size
+ *            in: query
+ *            description: Registros por pagina
+ *            example: 100
+ *            schema:
+ *              type: integer
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get shoppings successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /log/find_all:
+ *  get:
+ *      tags:
+ *          - Registros de acciones
+ *      summary: Registro de acciones en la API
+ *      description: Obtener todos los logs
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get logs successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /log/find_one/{id}:
+ *  get:
+ *      tags:
+ *          - Registros de acciones
+ *      summary: Obtener un registro de acciones
+ *      description: Obtener una solo registro de acciones
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id del registro de acciones a buscar
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *              format: int64
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get Log successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /log/search/:
+ *  get:
+ *      tags:
+ *          - Registros de acciones
+ *      summary: Búsqueda de registros de acciones
+ *      description: Buscar registros de acciones por varios campos y paginación
+ *      parameters:
+ *          - name: action
+ *            in: query
+ *            description: Nombre de la acción registrada
+ *            example: 'create'
+ *            schema:
+ *              type: string
+ *              enum: ["findAll","findOne","search","create","update","remove","restore","reportResume"]
+ *              example: ''
+ *          - name: catalog
+ *            in: query
+ *            description: Nombre del catalogo o modulo afectado
+ *            example: 'brand'
+ *            schema:
+ *              type: string
+ *              enum: ["brand","inventory","payment_order_txn","payment_type","sale","shopping_inventory","supplier","payment_order_purchase"]
+ *              example: ''
+ *          - name: user_id
+ *            in: query
+ *            description: Id del usuario que registro la acción
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *          - name: user_name
+ *            in: query
+ *            description: Nombre del usuario que registro la acción
+ *            example: ''
+ *            schema:
+ *              type: string
+ *          - name: user_email
+ *            in: query
+ *            description: Correo del usuario que registro la acción
+ *            example: ''
+ *            schema:
+ *              type: string
+ *          - name: type_date
+ *            in: query
+ *            description: Tipo de fecha
+ *            schema:
+ *              type: string
+ *              enum: ["created_at","updated_at"]
+ *              example: 'created_at'
+ *          - name: init_date
+ *            in: query
+ *            description: Fecha inicial
+ *            example: '2023-12-19'
+ *            schema:
+ *              type: string
+ *          - name: end_date
+ *            in: query
+ *            description: Fecha final
+ *            example: '2024-01-20'
+ *            schema:
+ *              type: string
+ *          - name: page
+ *            in: query
+ *            description: Numero de la pagina
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *          - name: page_size
+ *            in: query
+ *            description: Registros por pagina
+ *            example: 100
+ *            schema:
+ *              type: integer
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Searchs logs successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
  * /payment_order/create:
  *  post:
  *      tags:
- *          - Ordenes de pago para las compras
+ *          - Ordenes de pago
  *      description: Crear un orden pago para las ventas
  *      requestBody:
  *          required: true
@@ -1237,12 +1686,62 @@
  *              description: (ERROR) Unauthorized
  *          500:
  *              description: (ERROR) Internal Server Error
- * /payment_order/find_all:
+ * /payment_order/search:
  *  get:
  *      tags:
- *          - Ordenes de pago para las compras
- *      summary: Obtener las ordenes de pago de las compras
- *      description: Obtener las ordenes de pago de las compras a los proveedores
+ *          - Ordenes de pago
+ *      description: Obtener todas las ordenes de pago
+ *      parameters:
+ *          - name: field_type
+ *            in: query
+ *            description: Opciones de campos por los que filtrar un rango de valores
+ *            schema:
+ *              type: string
+ *              enum: ["total_amount"]
+ *              example: 
+ *          - name: initial_value
+ *            in: query
+ *            description: Valor inicial
+ *            example: 
+ *            schema:
+ *              type: number
+ *          - name: end_value
+ *            in: query
+ *            description: Valor final
+ *            example: 
+ *            schema:
+ *              type: number
+ *          - name: type_date
+ *            in: query
+ *            description: Tipo de fecha
+ *            schema:
+ *              type: string
+ *              enum: ["created_at","updated_at","payment_date"]
+ *              example: 
+ *          - name: init_date
+ *            in: query
+ *            description: Fecha inicial
+ *            example: 
+ *            schema:
+ *              type: string
+ *          - name: end_date
+ *            in: query
+ *            description: Fecha final
+ *            example: 
+ *            schema:
+ *              type: string
+ *          - name: page
+ *            in: query
+ *            description: Numero de la pagina
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *          - name: page_size
+ *            in: query
+ *            description: Registros por pagina
+ *            example: 100
+ *            schema:
+ *              type: integer
  *      security:
  *      - ApiKeyAuth: []
  *      responses:
@@ -1254,41 +1753,15 @@
  *              description: (ERROR) Unauthorized
  *          500:
  *              description: (ERROR) Internal Server Error
-*/
-
-
-
-
-
-
-
-/**
- * @swagger
- * /sale/find_all:
+ * /payment_order/find_one/{id}:
  *  get:
  *      tags:
- *          - Ventas
- *      description: Obtener todas las ventas
- *      security:
- *      - ApiKeyAuth: []
- *      responses:
- *          200:
- *              description: (OK) Get sales successfull
- *          404:
- *              description: (ERROR) Bad Request
- *          401:
- *              description: (ERROR) Unauthorized
- *          500:
- *              description: (ERROR) Internal Server Error
- * /sale/find_one/{id}:
- *  get:
- *      tags:
- *          - Ventas
- *      description: Obtener una venta
+ *          - Ordenes de pago
+ *      description: Obtener una orden de pago
  *      parameters:
  *          - name: id
  *            in: path
- *            description: Id de la venta a consultar
+ *            description: Id de la orden de pago
  *            required: true
  *            example: 1
  *            schema:
@@ -1298,85 +1771,129 @@
  *      - ApiKeyAuth: []
  *      responses:
  *          200:
- *              description: (OK) Get sale successfull
+ *              description: (OK) Get payment order successfull
  *          404:
  *              description: (ERROR) Bad Request
  *          401:
  *              description: (ERROR) Unauthorized
  *          500:
  *              description: (ERROR) Internal Server Error
- * /sale/create:
+ * /order_receive/create:
  *  post:
  *      tags:
- *          - Ventas
- *      description: Crear una mueva venta
+ *          - Ordenes de cobro a clientes
+ *      description: Crear ordenes de cobro a varias ventas
  *      requestBody:
  *          required: true
  *          content:
  *              application/json:
  *                  schema:
  *                      type: object
- *                      $ref: '#/components/schemas/Venta'
+ *                      $ref: '#/components/schemas/OrdenesCobro'
  *      security:
  *          - ApiKeyAuth: []
  *      responses:
  *          200:
- *              description: (OK) Create sale successfull
+ *              description: (OK) Create order receive successfull
  *          404:
  *              description: (ERROR) Bad Request
  *          401:
  *              description: (ERROR) Unauthorized
  *          500:
  *              description: (ERROR) Internal Server Error
- * /sale/update/{id}:
- *  put:
+ * /order_receive/search/:
+ *  get:
  *      tags:
- *          - Ventas
- *      description: Actualizar una venta
+ *          - Ordenes de cobro a clientes
+ *      summary: Búsqueda de ordenes de cobro
+ *      description: Buscar ordenes de cobro
  *      parameters:
- *          - name: id
- *            in: path
- *            description: Id de  la venta a actualizar
- *            required: true
+ *          - name: supplier_customer_id
+ *            in: query
+ *            description: Id del cliente
  *            example: 1
  *            schema:
  *              type: integer
- *      requestBody:
- *          required: true
- *          content:
- *              application/json:
- *                  schema:
- *                      type: object
- *                      $ref: '#/components/schemas/Venta'
+ *          - name: field_type
+ *            in: query
+ *            description: Opciones de campos por los que filtrar un rango de valores
+ *            schema:
+ *              type: string
+ *              enum: ["total_amount"]
+ *              example: 'total_amount'
+ *          - name: initial_value
+ *            in: query
+ *            description: Valor inicial
+ *            example: 1
+ *            schema:
+ *              type: number
+ *          - name: end_value
+ *            in: query
+ *            description: Valor final
+ *            example: 100
+ *            schema:
+ *              type: number
+ *          - name: type_date
+ *            in: query
+ *            description: Tipo de fecha
+ *            schema:
+ *              type: string
+ *              enum: ["created_at","updated_at"]
+ *              example: 'created_at'
+ *          - name: init_date
+ *            in: query
+ *            description: Fecha inicial
+ *            example: '2023-12-19'
+ *            schema:
+ *              type: string
+ *          - name: end_date
+ *            in: query
+ *            description: Fecha final
+ *            example: '2024-01-20'
+ *            schema:
+ *              type: string
+ *          - name: page
+ *            in: query
+ *            description: Numero de la pagina
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *          - name: page_size
+ *            in: query
+ *            description: Registros por pagina
+ *            example: 100
+ *            schema:
+ *              type: integer
  *      security:
  *          - ApiKeyAuth: []
  *      responses:
  *          200:
- *              description: (OK) Update sale successfull
+ *              description: (OK) Searchs orders receive successfull
  *          404:
  *              description: (ERROR) Bad Request
  *          401:
  *              description: (ERROR) Unauthorized
  *          500:
  *              description: (ERROR) Internal Server Error
- * /sale/remove/{id}:
- *  delete:
+ * /order_receive/find_one/{id}:
+ *  get:
  *      tags:
- *          - Ventas
- *      description: Eliminar una venta
+ *          - Ordenes de cobro a clientes
+ *      description: Obtener una orden de cobro
  *      parameters:
  *          - name: id
  *            in: path
- *            description: Id de la venta a eliminar
+ *            description: Id de la orden de cobro
  *            required: true
  *            example: 1
  *            schema:
  *              type: integer
+ *              format: int64
  *      security:
- *          - ApiKeyAuth: []
+ *      - ApiKeyAuth: []
  *      responses:
  *          200:
- *              description: (OK) Delete sale successfull
+ *              description: (OK) Get order receive successfull
  *          404:
  *              description: (ERROR) Bad Request
  *          401:
@@ -1384,6 +1901,26 @@
  *          500:
  *              description: (ERROR) Internal Server Error
 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1463,9 +2000,15 @@
  *      ProductoActualizacion:
  *          type: object
  *          properties:
+ *              name:
+ *                  type: string
+ *                  description: Nombre del producto
  *              description:
  *                  type: text
  *                  description: Descripción del producto
+ *              sku:
+ *                  type: string
+ *                  description: El sku del producto
  *              price:
  *                  type: number
  *                  format: double
@@ -1473,13 +2016,20 @@
  *              reorder_point:
  *                  type: integer
  *                  description: La cantidad de producto minima para reordenar o resurtir
- *          required:
- *              - price
- *              - reorder_point
+ *              brand_id:
+ *                  type: integer
+ *                  description: El id de la marca asociada al producto
+ *              supplier_customer_id:
+ *                  type: integer
+ *                  description: El id del proveedor del producto
  *          example:
+ *              name: 'Galletas maría gamesa'
  *              description: 'Producto de tal proveedor, etc'
+ *              sku: 'game'
  *              price: 15
  *              reorder_point: 15
+ *              brand_id: 1
+ *              supplier_customer_id: 1
  *      ProveedorCreacion:
  *          type: object
  *          properties:
@@ -1515,8 +2065,6 @@
  *              phone_number:
  *                  type: string
  *                  description: El numero de contacto del proveedor
- *          required:
- *              - name
  *          example:
  *              name: 'supplier'
  *              address: 'Avenida popocatepetl'
@@ -1549,44 +2097,83 @@
  *      ComprasInventariosProveedores:
  *          type: object
  *          properties:
- *              product_id:
- *                  type: integer
- *                  description: El id del producto
- *              quantity:
- *                  type: integer
- *                  description: La cantidad de productos a comprar
- *              unit_price:
- *                  type: number
- *                  description: El precio unitario del producto
+ *              date_purchase:
+ *                  type: string
+ *                  description: La fecha de compra
+ *                  example: '2024-01-01'
+ *              products:
+ *                  type: array
+ *                  description: Los productos a comprar, pueden ser solo 1
+ *                  items:
+ *                      type: object
+ *                      properties:
+ *                          product_id:
+ *                              type: integer
+ *                              required: true
+ *                              example: 1
+ *                          quantity:
+ *                              type: integer
+ *                              required: true
+ *                              example: 2
  *          required:
- *              - product_id
- *              - quantity
- *              - unit_price
- *          example:
- *              product_id: 1
- *              quantity: 25
- *              unit_price: 15
+ *              - products
  *      OrdenesDePago:
  *          type: object
  *          properties:
- *              shopping_id:
- *                  type: integer
- *                  description: El id de la compra asociada a las orden de pago
  *              payment_date:
- *                  type: date
+ *                  type: string
  *                  description: La fecha de la compra, se ingresa ya que puede ser distinta a la actual
+ *                  example: '2024-01-01'
  *              status:
  *                  type: number
  *                  description: El estado posible de una orden
  *                  enum: ['pending', 'process','completed','failed','cancelled','refunded','verifying','rejected']
+ *                  example: 'pending'
+ *              shoppings:
+ *                  type: array
+ *                  description: Los productos a comprar, pueden ser solo 1
+ *                  items:
+ *                      type: object
+ *                      properties:
+ *                          shopping_id:
+ *                              type: integer
+ *                              required: true
+ *                              example: 1
+ *                          amount:
+ *                              type: number
+ *                              format: double
+ *                              required: true
+ *                              example: 100
  *          required:
- *              - shopping_id
- *              - payment_date
- *              - status
- *          example:
- *              shopping_id: 1
- *              payment_date: '2023-12-27'
- *              status: 'pending'
+ *              - shoppings
+ *      OrdenesCobro:
+ *          type: object
+ *          properties:
+ *              date_order:
+ *                  type: string
+ *                  description: La fecha de la compra, se ingresa ya que puede ser distinta a la actual
+ *                  example: '2024-01-01'
+ *              customer_id:
+ *                  type: number
+ *                  description: El ide del cliente que compra
+ *                  example: 3
+ *              sales:
+ *                  type: array
+ *                  description: Los productos que el cliente compra, pueden ser solo 1
+ *                  items:
+ *                      type: object
+ *                      properties:
+ *                          product_sale_id:
+ *                              type: integer
+ *                              required: true
+ *                              example: 1
+ *                          amount:
+ *                              type: number
+ *                              format: double
+ *                              required: true
+ *                              example: 100
+ *          required:
+ *              - shoppings
  *      TransaccionesOrdenesDePagoCreacion:
  *          type: object
  *          properties:
@@ -1594,9 +2181,6 @@
  *                  type: string
  *                  description: El estado posible de una orden
  *                  enum: ['pending', 'process','completed','failed','cancelled','refunded','verifying','rejected']
- *              amount:
- *                  type: integer
- *                  description: El monto de la transacción
  *              user_id:
  *                  type: integer
  *                  description: El identificador del usuario que inicio sesión
@@ -1616,7 +2200,6 @@
  *              - supplier_customer_id
  *          example:
  *              status: 'pending'
- *              amount: 1
  *              user_id: 1
  *              payment_type_id: 1
  *              payment_order_id: 1
@@ -1647,18 +2230,31 @@
  *      Venta:
  *          type: object
  *          properties:
- *              product_id:
+ *              date_sale:
+ *                  type: string
+ *                  description: La fecha de la venta
+ *                  example: '2024-01-01'
+ *              customer_id:
  *                  type: integer
- *                  description: El id del producto
- *              quantity:
- *                  type: number
- *                  description: La cantidad de productos a vender
+ *                  description: El id del cliente registrado
+ *                  example: 3
+ *              products:
+ *                  type: array
+ *                  description: Los productos a comprar, pueden ser solo 1
+ *                  items:
+ *                      type: object
+ *                      properties:
+ *                          product_id:
+ *                              type: integer
+ *                              required: true
+ *                              example: 1
+ *                          quantity:
+ *                              type: integer
+ *                              required: true
+ *                              example: 2
  *          required:
- *              - product_id
- *              - quantity
- *          example:
- *              product_id: 1
- *              quantity: 5
+ *              - customer_id
+ *              - products
  *  securitySchemes:
  *      ApiKeyAuth:
  *          type: apiKey

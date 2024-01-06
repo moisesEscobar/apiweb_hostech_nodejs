@@ -18,5 +18,16 @@ class PaymentTypeValidation {
         });
         return schema.validate(body);
     }
+    searchPaymentType(params: any): Joi.ValidationResult {
+        const schema: Joi.Schema = Joi.object().keys({
+            name: Joi.string().optional().allow(''),
+            type_date: Joi.string().valid('created_at', 'updated_at').optional().allow(''),
+            init_date:  Joi.date().optional().allow(''),
+            end_date:  Joi.date().optional().allow(''),
+            page:  Joi.number().optional().min(1),
+            page_size:  Joi.number().optional().min(1)
+        });
+        return schema.validate(params);
+    } 
 }
 export default new PaymentTypeValidation();
