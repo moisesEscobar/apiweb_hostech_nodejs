@@ -1,9 +1,10 @@
 import SupplierService from '../services/supplier-service';
 import LogService from '../services/log-service';
-import { HttpError } from '../config/error';
+import { handleRouteError } from '../config/error';
 import { ISupplierModel } from '../models/supplier-model';
 import { NextFunction, Response } from 'express';
 import { RequestWithUser } from '../interfaces/request';
+import HandlerSucess from '../config/sucess';
 
 export async function findAll(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
     try {
@@ -15,18 +16,12 @@ export async function findAll(req: RequestWithUser, res: Response, next: NextFun
             catalog: "supplier"
         })
         res.json({
-            status: 200,
-            message: 'Get suppliers successfull',
+            sub_code: 200,
+            message: HandlerSucess.getSuccessMessage('records_get','suppliers'),
             content: suppliers
         });
     } catch (error) {
-        if (error.code === 500) {
-            return next(new HttpError(error.message.status, error.message));
-        }
-        res.json({
-            status: 400,
-            message: error.message
-        });
+        handleRouteError(error, res, next);
     }
 }
 
@@ -41,20 +36,14 @@ export async function summaryShopings(req: RequestWithUser, res: Response, next:
             catalog: "supplier"
         })
         res.json({
-            status: 200,
-            message: 'Searchs suppliers successfull',
+            sub_code: 200,
+            message: HandlerSucess.getSuccessMessage('records_search','suppliers'),
             content: suppliers,
             //page: req.query.page,
             page_size: req.query.page_size,
         });
     } catch (error) {
-        if (error.code === 500) {
-            return next(new HttpError(error.message.status, error.message));
-        }
-        res.json({
-            status: 400,
-            message: error.message
-        });
+        handleRouteError(error, res, next);
     }
 }
 
@@ -69,20 +58,14 @@ export async function search(req: RequestWithUser, res: Response, next: NextFunc
             catalog: "supplier"
         })
         res.json({
-            status: 200,
-            message: 'Searchs suppliers successfull',
+            sub_code: 200,
+            message: HandlerSucess.getSuccessMessage('records_search','suppliers'),
             content: suppliers,
             //page: req.query.page,
             page_size: req.query.page_size,
         });
     } catch (error) {
-        if (error.code === 500) {
-            return next(new HttpError(error.message.status, error.message));
-        }
-        res.json({
-            status: 400,
-            message: error.message
-        });
+        handleRouteError(error, res, next);
     }
 }
 
@@ -96,18 +79,12 @@ export async function findOne(req: RequestWithUser, res: Response, next: NextFun
             catalog: "supplier"
         })
         res.json({
-            status: 200,
-            message: 'Get supplier successfull',
+            sub_code: 200,
+            message: HandlerSucess.getSuccessMessage('records_get','supplier'),
             content: supplier
         });
     } catch (error) {
-        if (error.code === 500) {
-            return next(new HttpError(error.message.status, error.message));
-        }
-        res.json({
-            status: 400,
-            message: error.message
-        });
+        handleRouteError(error, res, next);
     }
 }
 
@@ -124,18 +101,12 @@ export async function create(req: RequestWithUser, res: Response, next: NextFunc
             detail_new: JSON.stringify(supplier)
         });
         res.json({
-            status: 200,
-            message: 'Create supplier successfull',
+            sub_code: 200,
+            message: HandlerSucess.getSuccessMessage('records_create','supplier'),
             content: supplier
         });
     } catch (error) {
-        if (error.code === 500) {
-            return next(new HttpError(error.message.status, error.message));
-        }
-        res.json({
-            status: 400,
-            message: error.message
-        });
+        handleRouteError(error, res, next);
     }
 }
 
@@ -152,17 +123,11 @@ export async function update(req: RequestWithUser, res: Response, next: NextFunc
             detail_new: JSON.stringify(new_data)
         });
         res.json({
-            status: 200,
-            message: 'Update supplier successfull'
+            sub_code: 200,
+            message: HandlerSucess.getSuccessMessage('records_update','supplier'),
         });
     } catch (error) {
-        if (error.code === 500) {
-            return next(new HttpError(error.message.status, error.message));
-        }
-        res.json({
-            status: 400,
-            message: error.message
-        });
+        handleRouteError(error, res, next);
     }
 }
 
@@ -178,18 +143,12 @@ export async function remove(req: RequestWithUser, res: Response, next: NextFunc
             detail_new: JSON.stringify(new_data)
         })
         res.json({
-            status: 200,
-            message: 'Delete supplier successfull',
+            sub_code: 200,
+            message: HandlerSucess.getSuccessMessage('records_delete','supplier'),
             // content: new_data
         });
     } catch (error) {
-        if (error.code === 500) {
-            return next(new HttpError(error.message.status, error.message));
-        }
-        res.json({
-            status: 400,
-            message: error.message
-        });
+        handleRouteError(error, res, next);
     }
 }
 
@@ -205,17 +164,11 @@ export async function restore(req: RequestWithUser, res: Response, next: NextFun
             detail_new: JSON.stringify(new_data)
         })
         res.json({
-            status: 200,
-            message: 'Restore supplier successfull',
+            sub_code: 200,
+            message: HandlerSucess.getSuccessMessage('records_restore','supplier'),
             // content: new_data
         });
     } catch (error) {
-        if (error.code === 500) {
-            return next(new HttpError(error.message.status, error.message));
-        }
-        res.json({
-            status: 400,
-            message: error.message
-        });
+        handleRouteError(error, res, next);
     }
 }

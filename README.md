@@ -1,5 +1,4 @@
-# Mascara-api
-# Prueba de Ingreso - Backend Developer
+# API WEB - EMULACIÓN
 
 Este proyecto es una API web desarrollada para cumplir con los requisitos especificados en la prueba de ingreso para el puesto de Backend Developer. Proporciona funcionalidades de autenticación de usuarios, operaciones CRUD en productos, gestión de marcas y registro de acciones realizadas por usuarios logueados.
 

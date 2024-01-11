@@ -5,19 +5,20 @@ import sequelize from '../config/connection/connection';
 import { Op } from 'sequelize';
 import ShoppingsView from '../models/views/shopping-view';
 import Utils from '../utils/validate-data-utils';
+import { ErrorRate } from '../config/error';
 
 const ShoppingInventoryService: IShoppingInventoryService = {
     async findAll(): Promise < any[] > {
         try {
             return await ShoppingsView.findAll();
         } catch (error) {
-            throw new Error(error.message);
+            throw new ErrorRate(error.message,error.code);
         }
     },
     async search(params: any): Promise < any[] > {
         try {
             const validate: Joi.ValidationResult = await ShoppingInventoryValidation.searchShopping(params);
-            if (validate.error) throw new Error(validate.error.message)
+            if (validate.error) throw new ErrorRate(validate.error.message,3);
 
             const whereClause: { [key: string]: any } = {};
             Utils.validateFieldsParams('supplier_customer_id',params['supplier_customer_id'],Op.eq,whereClause);
@@ -34,15 +35,15 @@ const ShoppingInventoryService: IShoppingInventoryService = {
                 limit: page_size,
             });
         } catch (error) {
-            throw new Error(error.message);
+            throw new ErrorRate(error.message,error.code);
         }
     },
     async create(body: IShoppingInventoryCreateModel): Promise < void > {
         try {
             const validate: Joi.ValidationResult = await ShoppingInventoryValidation.create(body);
-            if(validate.error) throw new Error(validate.error.message);
+            if(validate.error) throw new ErrorRate(validate.error.message,3);
 
-            Utils.ValidateDateToCurrent(body.date_purchase,1);
+            Utils.validateDateToCurrent(body.date_purchase,1);
             if (!body.date_purchase) body.date_purchase = new Date();
 
             const jso_body=JSON.stringify(body);
@@ -50,22 +51,22 @@ const ShoppingInventoryService: IShoppingInventoryService = {
                 replacements: { jso_body },
             }); 
         } catch (error) {
-            throw new Error(error.message);
+            throw new ErrorRate(error.message,error.code);
         }
     },
     async findOne(id: number): Promise < any > {
         try {
             const validate: Joi.ValidationResult =  ShoppingInventoryValidation.validateId({id});
             if (validate.error) {
-                throw new Error(validate.error.message);
+                throw new ErrorRate(validate.error.message,3);
             }
             const inventory = await ShoppingsView.findByPk(id);
             if(!inventory){
-                throw new Error("Shopping not found");
+                throw new ErrorRate("shopping_not_exist");
             }
             return inventory;
         } catch (error) {
-            throw new Error(error.message);
+            throw new ErrorRate(error.message,error.code);
         }
     }
 };

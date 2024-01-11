@@ -1,11 +1,12 @@
 import * as Joi from 'joi';
 import  { IPaymentOrderTxnModel } from '../models/payment-order-txn-model';
+import { errorJoiValidations } from '../config/error';
 
 class PaymentOrderTxnValidation {
     createPaymentOrderTxn(
         params: IPaymentOrderTxnModel
     ): Joi.ValidationResult {
-        const schema: Joi.Schema = Joi.object().keys({
+        let schema: Joi.Schema = Joi.object().keys({
             status: Joi.string().valid(
                 'pending', 'process','completed','failed','cancelled','refunded','verifying','rejected'
             ).required(),
@@ -15,12 +16,13 @@ class PaymentOrderTxnValidation {
             payment_order_id: Joi.number().required(),
             supplier_customer_id: Joi.number().required()
         });
+        schema = errorJoiValidations(schema);
         return schema.validate(params);
     }
     updatePaymentOrderTxn(
         params: IPaymentOrderTxnModel
     ): Joi.ValidationResult {
-        const schema: Joi.Schema = Joi.object().keys({
+        let schema: Joi.Schema = Joi.object().keys({
             status: Joi.string().valid(
                 'pending', 'process','completed','failed','cancelled','refunded','verifying','rejected'
             ).optional(),
@@ -28,14 +30,16 @@ class PaymentOrderTxnValidation {
             user_id: Joi.number().optional(),
             payment_type_id: Joi.number().optional()
         });
+        schema = errorJoiValidations(schema);
         return schema.validate(params);
     }
     validateId(
         body: {id: number}
     ): Joi.ValidationResult {
-        const schema: Joi.Schema = Joi.object().keys({
+        let schema: Joi.Schema = Joi.object().keys({
             id: Joi.number().required()
         });
+        schema = errorJoiValidations(schema);
         return schema.validate(body);
     }
 }

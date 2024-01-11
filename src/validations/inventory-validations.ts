@@ -1,18 +1,20 @@
 import * as Joi from 'joi';
-import Inventory, { IInventoryModel } from '../models/inventory-model';
+import { IInventoryModel } from '../models/inventory-model';
+import { errorJoiValidations } from '../config/error';
 
 class InventoryValidation {
     inventory(
         params: IInventoryModel
     ): Joi.ValidationResult {
-        const schema: Joi.Schema = Joi.object().keys({
+        let schema: Joi.Schema = Joi.object().keys({
             product_id: Joi.number().required(),
             quantity: Joi.number().required()
         });
+        schema = errorJoiValidations(schema);
         return schema.validate(params);
     }
     searchInventory(params: any): Joi.ValidationResult {
-        const schema: Joi.Schema = Joi.object().keys({
+        let schema: Joi.Schema = Joi.object().keys({
             product_id:  Joi.number().optional().min(1).allow(''),
             supplier_customer_id:  Joi.number().optional().min(1).allow(''),
             brand_id:  Joi.number().optional().min(1).allow(''),
@@ -23,14 +25,16 @@ class InventoryValidation {
             page:  Joi.number().optional().min(1),
             page_size:  Joi.number().optional().min(1)
         });
+        schema = errorJoiValidations(schema);
         return schema.validate(params);
     } 
     validateId(
         body: {id: number}
     ): Joi.ValidationResult {
-        const schema: Joi.Schema = Joi.object().keys({
+        let schema: Joi.Schema = Joi.object().keys({
             id: Joi.number().required()
         });
+        schema = errorJoiValidations(schema);
         return schema.validate(body);
     }
 }

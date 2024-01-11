@@ -1,11 +1,12 @@
 import { Op } from "sequelize";
+import { ErrorRate } from "../config/error";
 
 const Utils = {
     validateFieldRangeParams(params: any, whereClause: { [key: string]: any }) {
-        Utils.ValidateDateToCurrent(params['init_date'],2);
+        Utils.validateDateToCurrent(params['init_date'],2);
         if (params['type_date'] && (params['init_date'] || params['end_date'])) {
             if (params['end_date'] < params['init_date']) {
-                throw new Error("La fecha inicial debe ser menor a la fecha final");
+                throw new ErrorRate("date_start_less");
             }
             if (params['init_date'] && params['end_date']) {
                 whereClause[params['type_date']] = {
@@ -22,13 +23,13 @@ const Utils = {
                 };
             }
         } else if (!params['type_date'] && (params['init_date'] || params['end_date'])) {
-            throw new Error("Se debe especificar un tipo de fecha");
+            throw new ErrorRate("date_required_type");
         } else if (params['type_date'] && (!params['init_date'] && !params['end_date'])) {
-            throw new Error("Se debe especificar una fecha inicial o final");
+            throw new ErrorRate("date_required");
         }
         if (params['field_type'] && (params['initial_value'] || params['end_value'])) {
             if (params['end_value'] < params['initial_value']) {
-                throw new Error("El valor inicial debe ser menor al valor final");
+                throw new ErrorRate("value_start_less");
             }
             if (params['initial_value'] && params['end_value']) {
                 whereClause[params['field_type']] = {
@@ -41,9 +42,9 @@ const Utils = {
                 whereClause[params['field_type']] = { [Op.lte]: params['end_value'] };
             }
         } else if (!params['field_type'] && (params['initial_value'] || params['end_value'])) {
-            throw new Error("Se debe especificar un tipo de campo");
+            throw new ErrorRate("value_required_type");
         } else if (params['field_type'] && (!params['initial_value'] && !params['end_value'])) {
-            throw new Error("Se debe especificar un valor inicial o final");
+            throw new ErrorRate("value_required");
         }
         return whereClause;
     },
@@ -52,7 +53,7 @@ const Utils = {
             whereClause[key] = { [operator]: (operator === Op.iLike ? `%${value}%` : value) };
         }
     },
-    ValidateDateToCurrent(date: Date,type:number) {
+    validateDateToCurrent(date: Date,type:number) {
         const date_new = new Date(`${date}T00:00:00`);
         const current_date = new Date();
         date_new.setHours(0, 0, 0, 0);
@@ -60,10 +61,9 @@ const Utils = {
 
         if (date_new > current_date) {
             if(type==1){
-                throw new Error("La fecha debe ser menor o igual a la fecha actual");
+                throw new ErrorRate("date_less_currentdate");
             }else if(type==2){
-                console.log("ERROR")
-                throw new Error("La fecha inicial debe ser menor o igual a la fecha actual");
+                throw new ErrorRate("date_start_less_currentdate");
             }
         }
     }

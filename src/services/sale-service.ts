@@ -7,14 +7,14 @@ import { Op } from 'sequelize';
 import ProductWithInventoryView from '../models/views/products_with_inventory';
 import sequelize from '../config/connection/connection';
 import Utils from '../utils/validate-data-utils';
-import ProductView from '../models/views/product-view';
+import { ErrorRate } from '../config/error';
 
 const SaleService: ISaleService = {
     async findAll(params: any): Promise<any[]> {
         try {
 
             const validate: Joi.ValidationResult = await SaleValidation.searchSale(params);
-            if (validate.error) throw new Error(validate.error.message)
+            if (validate.error) throw new ErrorRate(validate.error.message,3);
 
             const whereClause: { [key: string]: any } = {};
             Utils.validateFieldsParams('supplier_customer_id',params['supplier_customer_id'],Op.eq,whereClause);
@@ -32,22 +32,22 @@ const SaleService: ISaleService = {
 
             return await SaleView.findAll();
         } catch (error) {
-            throw new Error(error.message);
+            throw new ErrorRate(error.message,error.code);
         }
     },
     async findOne(id: number): Promise<any> {
         try {
             const validate: Joi.ValidationResult = SaleValidation.validateId({ id });
             if (validate.error) {
-                throw new Error(validate.error.message);
+                throw new ErrorRate(validate.error.message,3);
             }
             const sale = await SaleView.findByPk(id);
             if (!sale) {
-                throw new Error("Sale not found");
+                throw new ErrorRate("sale_not_exist");
             }
             return sale;
         } catch (error) {
-            throw new Error(error.message);
+            throw new ErrorRate(error.message,error.code);
         }
     },
     async create(body: ISaleCreateModel): Promise<any> {
@@ -55,9 +55,9 @@ const SaleService: ISaleService = {
 
             let message=[];
             const validate: Joi.ValidationResult = await SaleValidation.createSale(body);
-            if(validate.error) throw new Error(validate.error.message);
+            if(validate.error) throw new ErrorRate(validate.error.message,3);
 
-            Utils.ValidateDateToCurrent(body.date_sale,1);
+            Utils.validateDateToCurrent(body.date_sale,1);
             if (!body.date_sale) body.date_sale = new Date();
 
             const jso_body=JSON.stringify(body);
@@ -71,79 +71,50 @@ const SaleService: ISaleService = {
             }
             return{message: message}
         } catch (error) {
-            throw new Error(error.message);
+            throw new ErrorRate(error.message,error.code);
         }
     },
     async update(id: number, body: ISaleModel): Promise<any> {
         try {
-            let message=null;
-            const validate: Joi.ValidationResult = SaleValidation.sale(body);
-            if (validate.error) {
-                throw new Error(validate.error.message);
-            }
-            const sale = await Sale.findByPk(id);
-            if (!sale) {
-                throw new Error("Sale not found");
-            }
-            const last_data = { ...sale.get() };
-            
-            if(body.quantity>last_data.quantity){
-                let inventory_exist = await ProductWithInventoryView.findOne({
-                    where: {product_id: body.product_id, quantity_available: {[Op.gt]: body.quantity}}
-                });
-                if (!inventory_exist) {
-                    throw new Error("The product is not found or not in stock");
-                }
-            }
-            await sale.update(body);
-            const new_data = { ...sale.get() };
-
-            let inventory = await ProductWithInventoryView.findOne({where: {product_id: body.product_id}});
-            if(inventory){
-                const json_inventory = inventory.toJSON();
-                if(json_inventory.quantity_available <= json_inventory.product_reorder_point){
-                    message=" Es necesario reordenar mas unidades de este producto"
-                }
-            }
-            return { message,last_data: last_data, new_data: new_data }
+            // Falta implementar
         } catch (error) {
-            throw new Error(error.message);
+            throw new ErrorRate(error.message,error.code);
         }
     },
     async remove(id: number): Promise<any> {
         try {
             const validate: Joi.ValidationResult = SaleValidation.validateId({ id });
             if (validate.error) {
-                throw new Error(validate.error.message);
+                throw new ErrorRate(validate.error.message,3);
             }
             const sale = await Sale.findByPk(id);
             if (!sale) {
-                throw new Error("Sale not found");
+                throw new ErrorRate("sale_not_exist");
             }
             const last_data = { ...sale.get() };
             await sale.destroy();
             const new_data = { ...sale.get() };
             return { last_data: last_data, new_data: new_data }
         } catch (error) {
-            throw new Error(error.message);
+            throw new ErrorRate(error.message,error.code);
         }
     },
     async restore(id: number): Promise<any> {
         try {
             const validate: Joi.ValidationResult = SaleValidation.validateId({ id });
             if (validate.error) {
-                throw new Error(validate.error.message);
+                throw new ErrorRate(validate.error.message,3);
             }
             const sale = await Sale.findByPk(id, { paranoid: false });
             if (!sale) {
-                throw new Error("Sale not found");
+                throw new ErrorRate("sale_not_exist");
             }
             const last_data = { ...sale.get() };
             await sale.restore();
             const new_data = { ...sale.get() };
             return { last_data: last_data, new_data: new_data }
         } catch (error) {
-            throw new Error(error.message);
+            throw new ErrorRate(error.message,error.code);
         }
     },
 };

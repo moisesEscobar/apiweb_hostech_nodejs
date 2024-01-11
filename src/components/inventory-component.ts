@@ -1,9 +1,10 @@
 import InventoryService from '../services/inventory-service';
 import LogService from '../services/log-service';
-import { HttpError } from '../config/error';
+import { handleRouteError } from '../config/error';
 import { IInventoryModel } from '../models/inventory-model';
 import { NextFunction, Response } from 'express';
 import { RequestWithUser } from '../interfaces/request';
+import HandlerSucess from '../config/sucess';
 
 export async function search(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
     try {
@@ -11,22 +12,16 @@ export async function search(req: RequestWithUser, res: Response, next: NextFunc
         const inventories: IInventoryModel[] = await InventoryService.search(req.query);
         await LogService.create({
             user_id: json_object_user.id,
-            action: "findAll",
+            action: "search",
             catalog: "inventory"
         })
         res.json({
-            status: 200,
-            message: 'Get inventories successfull',
+            sub_code: 200,
+            message: HandlerSucess.getSuccessMessage('records_search','inventories'),
             content: inventories
         });
     } catch (error) {
-        if (error.code === 500) {
-            return next(new HttpError(error.message.status, error.message));
-        }
-        res.json({
-            status: 400,
-            message: error.message
-        });
+        handleRouteError(error, res, next);
     }
 }
 export async function findOne(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
@@ -39,17 +34,11 @@ export async function findOne(req: RequestWithUser, res: Response, next: NextFun
             catalog: "inventory"
         })
         res.json({
-            status: 200,
-            message: 'Get inventory successfull',
+            sub_code: 200,
+            message: HandlerSucess.getSuccessMessage('records_get','inventory'),
             content: inventory
         });
     } catch (error) {
-        if (error.code === 500) {
-            return next(new HttpError(error.message.status, error.message));
-        }
-        res.json({
-            status: 400,
-            message: error.message
-        });
+        handleRouteError(error, res, next);
     }
 }

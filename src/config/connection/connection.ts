@@ -6,7 +6,7 @@ import config from '../env/index';
   dialect: 'postgres',
   logging: false
 }); */
-const ssl= (config.NODE_ENV=='production')?true:false;
+const ssl= (config.NODE_ENV=='production' )?true:false;
 const sequelize = new Sequelize(config.DATABASE_POSTGRES.POSTGRES_DATABASE, config.DATABASE_POSTGRES.POSTGRES_USER, config.DATABASE_POSTGRES.POSTGRES_PASSWORD, {
   host: config.DATABASE_POSTGRES.POSTGRES_HOST,
   dialect: 'postgres',

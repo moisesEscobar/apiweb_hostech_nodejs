@@ -5,12 +5,13 @@ import {IOrderReceiveCreateModel,IOrderReceiveService } from '../interfaces/orde
 import sequelize from '../config/connection/connection';
 import { Op } from 'sequelize';
 import Utils from '../utils/validate-data-utils';
+import { ErrorRate } from '../config/error';
 
 const OrderReceiveService: IOrderReceiveService = {
     async search(params: any): Promise < any[] > {
         try {
             const validate: Joi.ValidationResult = await OrderReceiveValidation.searchShopping(params);
-            if (validate.error) throw new Error(validate.error.message)
+            if (validate.error) throw new ErrorRate(validate.error.message,3);
 
             const whereClause: { [key: string]: any } = {};
             Utils.validateFieldsParams('supplier_customer_id',params['supplier_customer_id'],Op.eq,whereClause);
@@ -26,30 +27,30 @@ const OrderReceiveService: IOrderReceiveService = {
                 limit: page_size,
             });
         } catch (error) {
-            throw new Error(error.message);
+            throw new ErrorRate(error.message,error.code);
         }
     },
     async findOne(id: number): Promise < any > {
         try {
             const validate: Joi.ValidationResult =  OrderReceiveValidation.validateId({id});
             if (validate.error) {
-                throw new Error(validate.error.message);
+                throw new ErrorRate(validate.error.message,3);
             }
             const order_receive = await OrderReceiveView.findByPk(id);
             if(!order_receive){
-                throw new Error("Order receive not found");
+                throw new ErrorRate("orderreceive_not_exist");
             }
             return order_receive;
         } catch (error) {
-            throw new Error(error.message);
+            throw new ErrorRate(error.message,error.code);
         }
     },
     async create(body: IOrderReceiveCreateModel): Promise < void > {
         try {
             const validate: Joi.ValidationResult = await OrderReceiveValidation.createOrderReceive(body);
-            if(validate.error) throw new Error(validate.error.message);
+            if(validate.error) throw new ErrorRate(validate.error.message,3);
 
-            Utils.ValidateDateToCurrent(body.date_order,1);
+            Utils.validateDateToCurrent(body.date_order,1);
             if (!body.date_order)  body.date_order = new Date();
 
             const jso_body=JSON.stringify(body);
@@ -57,7 +58,7 @@ const OrderReceiveService: IOrderReceiveService = {
                 replacements: {jso_body },
             });
         } catch (error) {
-            throw new Error(error.message);
+            throw new ErrorRate(error.message,error.code);
         }
     }
 };

@@ -1,9 +1,10 @@
 import * as Joi from 'joi';
 import { IProductModel } from '../models/product-model';
+import { errorJoiValidations } from '../config/error';
 
 class ProductValidation {
     async createProduct(params: IProductModel) {
-        const schema = Joi.object({
+        let schema: Joi.Schema = Joi.object({
             name: Joi.string().required(),
             path_file: Joi.string().optional(),
             description: Joi.string().allow('').optional(),
@@ -13,10 +14,11 @@ class ProductValidation {
             brand_id: Joi.number().integer().positive().required(),
             supplier_customer_id: Joi.number().integer().positive().required()
         });
+        schema = errorJoiValidations(schema);
         return await schema.validateAsync(params);
     }
     searchSupplier(params: IProductModel): Joi.ValidationResult {
-        const schema: Joi.Schema = Joi.object().keys({
+        let schema: Joi.Schema = Joi.object().keys({
             name:  Joi.string().optional().min(3).max(255).allow(''),
             sku:  Joi.string().optional().allow(''),
             brand_id:  Joi.number().optional().min(1).allow(''),
@@ -27,10 +29,11 @@ class ProductValidation {
             page:  Joi.number().optional().min(1),
             page_size:  Joi.number().optional().min(1)
         });
+        schema = errorJoiValidations(schema);
         return schema.validate(params);
     }    
     async updateProduct(params: IProductModel) {
-        const schema = Joi.object({
+        let schema: Joi.Schema = Joi.object({
             name: Joi.string().optional(),
             description: Joi.string().allow('').optional(),
             sku: Joi.string().optional(),
@@ -39,14 +42,16 @@ class ProductValidation {
             brand_id: Joi.number().integer().positive().optional(),
             supplier_customer_id: Joi.number().integer().positive().optional()
         });
+        schema = errorJoiValidations(schema);
         return await schema.validateAsync(params);
     }
     validateId(
         body: {id: number}
     ): Joi.ValidationResult {
-        const schema: Joi.Schema = Joi.object().keys({
+        let schema: Joi.Schema = Joi.object().keys({
             id: Joi.number().required()
         });
+        schema = errorJoiValidations(schema);
         return schema.validate(body);
     }
 }

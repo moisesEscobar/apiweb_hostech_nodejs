@@ -18,6 +18,8 @@ export interface IPaymentOrderModel {
 }
 
 export interface IPaymentOrderCreateModel {
+    user_id?: number;
+    account_id?: number;
     payment_date?: Date | null;
     supplier_id?: number;
     status?: string;

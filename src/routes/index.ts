@@ -17,6 +17,9 @@ import PaymentOrderRouter from './payment-order-router';
 import PaymentOrderTxnRouter from './payment-order-txn-router';
 import ShoppingInventortyRouter from './shopping-inventory-router';
 import OrderReceiveRouter from './order-receive-router ';
+import AccountRouter from './account-router';
+import IncomeRouter from './income-router';
+import ExpenseRouter from './expense-router';
 
 export function init(app: express.Application): void {
     let ext_file_api = (config.NODE_ENV=='production')?"api-doc.js":"api-doc.ts";
@@ -42,6 +45,10 @@ export function init(app: express.Application): void {
     app.use('/sale', jwtConfig.isAuthenticated, SaleRouter);
     app.use('/inventory', jwtConfig.isAuthenticated, InventoryRouter);
     app.use('/payment_type', jwtConfig.isAuthenticated, PaymentTypeRouter);
+    
+    app.use('/account', jwtConfig.isAuthenticated, AccountRouter);
+    app.use('/income', jwtConfig.isAuthenticated, IncomeRouter);
+    app.use('/expense', jwtConfig.isAuthenticated, ExpenseRouter);
 
     /* 
         app.use('/purchase_order', jwtConfig.isAuthenticated, PurchaseOrderRouter);
@@ -52,7 +59,6 @@ export function init(app: express.Application): void {
     app.use('/shopping_inventory', jwtConfig.isAuthenticated, ShoppingInventortyRouter);
     app.use('/payment_order_txn', jwtConfig.isAuthenticated, PaymentOrderTxnRouter);
     app.use((req, res, next) => {
-        console.log(res)
         res.status(StatusCodes.BAD_REQUEST).json( {message: 'Not Found!'});
     });
     app.use(router);

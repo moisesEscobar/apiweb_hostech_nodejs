@@ -6,20 +6,21 @@ import LogView from '../models/views/log-view';
 import sequelize from '../config/connection/connection';
 import { Op } from 'sequelize';
 import Utils from '../utils/validate-data-utils';
+import { ErrorRate } from '../config/error';
 
 const LogService: ILogService = {
     async findAll(): Promise<any[]> {
         try {
             return await LogView.findAll({});
         } catch (error) {
-            throw new Error(error.message);
+            throw new ErrorRate(error.message,error.code);
         }
     },
     async create(body: ILogModel): Promise<any> {
         try {
             const validate: Joi.ValidationResult = await LogValidation.log(body);
             if (validate.error) {
-                throw new Error(validate.error.message);
+                throw new ErrorRate(validate.error.message,3);
             }
 
             // Llamada al procedimiento almacenado desde Sequelize
@@ -28,7 +29,7 @@ const LogService: ILogService = {
                 replacements: { user_id, action, catalog, detail_last, detail_new },
             });
         } catch (error) {
-            throw new Error(error.message);
+            throw new ErrorRate(error.message,error.code);
         }
     },
     async search(params: any): Promise<any[]> {
@@ -36,7 +37,7 @@ const LogService: ILogService = {
             //action,catalog,user_id,user_name, user_last_name, user_email,created_at, updated_at
             const validate: Joi.ValidationResult = await LogValidation.searchSupplier(params);
             if (validate.error) {
-                throw new Error(validate.error.message);
+                throw new ErrorRate(validate.error.message,3);
             }
             const whereClause: { [key: string]: any } = {};
             Utils.validateFieldsParams('action',params['action'],Op.iLike,whereClause);
@@ -55,18 +56,18 @@ const LogService: ILogService = {
                 limit: page_size,
             });
         } catch (error) {
-            throw new Error(error.message);
+            throw new ErrorRate(error.message,error.code);
         }
     },
     async findOne(id: number): Promise<any> {
         try {
             const validate: Joi.ValidationResult = LogValidation.validateId({ id });
-            if (validate.error) throw new Error(validate.error.message)
+            if (validate.error) throw new ErrorRate(validate.error.message,3);
             const product = await LogView.findByPk(id);
-            if (!product) throw new Error("Log not found");
+            if (!product) throw new ErrorRate("log_not_exist");
             return product;
         } catch (error) {
-            throw new Error(error.message);
+            throw new ErrorRate(error.message,error.code);
         }
     },
 };

@@ -1,9 +1,10 @@
 import PaymentTypeService from '../services/payment-type-service';
 import LogService from '../services/log-service';
-import { HttpError } from '../config/error';
+import { handleRouteError } from '../config/error';
 import { IPaymentTypeModel } from '../models/payment-type-model';
 import { NextFunction, Response } from 'express';
 import { RequestWithUser } from '../interfaces/request';
+import HandlerSucess from '../config/sucess';
 
 export async function findAll(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
     try {
@@ -15,18 +16,12 @@ export async function findAll(req: RequestWithUser, res: Response, next: NextFun
             catalog: "payment_type"
         })
         res.json({
-            status: 200,
-            message: 'Get payment types successfull',
+            sub_code: 200,
+            message: HandlerSucess.getSuccessMessage('records_get','payment_types'),
             content: payment_types
         });
     } catch (error) {
-        if (error.code === 500) {
-            return next(new HttpError(error.message.status, error.message));
-        }
-        res.json({
-            status: 400,
-            message: error.message
-        });
+        handleRouteError(error, res, next);
     }
 }
 export async function findOne(req: RequestWithUser, res: Response, next: NextFunction): Promise<void> {
@@ -39,18 +34,12 @@ export async function findOne(req: RequestWithUser, res: Response, next: NextFun
             catalog: "payment_type"
         })
         res.json({
-            status: 200,
-            message: 'Get payment type successfull',
+            sub_code: 200,
+            message: HandlerSucess.getSuccessMessage('records_get','payment_type'),
             content: payment_type
         });
     } catch (error) {
-        if (error.code === 500) {
-            return next(new HttpError(error.message.status, error.message));
-        }
-        res.json({
-            status: 400,
-            message: error.message
-        });
+        handleRouteError(error, res, next);
     }
 }
 
@@ -67,18 +56,12 @@ export async function create(req: RequestWithUser, res: Response, next: NextFunc
             detail_new: JSON.stringify(payment_type)
         });
         res.json({
-            status: 200,
-            message: 'Create payment type successfull',
+            sub_code: 200,
+            message: HandlerSucess.getSuccessMessage('records_create','payment_type'),
             content: payment_type
         });
     } catch (error) {
-        if (error.code === 500) {
-            return next(new HttpError(error.message.status, error.message));
-        }
-        res.json({
-            status: 400,
-            message: error.message
-        });
+        handleRouteError(error, res, next);
     }
 }
 
@@ -95,17 +78,11 @@ export async function update(req: RequestWithUser, res: Response, next: NextFunc
             detail_new: JSON.stringify(new_data)
         });
         res.json({
-            status: 200,
-            message: 'Update payment type successfull'
+            sub_code: 200,
+            message: HandlerSucess.getSuccessMessage('records_update','payment_type'),
         });
     } catch (error) {
-        if (error.code === 500) {
-            return next(new HttpError(error.message.status, error.message));
-        }
-        res.json({
-            status: 400,
-            message: error.message
-        });
+        handleRouteError(error, res, next);
     }
 }
 
@@ -121,18 +98,12 @@ export async function remove(req: RequestWithUser, res: Response, next: NextFunc
             detail_new: JSON.stringify(new_data)
         })
         res.json({
-            status: 200,
-            message: 'Delete payment type successfull',
+            sub_code: 200,
+            message: HandlerSucess.getSuccessMessage('records_delete','payment_type'),
             // content: new_data
         });
     } catch (error) {
-        if (error.code === 500) {
-            return next(new HttpError(error.message.status, error.message));
-        }
-        res.json({
-            status: 400,
-            message: error.message
-        });
+        handleRouteError(error, res, next);
     }
 }
 
@@ -148,17 +119,11 @@ export async function restore(req: RequestWithUser, res: Response, next: NextFun
             detail_new: JSON.stringify(new_data)
         })
         res.json({
-            status: 200,
-            message: 'Restore payment type successfull',
+            sub_code: 200,
+            message: HandlerSucess.getSuccessMessage('records_restore','payment_type'),
             // content: new_data
         });
     } catch (error) {
-        if (error.code === 500) {
-            return next(new HttpError(error.message.status, error.message));
-        }
-        res.json({
-            status: 400,
-            message: error.message
-        });
+        handleRouteError(error, res, next);
     }
 }

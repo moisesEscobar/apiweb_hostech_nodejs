@@ -5,6 +5,8 @@
  *      description: Detalles de los usuarios
  *  -   name: Proveedores
  *      description: Detalles del los proveedores
+ *  -   name: Cuentas
+ *      description: Detalles de las cuentas
  *  -   name: Marcas
  *      description: Detalles del catalogo de marcas
  *  -   name: Productos
@@ -25,6 +27,12 @@
  *      description: Detalles de las ventas de los productos (Los productos que el cliente compra)
  *  -   name: Ordenes de cobro a clientes
  *      description: Detalles de las ordenes de cobro vinculadas a clientes
+ *  -   name: Entradas
+ *      description: Creación de entradas de dinero a las cuentas bancarias
+ *  -   name: Salidas
+ *      description: Creación de salidas de dinero a las cuentas bancarias
+ *  -   name: Reportes
+ *      description: Reportes
  * /auth/login:
  *  post:
  *      tags:
@@ -982,6 +990,168 @@
  *          500:
  *              description: (ERROR) Internal Server Error
  * 
+ * 
+ * /account/search:
+ *  get:
+ *      tags:
+ *          - Cuentas
+ *      summary: Obtener las cuentas
+ *      description: Obtener y buscar todos las cuentas
+ *      parameters:
+ *          - name: account_name
+ *            in: query
+ *            description: Nombre de la cuenta
+ *            example: 
+ *            schema:
+ *              type: string
+ *          - name: field_type
+ *            in: query
+ *            description: Opciones de campos por los que filtrar un rango de valores
+ *            schema:
+ *              type: string
+ *              enum: ["initial_balance"]
+ *              example: 
+ *          - name: initial_value
+ *            in: query
+ *            description: Valor inicial
+ *            example: 
+ *            schema:
+ *              type: number
+ *          - name: end_value
+ *            in: query
+ *            description: Valor final
+ *            example: 
+ *            schema:
+ *              type: number
+ *          - name: type_date
+ *            in: query
+ *            description: Tipo de fecha
+ *            schema:
+ *              type: string
+ *              enum: ["created_at","updated_at"]
+ *              example: 
+ *          - name: init_date
+ *            in: query
+ *            description: Fecha inicial
+ *            example: 
+ *            schema:
+ *              type: string
+ *          - name: end_date
+ *            in: query
+ *            description: Fecha final
+ *            example: 
+ *            schema:
+ *              type: string
+ *          - name: page
+ *            in: query
+ *            description: Numero de la pagina
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *          - name: page_size
+ *            in: query
+ *            description: Registros por pagina
+ *            example: 100
+ *            schema:
+ *              type: integer
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get accounts successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /account/find_one/{id}:
+ *  get:
+ *      tags:
+ *          - Cuentas
+ *      summary: Obtener una Cuentas
+ *      description: Obtener una Cuenta
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id de la cuenta
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *              format: int64
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get accounts txn successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /account/create:
+ *  post:
+ *      tags:
+ *          - Cuentas
+ *      summary: Crear una cuenta
+ *      description: Crear un nueva cuenta
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      $ref: '#/components/schemas/Cuenta'
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Create account successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /account/update/{id}:
+ *  put:
+ *      tags:
+ *          - Cuentas
+ *      summary: Actualizar una cuenta
+ *      description: Actualizar una cuenta
+ *      parameters:
+ *          - name: id
+ *            in: path
+ *            description: Id de la cuenta
+ *            required: true
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      $ref: '#/components/schemas/CuentaActualizacion'
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Update account successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * 
+ * 
+
+ * 
+ * 
  * /inventory/search:
  *  get:
  *      tags:
@@ -1395,7 +1565,6 @@
  *              description: (ERROR) Unauthorized
  *          500:
  *              description: (ERROR) Internal Server Error
- *  @swagger
  * /shopping_inventory/create:
  *  post:
  *      tags:
@@ -1601,7 +1770,7 @@
  *            example: 'brand'
  *            schema:
  *              type: string
- *              enum: ["brand","inventory","payment_order_txn","payment_type","sale","shopping_inventory","supplier","payment_order_purchase"]
+ *              enum: ["account","brand","expense","income","inventory","order_receive","payment_order_purchase","payment_order_txn","payment_type","product","sale","shopping_inventory","supplier"]
  *              example: ''
  *          - name: user_id
  *            in: query
@@ -1900,6 +2069,164 @@
  *              description: (ERROR) Unauthorized
  *          500:
  *              description: (ERROR) Internal Server Error
+ * /income/create:
+ *  post:
+ *      tags:
+ *          - Entradas
+ *      description: Crear una entrada manualmente
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      $ref: '#/components/schemas/Entrada'
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Create payment order  successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /expense/create:
+ *  post:
+ *      tags:
+ *          - Salidas
+ *      description: Crear una salida manualmente
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      $ref: '#/components/schemas/Salida'
+ *      security:
+ *          - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Create payment order  successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
+ * /income/search:
+ *  get:
+ *      tags:
+ *          - Reportes
+ *      summary: Reportes de entradas y salidas
+ *      description:  Obtener los reportes de las entradas y salidas
+ *      parameters:
+ *          - name: account_name
+ *            in: query
+ *            description: Nombre de la cuenta
+ *            example: 
+ *            schema:
+ *              type: string
+ *          - name: supplier_name
+ *            in: query
+ *            description: Nombre del proveedor o cliente
+ *            example: 
+ *            schema:
+ *              type: string
+ *          - name: type_user
+ *            in: query
+ *            description: Cliente o proveedor
+ *            schema:
+ *              type: string
+ *              enum: ["supplier","customer"]
+ *              example: 
+ *          - name: type
+ *            in: query
+ *            description: Entradas o salidas
+ *            schema:
+ *              type: string
+ *              enum: ["income","expense"]
+ *              example: 
+ *          - name: order_id
+ *            in: query
+ *            description: El id de la orden de pago o cobro
+ *            schema:
+ *              type: number
+ *              example: 
+ *          - name: account_id
+ *            in: query
+ *            description: El id de la cuenta
+ *            schema:
+ *              type: number
+ *              example: 
+ *          - name: supplier_customer_id
+ *            in: query
+ *            description: El id del proveedor o cliente
+ *            schema:
+ *              type: number
+ *              example: 
+ *          - name: field_type
+ *            in: query
+ *            description: Opciones de campos por los que filtrar un rango de valores
+ *            schema:
+ *              type: string
+ *              enum: ["amount"]
+ *              example: 
+ *          - name: initial_value
+ *            in: query
+ *            description: Valor inicial
+ *            example: 
+ *            schema:
+ *              type: number
+ *          - name: end_value
+ *            in: query
+ *            description: Valor final
+ *            example: 
+ *            schema:
+ *              type: number
+ *          - name: type_date
+ *            in: query
+ *            description: Tipo de fecha
+ *            schema:
+ *              type: string
+ *              enum: ["created_at","updated_at","date_order"]
+ *              example: 
+ *          - name: init_date
+ *            in: query
+ *            description: Fecha inicial
+ *            example: 
+ *            schema:
+ *              type: string
+ *          - name: end_date
+ *            in: query
+ *            description: Fecha final
+ *            example: 
+ *            schema:
+ *              type: string
+ *          - name: page
+ *            in: query
+ *            description: Numero de la pagina
+ *            example: 1
+ *            schema:
+ *              type: integer
+ *          - name: page_size
+ *            in: query
+ *            description: Registros por pagina
+ *            example: 100
+ *            schema:
+ *              type: integer
+ *      security:
+ *      - ApiKeyAuth: []
+ *      responses:
+ *          200:
+ *              description: (OK) Get accounts successfull
+ *          404:
+ *              description: (ERROR) Bad Request
+ *          401:
+ *              description: (ERROR) Unauthorized
+ *          500:
+ *              description: (ERROR) Internal Server Error
 */
 
 
@@ -2120,6 +2447,10 @@
  *      OrdenesDePago:
  *          type: object
  *          properties:
+ *              account_id:
+ *                  type: number
+ *                  description: El id de la cuenta
+ *                  example: 1
  *              payment_date:
  *                  type: string
  *                  description: La fecha de la compra, se ingresa ya que puede ser distinta a la actual
@@ -2149,14 +2480,18 @@
  *      OrdenesCobro:
  *          type: object
  *          properties:
+ *              customer_id:
+ *                  type: number
+ *                  description: El id del cliente que compra
+ *                  example: 3
+ *              account_id:
+ *                  type: number
+ *                  description: El id de la cuenta
+ *                  example: 1
  *              date_order:
  *                  type: string
  *                  description: La fecha de la compra, se ingresa ya que puede ser distinta a la actual
  *                  example: '2024-01-01'
- *              customer_id:
- *                  type: number
- *                  description: El ide del cliente que compra
- *                  example: 3
  *              sales:
  *                  type: array
  *                  description: Los productos que el cliente compra, pueden ser solo 1
@@ -2174,6 +2509,7 @@
  *                              example: 100
  *          required:
  *              - shoppings
+ *              - account_id
  *      TransaccionesOrdenesDePagoCreacion:
  *          type: object
  *          properties:
@@ -2204,6 +2540,72 @@
  *              payment_type_id: 1
  *              payment_order_id: 1
  *              supplier_customer_id: 1
+ *      Cuenta:
+ *          type: object
+ *          properties:
+ *              account_name:
+ *                  type: string
+ *                  description: El nombre de la cuenta
+ *              initial_balance:
+ *                  type: number
+ *                  format: double
+ *                  description: Eal saldo inicial de la cuenta
+ *          required:
+ *              - account_name
+ *          example:
+ *              account_name: 'Cuenta de moisés'
+ *              initial_balance: 100
+ *      CuentaActualizacion:
+ *          type: object
+ *          properties:
+ *              account_name:
+ *                  type: string
+ *                  description: El nombre de la cuenta
+ *              initial_balance:
+ *                  type: number
+ *                  format: double
+ *                  description: Eal saldo inicial de la cuenta
+ *          example:
+ *              account_name: 'Cuenta de moisés'
+ *              initial_balance: 100
+ *      Entrada:
+ *          type: object
+ *          properties:
+ *              account_id:
+ *                  type: number
+ *                  description: El id de la cuenta
+ *              order_receive_id:
+ *                  type: number
+ *                  description: El id de la orden de cobro
+ *              amount:
+ *                  type: number
+ *                  format: double
+ *                  description: El monto a descontar
+ *          required:
+ *              - account_id
+ *          example:
+ *              account_id: 1
+ *              order_receive_id: 1
+ *              amount: 100
+ *      Salida:
+ *          type: object
+ *          properties:
+ *              account_id:
+ *                  type: number
+ *                  description: El id de la cuenta
+ *              payment_order_id:
+ *                  type: number
+ *                  description: El id de la orden de pago
+ *              amount:
+ *                  type: number
+ *                  format: double
+ *                  description: El monto a descontar
+ *          required:
+ *              - account_id
+ *          example:
+ *              account_id: 1
+ *              payment_order_id: 1
+ *              amount: 100
  *      TransaccionesOrdenesDePagoActualizacion:
  *          type: object
  *          properties:

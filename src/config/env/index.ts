@@ -1,10 +1,15 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
+const lenguage = process.env.LENGUAGE || 'en';
+const token_expiration = '60m';
 interface IConfig { 
     HOST: string,
     NODE_ENV: string,
-    PORT: string | number;
+    PORT: string | number,
+    LENGUAGE: string,
+    TOKEN_EXPIRATION: string,
+    LENGUAGE_JOI: Boolean,
     DATABASE_POSTGRES:{
         DATABASE_URL: string,
         POSTGRES_USER: string,
@@ -20,6 +25,9 @@ const development: IConfig = {
     HOST: process.env.HOST,
     NODE_ENV: process.env.NODE_ENV,
     PORT: process.env.PORT || 3000,
+    LENGUAGE: lenguage, // en|es
+    LENGUAGE_JOI: (lenguage!='en')? true:false,
+    TOKEN_EXPIRATION: token_expiration,
     DATABASE_POSTGRES:{
         DATABASE_URL:process.env.POSTGRES_URL,
         POSTGRES_USER: process.env.POSTGRES_USER,
@@ -34,6 +42,9 @@ const production: IConfig = {
     HOST: process.env.HOST,
     NODE_ENV: process.env.NODE_ENV,
     PORT: process.env.PORT || 3000,
+    LENGUAGE: lenguage, // en|es
+    LENGUAGE_JOI: (lenguage!='en')? true:false,
+    TOKEN_EXPIRATION: token_expiration,
     DATABASE_POSTGRES:{
         DATABASE_URL:process.env.POSTGRES_URL,
         POSTGRES_USER: process.env.POSTGRES_USER,
@@ -47,6 +58,9 @@ const test: IConfig = {
     HOST: process.env.HOST,
     NODE_ENV: process.env.NODE_ENV,
     PORT: process.env.PORT || 3000,
+    LENGUAGE: lenguage, // en|es
+    LENGUAGE_JOI: (lenguage!='en')? true:false, // Definimos si usar los mensajes ersonalizados o los mensaje spor default de joi en ingles
+    TOKEN_EXPIRATION: token_expiration,
     DATABASE_POSTGRES:{
         DATABASE_URL:process.env.POSTGRES_URL,
         POSTGRES_USER: process.env.POSTGRES_USER,

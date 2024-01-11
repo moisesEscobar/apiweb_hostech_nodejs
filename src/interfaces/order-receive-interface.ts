@@ -15,6 +15,8 @@ export interface IOrderReceiveModel {
 }
 
 export interface IOrderReceiveCreateModel {
+    user_id?: number;
+    account_id?: number;
     date_order?: Date | null;
     customer_id?: number;
     sales:  {

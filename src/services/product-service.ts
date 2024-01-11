@@ -8,39 +8,40 @@ import BrandView from '../models/views/brand-view';
 import ProductWithInventoryView from '../models/views/products_with_inventory';
 import SupplierView from '../models/views/supplier-view';
 import Utils from '../utils/validate-data-utils';
+import { ErrorRate } from '../config/error';
 
 const ProductService: IProductService = {
     async findAll(): Promise<any[]> {
         try {
             return await ProductView.findAll({});
         } catch (error) {
-            throw new Error(error.message);
+            throw new ErrorRate(error.message,error.code);
         }
     },
     async reportResume(): Promise<any[]> {
         try {
             return await ProductWithInventoryView.findAll({});
         } catch (error) {
-            throw new Error(error.message);
+            throw new ErrorRate(error.message,error.code);
         }
     },
     async findOne(id: number): Promise<any> {
         try {
             const validate: Joi.ValidationResult = ProductValidation.validateId({ id });
-            if (validate.error) throw new Error(validate.error.message)
+            if (validate.error) throw new ErrorRate(validate.error.message,3);
 
             const product = await ProductView.findByPk(id);
-            if (!product) throw new Error("Product not found");
+            if (!product) throw new ErrorRate("product_not_exist");
 
             return product;
         } catch (error) {
-            throw new Error(error.message);
+            throw new ErrorRate(error.message,error.code);
         }
     },
     async search(params: any): Promise<any[]> {
         try {
             const validate: Joi.ValidationResult = await ProductValidation.searchSupplier(params);
-            if (validate.error) throw new Error(validate.error.message)
+            if (validate.error) throw new ErrorRate(validate.error.message,3);
 
             const whereClause: { [key: string]: any } = {};
             Utils.validateFieldsParams('name',params['name'],Op.iLike,whereClause);
@@ -59,22 +60,22 @@ const ProductService: IProductService = {
                 limit: page_size,
             });
         } catch (error) {
-            throw new Error(error.message);
+            throw new ErrorRate(error.message,error.code);
         }
     },
     async create(body: IProductModel): Promise<IProductModel> {
         try {
             const validate: Joi.ValidationResult = await ProductValidation.createProduct(body);
-            if (validate.error) throw new Error(validate.error.message)
+            if (validate.error) throw new ErrorRate(validate.error.message,3);
 
             const brand = await BrandView.findByPk(body.brand_id);
-            if (!brand) throw new Error("Brand not exist")
+            if (!brand) throw new ErrorRate("brand_not_exist")
 
             const supplier = await SupplierView.findOne({ where: {id:body.supplier_customer_id,type_user:'supplier'}});
-            if (!supplier) throw new Error("Supplier not exist")
+            if (!supplier) throw new ErrorRate("supplier_not_exist");
 
             const product_exist = await ProductView.findOne({ where: {sku:body.sku}});
-            if (product_exist) throw new Error("Product sku exist")
+            if (product_exist) throw new ErrorRate("productsku_exist")
 
             const product: IProductModel = await Product.create({
                 name: body.name,
@@ -88,67 +89,67 @@ const ProductService: IProductService = {
             });
             return product;
         } catch (error) {
-            throw new Error(error.message);
+            throw new ErrorRate(error.message,error.code);
         }
     },
     async update(id: number, body: IProductModel): Promise<any> {
         try {
             const validate: Joi.ValidationResult = await ProductValidation.updateProduct(body);
-            if (validate.error) throw new Error(validate.error.message)
+            if (validate.error) throw new ErrorRate(validate.error.message,3);
 
             const product = await Product.findByPk(id);
-            if (!product) throw new Error("Product not found")
+            if (!product) throw new ErrorRate("product_not_exist");
 
             if(body.brand_id){
                 const brand = await BrandView.findByPk(body.brand_id);
-                if (!brand) throw new Error("Brand not exist");
+                if (!brand) throw new ErrorRate("brand_not_exist")
             }
             if(body.supplier_customer_id){
                 const supplier = await SupplierView.findOne({ where: {id:body.supplier_customer_id,type_user:'supplier'}});
-                if (!supplier) throw new Error("Supplier not exist");
+                if (!supplier) throw new ErrorRate("supplier_not_exist");
             }
             if(body.sku){
                 const product_exist = await ProductView.findOne({ where: {sku:body.sku}});
-                if (product_exist) throw new Error("Product sku exist");
+                if (product_exist) throw new ErrorRate("productsku_exist");
             }
             const last_data = { ...product.get() };
             await product.update(body);
             const new_data = { ...product.get() };
             return { last_data: last_data, new_data: new_data }
         } catch (error) {
-            throw new Error(error.message);
+            throw new ErrorRate(error.message,error.code);
         }
     },
     async remove(id: number): Promise<any> {
         try {
             const validate: Joi.ValidationResult = await ProductValidation.validateId({ id });
-            if (validate.error) throw new Error(validate.error.message)
+            if (validate.error) throw new ErrorRate(validate.error.message,3);
 
             const product = await Product.findByPk(id);
-            if (!product) throw new Error("Product not found")
+            if (!product) throw new ErrorRate("product_not_exist");
 
             const last_data = { ...product.get() };
             await product.destroy();
             const new_data = { ...product.get() };
             return { last_data: last_data, new_data: new_data }
         } catch (error) {
-            throw new Error(error.message);
+            throw new ErrorRate(error.message,error.code);
         }
     },
     async restore(id: number): Promise<any> {
         try {
             const validate: Joi.ValidationResult = ProductValidation.validateId({ id });
-            if (validate.error) throw new Error(validate.error.message)
+            if (validate.error) throw new ErrorRate(validate.error.message,3);
 
             const product = await Product.findByPk(id, { paranoid: false });
-            if (!product) throw new Error("Product not found")
+            if (!product) throw new ErrorRate("product_not_exist");
 
             const last_data = { ...product.get() };
             await product.restore();
             const new_data = { ...product.get() };
             return { last_data: last_data, new_data: new_data }
         } catch (error) {
-            throw new Error(error.message);
+            throw new ErrorRate(error.message,error.code);
         }
     },
 };
